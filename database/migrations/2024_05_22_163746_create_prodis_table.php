@@ -13,11 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('kuesioners', function (Blueprint $table) {
-            $table->id('id_kuesioner');
-            $table->unsignedBigInteger('id_role')->nullable();
-            $table->string('jenis_kuesioner', 100);
-            $table->foreign('id_kuesioner')->references('id_kuesioner')->on('kuesioners');
+        Schema::create('prodis', function (Blueprint $table) {
+            $table->id('id_prodi');
+            $table->string('nama_prodi', 100);
             $table->timestamps();
         });
     }
@@ -29,6 +27,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('kuesioners');
+        Schema::dropIfExists('prodis');
     }
 };

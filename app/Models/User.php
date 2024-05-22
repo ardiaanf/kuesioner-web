@@ -41,4 +41,23 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    protected $table = 'users';
+    protected $primaryKey = 'id_user';
+    public $timestamps = true;
+
+    public function role()
+    {
+        return $this->belongsTo(role::class, 'id_role');
+    }
+
+    public function prodi()
+    {
+        return $this->belongsTo(prodi::class, 'id_prodi');
+    }
+
+    public function responseData()
+    {
+        return $this->hasMany(response_data::class, 'id_user');
+    }
 }

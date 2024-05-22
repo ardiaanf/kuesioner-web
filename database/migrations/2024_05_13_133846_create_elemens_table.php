@@ -14,9 +14,10 @@ return new class extends Migration
     public function up()
     {
         Schema::create('elemens', function (Blueprint $table) {
-            $table->id_elemen();
-            $table->integer('id_kuesioner');
-            $table->string('nama_elemen');
+            $table->id('id_elemen');
+            $table->unsignedBigInteger('id_kuesioner');
+            $table->string('nama_elemen', 200);
+            $table->foreign('id_kuesioner')->references('id_kuesioner')->on('kuesioners');
             $table->timestamps();
         });
     }

@@ -15,8 +15,9 @@ return new class extends Migration
     {
         Schema::create('jawabans', function (Blueprint $table) {
             $table->id_jawaban();
-            $table->integer('id_pertanyaan');
+            $table->unsignedBigInteger('id_pertanyaan');
             $table->smallInteger('kriteria');
+            $table->foreign('id_pertanyaan')->references('id_pertanyaan')->on('pertanyaans');
             $table->timestamps();
         });
     }
