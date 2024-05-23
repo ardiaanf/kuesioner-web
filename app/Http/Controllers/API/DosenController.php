@@ -5,7 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class jawabanController extends Controller
+class DosenController extends Controller
 {
     /**
      * Display a listing of the resource.

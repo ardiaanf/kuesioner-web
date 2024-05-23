@@ -5,7 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class kuesionerController extends Controller
+class KuesionerController extends Controller
 {
     /**
      * Display a listing of the resource.
