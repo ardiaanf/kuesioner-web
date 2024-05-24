@@ -19,10 +19,10 @@ return new class extends Migration
             $table->unsignedBigInteger('id_prodi');
             $table->string('nomor_induk', 100);
             $table->string('nama_user', 100);
-            $table->foreign('id_role')->references('id_role')->on('role');
-            $table->foreign('id_prodi')->references('id_prodi')->on('prodi');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
+            // $table->foreign('id_role')->references('id_role')->on('roles');
+            // $table->foreign('id_prodi')->references('id_prodi')->on('prodis');
+            // $table->string('email')->unique();
+            // $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id('id_kuesioner');
             $table->unsignedBigInteger('id_role')->nullable();
             $table->string('jenis_kuesioner', 100);
-            $table->foreign('id_kuesioner')->references('id_kuesioner')->on('kuesioners');
+            // $table->foreign('id_role')->references('id_role')->on('roles');
             $table->timestamps();
         });
     }
