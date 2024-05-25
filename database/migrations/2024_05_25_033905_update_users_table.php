@@ -13,12 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('kuesioners', function (Blueprint $table) {
-            $table->id('id_kuesioner');
-            $table->unsignedBigInteger('id_role')->nullable();
-            $table->string('jenis_kuesioner', 100);
-            // $table->foreign('id_role')->references('id_role')->on('roles');
-            $table->timestamps();
+        Schema::table('users', function (Blueprint $table) {
+            $table->foreignId('study_program_id')->after('email_verified_at')->constrained('study_programs')->onDelete('cascade');
         });
     }
 
@@ -29,6 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('kuesioners');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropConstrainedForeignId('study_program_id');
+        });
     }
 };

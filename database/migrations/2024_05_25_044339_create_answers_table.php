@@ -13,9 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('prodis', function (Blueprint $table) {
-            $table->id('id_prodi');
-            $table->string('nama_prodi', 100);
+        Schema::create('answers', function (Blueprint $table) {
+            $table->id();
+            $table->smallInteger('range');
+            $table->foreignId('question_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -27,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('prodis');
+        Schema::dropIfExists('answers');
     }
 };

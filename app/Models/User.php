@@ -43,21 +43,9 @@ class User extends Authenticatable
     ];
 
     protected $table = 'users';
-    protected $primaryKey = 'id_user';
-    public $timestamps = true;
 
-    public function role()
+    public function studyProgram()
     {
-        return $this->belongsTo(role::class, 'id_role');
-    }
-
-    public function prodi()
-    {
-        return $this->belongsTo(prodi::class, 'id_prodi');
-    }
-
-    public function responseData()
-    {
-        return $this->hasMany(response_data::class, 'id_user');
+        return $this->belongsTo(StudyProgram::class);
     }
 }
