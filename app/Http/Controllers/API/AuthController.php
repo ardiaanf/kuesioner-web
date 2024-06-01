@@ -2,63 +2,36 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
+use App\Models\User;
+use App\Http\Controllers\API\BaseController as BaseController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
-class AuthController extends Controller
+class AuthController extends BaseController
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * Login api
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function signin(Request $request)
     {
-        //
-    }
+        if (!User::where('email', $request->email)->exists()) {
+            return $this->errorResponse('Unauthorized', ['error' => 'User not found'], 401);
+        }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+            $authUser = Auth::user();
+            $success['access_token'] =  $authUser->createToken('MyAuthApp')->plainTextToken;
+            $success['id'] =  $authUser->id;
+            $success['name'] =  $authUser->name;
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+            return $this->successResponse($success, 'User signed in');
+        } else if (User::where('email', $request->email)->first()->password != $request->password) {
+            return $this->errorResponse('Unauthorized', ['error' => 'Password is wrong'], 401);
+        } else {
+            return $this->errorResponse('Unauthorized', ['error' => 'Unauthorized'], 401);
+        }
     }
 }
