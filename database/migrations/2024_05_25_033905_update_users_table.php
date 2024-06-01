@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->foreignId('study_program_id')->after('email_verified_at')->constrained('study_programs')->onDelete('cascade');
+            $table->foreignId('study_program_id')->after('reg_number')->constrained('study_programs')->onDelete('cascade');
         });
     }
 
