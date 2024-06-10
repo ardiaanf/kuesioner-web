@@ -35,8 +35,18 @@ class RoleSeeder extends Seeder
 
         $admin->givePermissionTo('read_permissions');
 
+        $lecturer = Role::create([
+            'name' => 'dosen',
+            'guard_name' => 'web'
+        ]);
+
         $student = Role::create([
-            'name' => 'student',
+            'name' => 'mahasiswa',
+            'guard_name' => 'web'
+        ]);
+
+        $educationPersonnel = Role::create([
+            'name' => 'tendik',
             'guard_name' => 'web'
         ]);
     }
