@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('student_classes', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->foreignId('study_program_id')->constrained('study_progams')->onDelete('cascade');
+            $table->foreignId('study_program_id')->constrained('study_programs')->onDelete('cascade');
             $table->timestamps();
         });
     }

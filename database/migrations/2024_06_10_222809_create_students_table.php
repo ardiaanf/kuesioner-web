@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->string('semester');
-            $table->foreignId('study_program_id')->constrained('study_progams')->onDelete('cascade');
+            $table->foreignId('study_program_id')->constrained('study_programs')->onDelete('cascade');
             $table->foreignId('student_class_id')->constrained('student_classes')->onDelete('cascade');
             $table->timestamps();
         });

@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class AcadStaffElement extends Model
 {
     use HasFactory;
+
+    protected $table = 'acad_staff_elements';
 }
