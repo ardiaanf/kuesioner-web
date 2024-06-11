@@ -10,4 +10,11 @@ class StudentQuestionnaire extends Model
     use HasFactory;
 
     protected $table = 'student_questionnaires';
+
+    protected $fillable = [
+        'name',
+        'description',
+        'type',
+        'admin_id',
+    ];
 }
