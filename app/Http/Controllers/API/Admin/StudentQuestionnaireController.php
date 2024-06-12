@@ -4,10 +4,7 @@ namespace App\Http\Controllers\API\Admin;
 
 use App\Models\StudentQuestionnaire;
 use App\Http\Resources\Admin\StudentQuestionnaireResource;
-use App\Http\Resources\Admin\StudentElementResource;
-use App\Http\Resources\Admin\StudentQuestionResource;
 use App\Http\Controllers\API\BaseController as BaseController;
-use App\Models\Student;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
