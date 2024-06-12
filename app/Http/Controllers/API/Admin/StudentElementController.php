@@ -2,17 +2,14 @@
 
 namespace App\Http\Controllers\API\Admin;
 
-use App\Models\StudentQuestionnaire;
-use App\Http\Resources\Admin\StudentQuestionnaireResource;
+use App\Models\StudentElement;
 use App\Http\Resources\Admin\StudentElementResource;
-use App\Http\Resources\Admin\StudentQuestionResource;
 use App\Http\Controllers\API\BaseController as BaseController;
-use App\Models\Student;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
-class StudentQuestionnaireController extends BaseController
+class StudentElementController extends BaseController
 {
     /**
      * Display a listing of the resource.
@@ -22,9 +19,8 @@ class StudentQuestionnaireController extends BaseController
     public function index()
     {
         if (Auth::user()->role == 'admin') {
-            // $studentQuestionnaires = StudentQuestionnaire::all();
-            $studentQuestionnaires = StudentQuestionnaire::with('admin')->get();
-            return $this->successResponse(StudentQuestionnaireResource::collection($studentQuestionnaires), 'Student Questionnaires retrieved successfully');
+            $StudentElements = StudentElement::all();
+            return $this->successResponse(StudentElementResource::collection($StudentElements), 'Student Elements retrieved successfully.');
         } else {
             return $this->errorResponse('Unauthorized', [], 401);
         }
@@ -44,17 +40,16 @@ class StudentQuestionnaireController extends BaseController
             $validator = Validator::make($input, [
                 'name' => 'required',
                 'description' => 'nullable',
-                'type' => 'required',
+                'student_questionnaire_id' => 'required|exists:student_questionnaires,id',
             ]);
 
             if ($validator->fails()) {
                 return $this->errorResponse('Validation Error', $validator->errors(), 422);
             }
 
-            $input['admin_id'] = Auth::user()->id;
-            $studentQuestionnaire = StudentQuestionnaire::create($input);
+            $StudentElement = StudentElement::create($input);
 
-            return $this->successResponse(new StudentQuestionnaireResource($studentQuestionnaire), 'Student Questionnaire created successfully', 201);
+            return $this->successResponse(new StudentElementResource($StudentElement), 'Student Element created successfully.', 201);
         } else {
             return $this->errorResponse('Unauthorized', [], 401);
         }
@@ -69,13 +64,13 @@ class StudentQuestionnaireController extends BaseController
     public function show($id)
     {
         if (Auth::user()->role == 'admin') {
-            // $studentQuestionnaire = StudentQuestionnaire::find($id);
-            $studentQuestionnaire = StudentQuestionnaire::with('admin')->find($id);
-            if (is_null($studentQuestionnaire)) {
-                return $this->errorResponse('Student Questionnaire not found', [], 404);
+            $StudentElement = StudentElement::find($id);
+
+            if (is_null($StudentElement)) {
+                return $this->errorResponse('Student Element not found.', [], 404);
             }
 
-            return $this->successResponse(new StudentQuestionnaireResource($studentQuestionnaire), 'Student Questionnaire retrieved successfully');
+            return $this->successResponse(new StudentElementResource($StudentElement), 'Student Element retrieved successfully.');
         } else {
             return $this->errorResponse('Unauthorized', [], 401);
         }
@@ -90,13 +85,13 @@ class StudentQuestionnaireController extends BaseController
     public function showWithRelations($id)
     {
         if (Auth::user()->role == 'admin') {
-            // $studentQuestionnaire = StudentQuestionnaire::with('studentElements.studentQuestions')->find($id);
-            $studentQuestionnaire = StudentQuestionnaire::with('admin')->with('studentElements.studentQuestions')->find($id);
-            if (is_null($studentQuestionnaire)) {
-                return $this->errorResponse('Student Questionnaire not found', [], 404);
+            $StudentElement = StudentElement::with('studentQuestions')->find($id);
+
+            if (is_null($StudentElement)) {
+                return $this->errorResponse('Student Element not found.', [], 404);
             }
 
-            return $this->successResponse(new StudentQuestionnaireResource($studentQuestionnaire), 'Student Questionnaire retrieved successfully');
+            return $this->successResponse(new StudentElementResource($StudentElement), 'Student Element retrieved successfully.');
         } else {
             return $this->errorResponse('Unauthorized', [], 401);
         }
@@ -106,16 +101,16 @@ class StudentQuestionnaireController extends BaseController
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
         if (Auth::user()->role == 'admin') {
-            $studentQuestionnaire = StudentQuestionnaire::find($id);
+            $StudentElement = StudentElement::find($id);
 
-            if (is_null($studentQuestionnaire)) {
-                return $this->errorResponse('Student Questionnaire not found', [], 404);
+            if (is_null($StudentElement)) {
+                return $this->errorResponse('Student Element not found.', [], 404);
             }
 
             $input = $request->all();
@@ -123,19 +118,18 @@ class StudentQuestionnaireController extends BaseController
             $validator = Validator::make($input, [
                 'name' => 'required',
                 'description' => 'nullable',
-                'type' => 'required',
+                'student_questionnaire_id' => 'required|exists:student_questionnaires,id',
             ]);
 
             if ($validator->fails()) {
                 return $this->errorResponse('Validation Error', $validator->errors(), 422);
             }
 
-            $studentQuestionnaire->name = $input['name'];
-            $studentQuestionnaire->description = $input['description'];
-            $studentQuestionnaire->type = $input['type'];
-            $studentQuestionnaire->save();
+            $StudentElement->name = $input['name'];
+            $StudentElement->description = $input['description'];
+            $StudentElement->save();
 
-            return $this->successResponse(new StudentQuestionnaireResource($studentQuestionnaire), 'Student Questionnaire updated successfully');
+            return $this->successResponse(new StudentElementResource($StudentElement), 'Student Element updated successfully.');
         } else {
             return $this->errorResponse('Unauthorized', [], 401);
         }
@@ -150,15 +144,15 @@ class StudentQuestionnaireController extends BaseController
     public function destroy($id)
     {
         if (Auth::user()->role == 'admin') {
-            $studentQuestionnaire = StudentQuestionnaire::find($id);
+            $StudentElement = StudentElement::find($id);
 
-            if (is_null($studentQuestionnaire)) {
-                return $this->errorResponse('Student Questionnaire not found', [], 404);
+            if (is_null($StudentElement)) {
+                return $this->errorResponse('Student Element not found.', [], 404);
             }
 
-            $studentQuestionnaire->delete();
+            $StudentElement->delete();
 
-            return $this->successResponse([], 'Student Questionnaire deleted successfully');
+            return $this->successResponse([], 'Student Element deleted successfully.');
         } else {
             return $this->errorResponse('Unauthorized', [], 401);
         }

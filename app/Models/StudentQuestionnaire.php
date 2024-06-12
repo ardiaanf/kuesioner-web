@@ -17,4 +17,14 @@ class StudentQuestionnaire extends Model
         'type',
         'admin_id',
     ];
+
+    public function admin()
+    {
+        return $this->belongsTo(Admin::class);
+    }
+
+    public function studentElements()
+    {
+        return $this->hasMany(StudentElement::class);
+    }
 }
