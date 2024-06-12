@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\Admin;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -19,6 +19,10 @@ class StudentQuestionnaireResource extends JsonResource
             'name' => $this->name,
             'description' => $this->description,
             'type' => $this->type,
+            'admin' => $this->whenLoaded('admin', function () {
+                return $this->admin->name;
+            }),
+            'student_elements' => StudentElementResource::collection($this->whenLoaded('studentElements')),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
