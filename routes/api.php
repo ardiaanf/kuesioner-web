@@ -13,6 +13,7 @@ use App\Http\Controllers\API\{
     Admin\LecturerQuestionnaireController as AdminLecturerQuestionnaireController,
     Admin\LecturerQuestionController as AdminLecturerQuestionController,
     Admin\LecturerElementController as AdminLecturerElementController,
+    Admin\AcademicStaffQuestionnaireController as AdminAcademicStaffQuestionnaireController,
     Admin\AdminController,
     Student\StudentQuestionnaireController,
 };
@@ -72,6 +73,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('admin/lecturer-questions/{lecturerQuestion}', [AdminLecturerQuestionController::class, 'show']);
     Route::put('admin/lecturer-questions/{lecturerQuestion}', [AdminLecturerQuestionController::class, 'update']);
     Route::delete('admin/lecturer-questions/{lecturerQuestion}', [AdminLecturerQuestionController::class, 'destroy']);
+
+    // Academic staff Questionnaire
+    Route::get('admin/acadstaff-questionnaires', [AdminAcademicStaffQuestionnaireController::class, 'index']);
+    Route::post('admin/acadstaff-questionnaires', [AdminAcademicStaffQuestionnaireController::class, 'store']);
+    Route::get('admin/acadstaff-questionnaires/{acadstaffQuestionnaire}', [AdminAcademicStaffQuestionnaireController::class, 'show']);
+    Route::get('admin/acadstaff-questionnaires/{acadstaffQuestionnaire}/relations', [AdminAcademicStaffQuestionnaireController::class, 'showWithRelations']);
+    Route::put('admin/acadstaff-questionnaires/{acadstaffQuestionnaire}', [AdminAcademicStaffQuestionnaireController::class, 'update']);
+    Route::delete('admin/acadstaff-questionnaires/{acadstaffQuestionnaire}', [AdminAcademicStaffQuestionnaireController::class, 'destroy']);
 
     // Account Management
     Route::get('admin/admins', [AdminController::class, 'index']);
