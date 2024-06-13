@@ -11,6 +11,8 @@ use App\Http\Controllers\API\{
     Admin\StudentElementController as AdminStudentElementController,
     Admin\StudentQuestionController as AdminStudentQuestionController,
     Admin\LecturerQuestionnaireController as AdminLecturerQuestionnaireController,
+    Admin\LecturerQuestionController as AdminLecturerQuestionController,
+    Admin\LecturerElementController as AdminLecturerElementController,
     Admin\AdminController,
     Student\StudentQuestionnaireController,
 };
@@ -56,12 +58,28 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('admin/lecturer-questionnaires/{lecturerQuestionnaire}', [AdminLecturerQuestionnaireController::class, 'update']);
     Route::delete('admin/lecturer-questionnaires/{lecturerQuestionnaire}', [AdminLecturerQuestionnaireController::class, 'destroy']);
 
+    // Lecturer Elements
+    Route::get('admin/lecturer-elements', [AdminLecturerElementController::class, 'index']);
+    Route::post('admin/lecturer-elements', [AdminLecturerElementController::class, 'store']);
+    Route::get('admin/lecturer-elements/{lecturerElement}', [AdminLecturerElementController::class, 'show']);
+    Route::get('admin/lecturer-elements/{lecturerElement}/relations', [AdminLecturerElementController::class, 'showWithRelations']);
+    Route::put('admin/lecturer-elements/{lecturerElement}', [AdminLecturerElementController::class, 'update']);
+    Route::delete('admin/lecturer-elements/{lecturerElement}', [AdminLecturerElementController::class, 'destroy']);
+
+    // Lecturer Question
+    Route::get('admin/lecturer-questions', [AdminLecturerQuestionController::class, 'index']);
+    Route::post('admin/lecturer-questions', [AdminLecturerQuestionController::class, 'store']);
+    Route::get('admin/lecturer-questions/{lecturerQuestion}', [AdminLecturerQuestionController::class, 'show']);
+    Route::put('admin/lecturer-questions/{lecturerQuestion}', [AdminLecturerQuestionController::class, 'update']);
+    Route::delete('admin/lecturer-questions/{lecturerQuestion}', [AdminLecturerQuestionController::class, 'destroy']);
+
     // Account Management
     Route::get('admin/admins', [AdminController::class, 'index']);
     Route::post('admin/admins', [AdminController::class, 'store']);
     Route::get('admin/admins/{admin}', [AdminController::class, 'show']);
     Route::put('admin/admins/{admin}', [AdminController::class, 'update']);
     Route::delete('admin/admins/{admin}', [AdminController::class, 'destroy']);
+
 
     /**
      * ROUTES FOR STUDENT
