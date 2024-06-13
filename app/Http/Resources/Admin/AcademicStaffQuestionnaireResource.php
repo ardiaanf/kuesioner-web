@@ -21,7 +21,7 @@ class AcademicStaffQuestionnaireResource extends JsonResource
             'admin'=> $this->whenLoaded('admin', function() {
                 return $this->admin->name;
             }),
-            'acastaff_elements' => AcademicStaffElementResource::collection($this->whenLoaded('acastaffElements')) ,
+            'acadstaff_elements' => AcademicStaffElementResource::collection($this->whenLoaded('acadstaffElements')) ,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
