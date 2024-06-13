@@ -19,7 +19,6 @@ class LecturerQuestionnaireResource extends JsonResource
             'id' => $this->id,
             'name'=> $this->name,
             'description'=> $this->description,
-            'type'=> $this->type,
             'admin'=> $this->whenLoaded('admin', function() {
                 return $this->admin->name;
             }),
