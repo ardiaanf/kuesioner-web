@@ -86,7 +86,7 @@ class AcademicStaffElementController extends BaseController
     public function showWithRelations($id)
     {
         if (Auth::user()->role == 'admin') {
-            $acadstaffElement = AcadStaffElement::with('lecturerQuestions')->find($id);
+            $acadstaffElement = AcadStaffElement::with('acadstaffQuestions')->find($id);
 
             if (is_null($acadstaffElement)) {
                 return $this->errorResponse('Education Personel Element not found.', [], 404);
