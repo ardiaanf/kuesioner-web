@@ -112,7 +112,7 @@ class AcademicStaffElementController extends BaseController
             $acadstaffElement = AcadStaffElement::find($id);
 
             if (is_null($acadstaffElement)) {
-                return $this->errorResponse('Lecturer Element not found.', [], 404);
+                return $this->errorResponse('Education Personel Element not found.', [], 404);
             }
 
             $input = $request->all();
@@ -120,7 +120,7 @@ class AcademicStaffElementController extends BaseController
             $validator = Validator::make($input, [
                 'name' => 'required',
                 'description' => 'nullable',
-                'lecturer_questionnaire_id' => 'required|exists:lecturer_questionnaires,id',
+                'acad_staff_questionnaire_id' => 'required|exists:acad_staff_questionnaires,id',
             ]);
 
             if ($validator->fails()) {
