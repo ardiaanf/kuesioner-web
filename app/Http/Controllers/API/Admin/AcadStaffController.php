@@ -41,8 +41,8 @@ class AcadStaffController extends BaseController
 
             $validator = Validator::make($input, [
                 'name' => 'required',
-                'reg_number' => 'required',
-                'email' => 'required|email|unique:lecturers,email',
+                'reg_number' => 'required|unique:acad_staffs,reg_number',
+                'email' => 'required|email|unique:acad_staffs,email',
                 'password' => 'required',
                 'work_period' => 'required'
             ]);
@@ -107,9 +107,10 @@ class AcadStaffController extends BaseController
 
             $validator = Validator::make($input, [
                 'name' => 'required',
-                'reg_number' => 'required',
-                'email' => 'required|email|unique:admins,email,' . $id,
+                'reg_number' => 'required|unique:acad_staffs,reg_number,' .$id,
+                'email' => 'required|email|unique:acad_staffs,email,' . $id,
                 'password' => 'required',
+                'work_period' => 'required'
             ]);
 
             if ($validator->fails()) {
@@ -120,6 +121,7 @@ class AcadStaffController extends BaseController
             $acadstaff->reg_number = $input['reg_number'];
             $acadstaff->email = $input['email'];
             $acadstaff->password = bcrypt($input['password']);
+            $acadstaff->work_period = $input['work_period'];
             $acadstaff->save();
 
             return $this->successResponse(new AcadStaffResource($acadstaff), 'Education Personel updated successfully.');

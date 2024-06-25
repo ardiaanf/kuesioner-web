@@ -93,7 +93,7 @@ class AcademicStaffElementController extends BaseController
     public function showWithRelations($id)
     {
         if (Auth::user()->role == 'admin') {
-            $AcadStaffElement = AcadStaffElement::with('studentQuestions')->find($id);
+            $AcadStaffElement = AcadStaffElement::with('acadstaffQuestions')->find($id);
 
             if (is_null($AcadStaffElement)) {
                 return $this->errorResponse('Education Personal Element not found.', [], 404);
@@ -126,7 +126,7 @@ class AcademicStaffElementController extends BaseController
             $validator = Validator::make($input, [
                 'name' => 'required',
                 'description' => 'nullable',
-                'student_questionnaire_id' => 'required|exists:student_questionnaires,id',
+                'acad_staff_questionnaire_id' => 'required|exists:acad_staff_questionnaires,id',
             ]);
 
             if ($validator->fails()) {

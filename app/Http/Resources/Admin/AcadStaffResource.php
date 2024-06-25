@@ -14,6 +14,15 @@ class AcadStaffResource extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'reg_number' => $this->reg_number,
+            'email' => $this->email,
+            'password' => $this->password,
+            'work_period' => $this->work_period,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+        ];
     }
 }

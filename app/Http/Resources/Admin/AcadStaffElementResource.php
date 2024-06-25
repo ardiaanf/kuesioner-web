@@ -18,7 +18,7 @@ class AcadStaffElementResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
-            'acad_staff_questions' => AcademicStaffQuestionResource::collection($this->whenLoaded('acadstaffQuestions')),
+            'acad_staff_questions' => AcadStaffQuestionResource::collection($this->whenLoaded('acadstaffQuestions')),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

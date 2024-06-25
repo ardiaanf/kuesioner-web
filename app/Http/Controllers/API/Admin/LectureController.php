@@ -40,7 +40,7 @@ class LectureController extends BaseController
 
             $validator = Validator::make($input, [
                 'name' => 'required',
-                'reg_number' => 'required',
+                'reg_number' => 'required|unique:lecturers,reg_number',
                 'email' => 'required|email|unique:lecturers,email',
                 'password' => 'required',
                 'work_period' => 'required'
@@ -98,16 +98,17 @@ class LectureController extends BaseController
             $lecturer = Lecturer::find($id);
 
             if (is_null($lecturer)) {
-                return $this->errorResponse('Admin not found.', [], 404);
+                return $this->errorResponse('Lecturer Admin not found.', [], 404);
             }
 
             $input = $request->all();
 
             $validator = Validator::make($input, [
                 'name' => 'required',
-                'reg_number' => 'required',
-                'email' => 'required|email|unique:admins,email,' . $id,
+                'reg_number' => 'required|unique:lecturers,reg_number,'. $id,
+                'email' => 'required|email|unique:lecturers,email,' . $id,
                 'password' => 'required',
+                'work_period' => 'required'
             ]);
 
             if ($validator->fails()) {
@@ -118,9 +119,10 @@ class LectureController extends BaseController
             $lecturer->reg_number = $input['reg_number'];
             $lecturer->email = $input['email'];
             $lecturer->password = bcrypt($input['password']);
+            $lecturer->work_period = $input['work_period'];
             $lecturer->save();
 
-            return $this->successResponse(new LectureResource($lecturer), 'Lecture updated successfully.');
+            return $this->successResponse(new LectureResource($lecturer), 'Lecturer updated successfully.');
         } else {
             return $this->errorResponse('Unauthorized', [], 401);
         }
