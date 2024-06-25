@@ -15,9 +15,12 @@ use App\Http\Controllers\API\{
     Admin\LecturerElementController as AdminLecturerElementController,
     Admin\AcademicStaffQuestionnaireController as AdminAcademicStaffQuestionnaireController,
     Admin\AcademicStaffElementController as AdminAcademicStaffElementController,
+    Admin\AcademicStaffQuestionController as AdminAcademicStaffQuestionController,
     Admin\AdminController,
+    Admin\LectureController,
     Student\StudentQuestionnaireController,
 };
+
 
 Route::post('auth/admin', [AdminAuthController::class, 'signin']);
 Route::post('auth/lecturer', [LecturerAuthController::class, 'signin']);
@@ -90,12 +93,26 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('admin/acadstaff-elements/{acadstaffElement}', [AdminAcademicStaffElementController::class, 'update']);
     Route::delete('admin/acadstaff-elements/{acadstaffElement}', [AdminAcademicStaffElementController::class, 'destroy']);
 
-    // Account Management
+    // Academic staff Question
+    Route::get('admin/acadstaff-questions', [AdminAcademicStaffQuestionController::class, 'index']);
+    Route::post('admin/acadstaff-questions', [AdminAcademicStaffQuestionController::class, 'store']);
+    Route::get('admin/acadstaff-questions/{acadstaffQuestion}', [AdminAcademicStaffQuestionController::class, 'show']);
+    Route::put('admin/acadstaff-questions/{acadstaffQuestion}', [AdminAcademicStaffQuestionController::class, 'update']);
+    Route::delete('admin/acadstaff-questions/{acadstaffQuestion}', [AdminAcademicStaffQuestionController::class, 'destroy']);
+
+    // Account Management Admin
     Route::get('admin/admins', [AdminController::class, 'index']);
     Route::post('admin/admins', [AdminController::class, 'store']);
     Route::get('admin/admins/{admin}', [AdminController::class, 'show']);
     Route::put('admin/admins/{admin}', [AdminController::class, 'update']);
     Route::delete('admin/admins/{admin}', [AdminController::class, 'destroy']);
+
+    // Account Management Lecturer
+    Route::get('admin/lecturer', [LectureController::class, 'index']);
+    Route::post('admin/lecturer', [LectureController::class, 'store']);
+    Route::get('admin/lecturer/{admin}', [LectureController::class, 'show']);
+    Route::put('admin/lecturer/{admin}', [LectureController::class, 'update']);
+    Route::delete('admin/lecturer/{admin}', [LectureController::class, 'destroy']);
 
 
     /**

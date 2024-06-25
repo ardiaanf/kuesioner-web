@@ -37,6 +37,7 @@ class LecturerElementController extends BaseController
     {
         if (Auth::user()->role == 'admin') {
             $input = $request->all();
+            // var_dump($input);
 
             $validator = Validator::make($input, [
                 'name' => 'required',

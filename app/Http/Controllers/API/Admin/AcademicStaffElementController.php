@@ -5,14 +5,16 @@ namespace App\Http\Controllers\API\Admin;
 use App\Http\Controllers\API\BaseController;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Admin\AcademicStaffElementResource;
+use App\Http\Resources\Admin\AcadStaffElementResource;
 use App\Models\AcadStaffElement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class AcademicStaffElementController extends BaseController
 {
-     /**
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -20,8 +22,8 @@ class AcademicStaffElementController extends BaseController
     public function index()
     {
         if (Auth::user()->role == 'admin') {
-            $acadstaffElements = AcadStaffElement::all();
-            return $this->successResponse(AcademicStaffElementResource::collection($acadstaffElements), 'Educational Personal Elements retrieved successfully.');
+            $AcadStaffElements = AcadStaffElement::all();
+            return $this->successResponse(AcadStaffElementResource::collection($AcadStaffElements), 'Education Personel Elements retrieved successfully.');
         } else {
             return $this->errorResponse('Unauthorized', [], 401);
         }
@@ -37,26 +39,31 @@ class AcademicStaffElementController extends BaseController
     {
         if (Auth::user()->role == 'admin') {
             $input = $request->all();
+            // Log::info('Input data:', $input);
+            // dd($input);
+            // dd($input);
 
+            // var_dump($input);
             $validator = Validator::make($input, [
                 'name' => 'required',
                 'description' => 'nullable',
                 'acad_staff_questionnaire_id' => 'required|exists:acad_staff_questionnaires,id',
             ]);
+            // var_dump($validator->errors());
 
             if ($validator->fails()) {
                 return $this->errorResponse('Validation Error', $validator->errors(), 422);
             }
 
-            $acadstaffElement = AcadStaffElement::create($input);
+            $AcadStaffElement = AcadStaffElement::create($input);
 
-            return $this->successResponse(new AcademicStaffElementResource($acadstaffElement), 'Education Personel Element created successfully.', 201);
+            return $this->successResponse(new AcadStaffElementResource($AcadStaffElement), 'Education Personel Element created successfully.', 201);
         } else {
             return $this->errorResponse('Unauthorized', [], 401);
         }
     }
 
-    /**
+     /**
      * Display the specified resource.
      *
      * @param  int  $id
@@ -64,14 +71,14 @@ class AcademicStaffElementController extends BaseController
      */
     public function show($id)
     {
-         if (Auth::user()->role == 'admin') {
-            $acadstaffElement = AcadStaffElement::with('acadstaffQuestions')->find($id);
+        if (Auth::user()->role == 'admin') {
+            $AcadStaffElement = AcadStaffElement::find($id);
 
-            if (is_null($acadstaffElement)) {
+            if (is_null($AcadStaffElement)) {
                 return $this->errorResponse('Education Personel Element not found.', [], 404);
             }
 
-            return $this->successResponse(new AcademicStaffElementResource($acadstaffElement), 'Education Personel Element retrieved successfully.');
+            return $this->successResponse(new AcadStaffElementResource($AcadStaffElement), 'Education Personel Element retrieved successfully.');
         } else {
             return $this->errorResponse('Unauthorized', [], 401);
         }
@@ -86,18 +93,17 @@ class AcademicStaffElementController extends BaseController
     public function showWithRelations($id)
     {
         if (Auth::user()->role == 'admin') {
-            $acadstaffElement = AcadStaffElement::with('acadstaffQuestions')->find($id);
+            $AcadStaffElement = AcadStaffElement::with('studentQuestions')->find($id);
 
-            if (is_null($acadstaffElement)) {
-                return $this->errorResponse('Education Personel Element not found.', [], 404);
+            if (is_null($AcadStaffElement)) {
+                return $this->errorResponse('Education Personal Element not found.', [], 404);
             }
 
-            return $this->successResponse(new AcademicStaffElementResource($acadstaffElement), 'Education Personel Element retrieved successfully.');
+            return $this->successResponse(new AcadStaffElementResource($AcadStaffElement), 'Education Personal Element retrieved successfully.');
         } else {
             return $this->errorResponse('Unauthorized', [], 401);
         }
     }
-
 
     /**
      * Update the specified resource in storage.
@@ -109,10 +115,10 @@ class AcademicStaffElementController extends BaseController
     public function update(Request $request, $id)
     {
         if (Auth::user()->role == 'admin') {
-            $acadstaffElement = AcadStaffElement::find($id);
+            $AcadStaffElement = AcadStaffElement::find($id);
 
-            if (is_null($acadstaffElement)) {
-                return $this->errorResponse('Education Personel Element not found.', [], 404);
+            if (is_null($AcadStaffElement)) {
+                return $this->errorResponse('Education Personal Element not found.', [], 404);
             }
 
             $input = $request->all();
@@ -120,18 +126,18 @@ class AcademicStaffElementController extends BaseController
             $validator = Validator::make($input, [
                 'name' => 'required',
                 'description' => 'nullable',
-                'acad_staff_questionnaire_id' => 'required|exists:acad_staff_questionnaires,id',
+                'student_questionnaire_id' => 'required|exists:student_questionnaires,id',
             ]);
 
             if ($validator->fails()) {
                 return $this->errorResponse('Validation Error', $validator->errors(), 422);
             }
 
-             $acadstaffElement->name = $input['name'];
-             $acadstaffElement->description = $input['description'];
-             $acadstaffElement->save();
+            $AcadStaffElement->name = $input['name'];
+            $AcadStaffElement->description = $input['description'];
+            $AcadStaffElement->save();
 
-            return $this->successResponse(new AcademicStaffElementResource( $acadstaffElement), 'Education Personel Element updated successfully.');
+            return $this->successResponse(new AcadStaffElementResource($AcadStaffElement), 'Education Personal Element updated successfully.');
         } else {
             return $this->errorResponse('Unauthorized', [], 401);
         }
@@ -149,12 +155,12 @@ class AcademicStaffElementController extends BaseController
             $AcadStaffElement = AcadStaffElement::find($id);
 
             if (is_null($AcadStaffElement)) {
-                return $this->errorResponse('Education Personel Element not found.', [], 404);
+                return $this->errorResponse('Education Personal Element not found.', [], 404);
             }
 
             $AcadStaffElement->delete();
 
-            return $this->successResponse([], 'Education Personel Element deleted successfully.');
+            return $this->successResponse([], 'Education Personal Element deleted successfully.');
         } else {
             return $this->errorResponse('Unauthorized', [], 401);
         }

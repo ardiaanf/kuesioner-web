@@ -26,4 +26,6 @@ class AcadStaffElement extends Model
     {
         return $this->hasMany(AcadStaffQuestion::class);
     }
+
+
 }

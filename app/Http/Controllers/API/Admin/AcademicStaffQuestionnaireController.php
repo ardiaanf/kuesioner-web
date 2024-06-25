@@ -4,10 +4,11 @@ namespace App\Http\Controllers\API\Admin;
 
 use App\Http\Controllers\API\BaseController;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Admin\AcademicStaffQuestionnaireResource;
+use App\Http\Resources\Admin\AcadStaffQuestionnaireResource;
 use App\Models\AcadStaffQuestionnaire;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class AcademicStaffQuestionnaireController extends BaseController
@@ -22,7 +23,7 @@ class AcademicStaffQuestionnaireController extends BaseController
         // //
         if (Auth::user()->role = 'admin') {
             $acadstaffQuestionnaires = AcadStaffQuestionnaire::with('admin')->get();
-            return $this->successResponse(AcademicStaffQuestionnaireResource::collection($acadstaffQuestionnaires), ' Education Personnel retrieved successfully');
+            return $this->successResponse(AcadStaffQuestionnaireResource::collection($acadstaffQuestionnaires), ' Education Personnel retrieved successfully');
         }else {
             return $this->errorResponse('Unauthorized', [], 401);
         }
@@ -38,6 +39,9 @@ class AcademicStaffQuestionnaireController extends BaseController
     {
         if (Auth::user()->role = 'admin') {
             $input = $request->all();
+            // var_dump($input);
+            Log::info('Input data:', $input);
+            dd($input);
 
             $validator = Validator::make($input, [
                 'name' => 'required',
@@ -52,7 +56,7 @@ class AcademicStaffQuestionnaireController extends BaseController
         $input['admin_id'] = Auth::user()->id;
         $acadstaffQuestionnaires = AcadStaffQuestionnaire::create($input);
 
-        return $this->successResponse(new AcademicStaffQuestionnaireResource($acadstaffQuestionnaires), 'Education Personnel Questionnaire created successfully', 201);
+        return $this->successResponse(new AcadStaffQuestionnaireResource($acadstaffQuestionnaires), 'Education Personnel Questionnaire created successfully', 201);
 
         } else {
             return $this->errorResponse('Unauthorized', [], 401);
@@ -75,7 +79,7 @@ class AcademicStaffQuestionnaireController extends BaseController
                 return $this->errorResponse('Education Personnel Questionnaire not found', [], 404);
             }
 
-            return $this->successResponse(new AcademicStaffQuestionnaireResource($acadstaffQuestionnaires), 'Education Personel Questionnaire retrieved successfully');
+            return $this->successResponse(new AcadStaffQuestionnaireResource($acadstaffQuestionnaires), 'Education Personel Questionnaire retrieved successfully');
         } else {
             return $this->errorResponse('Unauthorized', [], 401);
         }
@@ -96,7 +100,7 @@ class AcademicStaffQuestionnaireController extends BaseController
                 return $this->errorResponse('Education Personal Questionnaire not found', [], 404);
             }
 
-            return $this->successResponse(new AcademicStaffQuestionnaireResource($lecturerQuestionnaire), 'Lecturer Questionnaire retrieved successfully');
+            return $this->successResponse(new AcadStaffQuestionnaireResource($lecturerQuestionnaire), 'Lecturer Questionnaire retrieved successfully');
         } else {
             return $this->errorResponse('Unauthorized', [], 401);
         }
@@ -133,7 +137,7 @@ class AcademicStaffQuestionnaireController extends BaseController
             $acadstaffQuestionnaires->description = $input['description'];
             $acadstaffQuestionnaires->save();
 
-            return $this->successResponse(new AcademicStaffQuestionnaireResource($acadstaffQuestionnaires), 'Education Personel Questionnaire updated successfully');
+            return $this->successResponse(new AcadStaffQuestionnaireResource($acadstaffQuestionnaires), 'Education Personel Questionnaire updated successfully');
         } else {
             return $this->errorResponse('Unauthorized', [], 401);
         }

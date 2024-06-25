@@ -4,7 +4,7 @@ namespace App\Http\Resources\Admin;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class AcademicStaffQuestionResource extends JsonResource
+class LectureResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,10 +16,9 @@ class AcademicStaffQuestionResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'question' => $this->question,
-            'min_range' => $this->min_range,
-            'max_range' => $this->max_range,
-            'label' => explode(',', $this->label),
+            'name' => $this->name,
+            'email' => $this->email,
+            'password' => $this->password,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
