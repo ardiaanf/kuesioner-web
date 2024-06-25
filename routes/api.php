@@ -18,6 +18,7 @@ use App\Http\Controllers\API\{
     Admin\AcademicStaffQuestionController as AdminAcademicStaffQuestionController,
     Admin\AdminController,
     Admin\LectureController,
+    Admin\AcadStaffController,
     Student\StudentQuestionnaireController,
 };
 
@@ -113,6 +114,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('admin/lecturer/{admin}', [LectureController::class, 'show']);
     Route::put('admin/lecturer/{admin}', [LectureController::class, 'update']);
     Route::delete('admin/lecturer/{admin}', [LectureController::class, 'destroy']);
+
+    // Account Management Lecturer
+    Route::get('admin/acadstaff', [AcadStaffController::class, 'index']);
+    Route::post('admin/acadstaff', [AcadStaffController::class, 'store']);
+    Route::get('admin/acadstaff/{admin}', [AcadStaffController::class, 'show']);
+    Route::put('admin/acadstaff/{admin}', [AcadStaffController::class, 'update']);
+    Route::delete('admin/acadstaff/{admin}', [AcadStaffController::class, 'destroy']);
 
 
     /**
