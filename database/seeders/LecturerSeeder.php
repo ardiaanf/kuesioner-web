@@ -21,6 +21,7 @@ class LecturerSeeder extends Seeder
             'email' => 'lecturer@mail.com',
             'password' => bcrypt('password'),
             'work_period' => 5,
+            'lecturer_employment_status_id' => 1,
         ]);
     }
 }

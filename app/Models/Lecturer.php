@@ -20,5 +20,11 @@ class Lecturer extends Authenticatable
         'email',
         'password',
         'work_period',
+        'lecturer_employment_status_id',
     ];
+
+    public function lecturerEmploymentStatus()
+    {
+        return $this->belongsTo(LecturerEmploymentStatus::class);
+    }
 }

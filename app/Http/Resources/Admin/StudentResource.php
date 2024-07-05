@@ -4,7 +4,7 @@ namespace App\Http\Resources\Admin;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class LectureResource extends JsonResource
+class StudentResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -20,7 +20,10 @@ class LectureResource extends JsonResource
             'reg_number' => $this->reg_number,
             'email' => $this->email,
             'password' => $this->password,
-            'work_period' => $this->work_period,
+            'semester' => $this->semester,
+            'major' => $this->major ? $this->major->name : null,
+            'study_program' => $this->studyProgram ? $this->studyProgram->name : null,
+            'student_class' => $this->studentClass ? $this->studentClass->name : null,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

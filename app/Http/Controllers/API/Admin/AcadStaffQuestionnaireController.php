@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
-class AcademicStaffQuestionnaireController extends BaseController
+class AcadStaffQuestionnaireController extends BaseController
 {
     /**
      * Display a listing of the resource.
@@ -24,7 +24,7 @@ class AcademicStaffQuestionnaireController extends BaseController
         if (Auth::user()->role = 'admin') {
             $acadstaffQuestionnaires = AcadStaffQuestionnaire::with('admin')->get();
             return $this->successResponse(AcadStaffQuestionnaireResource::collection($acadstaffQuestionnaires), ' Education Personnel retrieved successfully');
-        }else {
+        } else {
             return $this->errorResponse('Unauthorized', [], 401);
         }
     }
@@ -40,25 +40,25 @@ class AcademicStaffQuestionnaireController extends BaseController
         if (Auth::user()->role = 'admin') {
             $input = $request->all();
 
-            $validator = Validator::make($input, [
-                'name' => 'required',
-                'description' => 'nullable',
-            ]
-        );
+            $validator = Validator::make(
+                $input,
+                [
+                    'name' => 'required',
+                    'description' => 'nullable',
+                ]
+            );
 
-        if ($validator->fails()) {
-            return $this->errorResponse('Validation Error', $validator->errors(), 422);
-        };
+            if ($validator->fails()) {
+                return $this->errorResponse('Validation Error', $validator->errors(), 422);
+            };
 
-        $input['admin_id'] = Auth::user()->id;
-        $acadstaffQuestionnaires = AcadStaffQuestionnaire::create($input);
+            $input['admin_id'] = Auth::user()->id;
+            $acadstaffQuestionnaires = AcadStaffQuestionnaire::create($input);
 
-        return $this->successResponse(new AcadStaffQuestionnaireResource($acadstaffQuestionnaires), 'Education Personnel Questionnaire created successfully', 201);
-
+            return $this->successResponse(new AcadStaffQuestionnaireResource($acadstaffQuestionnaires), 'Education Personnel Questionnaire created successfully', 201);
         } else {
             return $this->errorResponse('Unauthorized', [], 401);
         }
-
     }
 
     /**

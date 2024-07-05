@@ -3,11 +3,9 @@
 namespace App\Http\Controllers\API\Admin;
 
 use App\Http\Controllers\API\BaseController;
-use App\Http\Controllers\Controller;
 use App\Http\Resources\Admin\AcadStaffResource;
 use App\Models\AcadStaff;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class AcadStaffController extends BaseController
@@ -19,12 +17,8 @@ class AcadStaffController extends BaseController
      */
     public function index()
     {
-        if (Auth::user()->role == 'admin') {
-            $acadstaff = AcadStaff::all();
-            return $this->successResponse(AcadStaffResource::collection($acadstaff), 'Education Personal retrieved successfully.');
-        } else {
-            return $this->errorResponse('Unauthorized', [], 401);
-        }
+        $acadstaff = AcadStaff::all();
+        return $this->successResponse(AcadStaffResource::collection($acadstaff), 'Education Personal retrieved successfully.');
     }
 
 
@@ -36,33 +30,29 @@ class AcadStaffController extends BaseController
      */
     public function store(Request $request)
     {
-        if (Auth::user()->role == 'admin') {
-            $input = $request->all();
+        $input = $request->all();
 
-            $validator = Validator::make($input, [
-                'name' => 'required',
-                'reg_number' => 'required|unique:acad_staffs,reg_number',
-                'email' => 'required|email|unique:acad_staffs,email',
-                'password' => 'required',
-                'work_period' => 'required'
-            ]);
+        $validator = Validator::make($input, [
+            'name' => 'required',
+            'reg_number' => 'required|unique:acad_staffs,reg_number',
+            'email' => 'required|email|unique:acad_staffs,email',
+            'password' => 'required',
+            'acad_staff_work_unit_id' => 'required|exists:acad_staff_work_units,id'
+        ]);
 
-            if ($validator->fails()) {
-                return $this->errorResponse('Validation Error', $validator->errors(), 422);
-            }
-
-            $lecturer = AcadStaff::create([
-                'name' => $input['name'],
-                'reg_number' => $input['reg_number'],
-                'email' => $input['email'],
-                'password' => bcrypt($input['password']),
-                'work_period' => $input['work_period']
-            ]);
-
-            return $this->successResponse(new AcadStaffResource($lecturer), 'Lecture created successfully.', 201);
-        } else {
-            return $this->errorResponse('Unauthorized', [], 401);
+        if ($validator->fails()) {
+            return $this->errorResponse('Validation Error', $validator->errors(), 422);
         }
+
+        $lecturer = AcadStaff::create([
+            'name' => $input['name'],
+            'reg_number' => $input['reg_number'],
+            'email' => $input['email'],
+            'password' => bcrypt($input['password']),
+            'acad_staff_work_unit_id' => $input['acad_staff_work_unit_id']
+        ]);
+
+        return $this->successResponse(new AcadStaffResource($lecturer), 'Education Personel created successfully.');
     }
 
     /**
@@ -73,17 +63,13 @@ class AcadStaffController extends BaseController
      */
     public function show($id)
     {
-        if (Auth::user()->role == 'admin') {
-            $acadstaff = AcadStaff::find($id);
+        $acadstaff = AcadStaff::find($id);
 
-            if (is_null($acadstaff)) {
-                return $this->errorResponse('Education Personel Admin lecture not found.', [], 404);
-            }
-
-            return $this->successResponse(new AcadStaffResource($acadstaff), 'Education Personel retrieved successfully.');
-        } else {
-            return $this->errorResponse('Unauthorized', [], 401);
+        if (is_null($acadstaff)) {
+            return $this->errorResponse('Education Personel not found.', [], 404);
         }
+
+        return $this->successResponse(new AcadStaffResource($acadstaff), 'Education Personel retrieved successfully.');
     }
 
 
@@ -96,38 +82,34 @@ class AcadStaffController extends BaseController
      */
     public function update(Request $request, $id)
     {
-        if (Auth::user()->role == 'admin') {
-            $acadstaff = AcadStaff::find($id);
+        $acadstaff = AcadStaff::find($id);
 
-            if (is_null($acadstaff)) {
-                return $this->errorResponse('Education Personel Admin not found.', [], 404);
-            }
-
-            $input = $request->all();
-
-            $validator = Validator::make($input, [
-                'name' => 'required',
-                'reg_number' => 'required|unique:acad_staffs,reg_number,' .$id,
-                'email' => 'required|email|unique:acad_staffs,email,' . $id,
-                'password' => 'required',
-                'work_period' => 'required'
-            ]);
-
-            if ($validator->fails()) {
-                return $this->errorResponse('Validation Error', $validator->errors(), 422);
-            }
-
-            $acadstaff->name = $input['name'];
-            $acadstaff->reg_number = $input['reg_number'];
-            $acadstaff->email = $input['email'];
-            $acadstaff->password = bcrypt($input['password']);
-            $acadstaff->work_period = $input['work_period'];
-            $acadstaff->save();
-
-            return $this->successResponse(new AcadStaffResource($acadstaff), 'Education Personel updated successfully.');
-        } else {
-            return $this->errorResponse('Unauthorized', [], 401);
+        if (is_null($acadstaff)) {
+            return $this->errorResponse('Education Personel not found.', [], 404);
         }
+
+        $input = $request->all();
+
+        $validator = Validator::make($input, [
+            'name' => 'required',
+            'reg_number' => 'required|unique:acad_staffs,reg_number,' . $id,
+            'email' => 'required|email|unique:acad_staffs,email,' . $id,
+            'password' => 'required',
+            'acad_staff_work_unit_id' => 'required|exists:acad_staff_work_units,id'
+        ]);
+
+        if ($validator->fails()) {
+            return $this->errorResponse('Validation Error', $validator->errors(), 422);
+        }
+
+        $acadstaff->name = $input['name'];
+        $acadstaff->reg_number = $input['reg_number'];
+        $acadstaff->email = $input['email'];
+        $acadstaff->password = bcrypt($input['password']);
+        $acadstaff->acad_staff_work_unit_id = $input['acad_staff_work_unit_id'];
+        $acadstaff->save();
+
+        return $this->successResponse(new AcadStaffResource($acadstaff), 'Education Personel updated successfully.');
     }
 
     /**
@@ -138,18 +120,14 @@ class AcadStaffController extends BaseController
      */
     public function destroy($id)
     {
-        if (Auth::user()->role == 'admin') {
-            $acadstaff = AcadStaff::find($id);
+        $acadstaff = AcadStaff::find($id);
 
-            if (is_null($acadstaff)) {
-                return $this->errorResponse('Education Personel Admin not found.', [], 404);
-            }
-
-            $acadstaff->delete();
-
-            return $this->successResponse([], 'Education Personel deleted successfully.');
-        } else {
-            return $this->errorResponse('Unauthorized', [], 401);
+        if (is_null($acadstaff)) {
+            return $this->errorResponse('Education Personel not found.', [], 404);
         }
+
+        $acadstaff->delete();
+
+        return $this->successResponse([], 'Education Personel deleted successfully.');
     }
 }

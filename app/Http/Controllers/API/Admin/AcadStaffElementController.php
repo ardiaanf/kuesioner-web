@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
-class AcademicStaffElementController extends BaseController
+class AcadStaffElementController extends BaseController
 {
     /**
      * Display a listing of the resource.
@@ -63,7 +63,7 @@ class AcademicStaffElementController extends BaseController
         }
     }
 
-     /**
+    /**
      * Display the specified resource.
      *
      * @param  int  $id

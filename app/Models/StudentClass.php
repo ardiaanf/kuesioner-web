@@ -11,4 +11,13 @@ class StudentClass extends Model
 
     protected $table = 'student_classes';
 
+    public function students()
+    {
+        return $this->hasMany(Student::class);
+    }
+
+    public function studyProgram()
+    {
+        return $this->belongsTo(StudyProgram::class);
+    }
 }

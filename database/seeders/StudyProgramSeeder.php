@@ -15,16 +15,19 @@ class StudyProgramSeeder extends Seeder
      */
     public function run()
     {
-        $study_programs = [
-            'Teknik Informatika',
-            'Sistem Informasi',
-            'Teknik Elektro',
-        ];
+        StudyProgram::create([
+            'name' => 'Desain Komunikasi Visual',
+            'major_id' => 1
+        ]);
 
-        foreach ($study_programs as $study_program) {
-            StudyProgram::create([
-                'name' => $study_program,
-            ]);
-        }
+        StudyProgram::create([
+            'name' => 'Rekayasa Perangkat Lunak',
+            'major_id' => 2
+        ]);
+
+        StudyProgram::create([
+            'name' => 'Broadcasting',
+            'major_id' => 3
+        ]);
     }
 }

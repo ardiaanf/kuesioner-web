@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('reg_number')->unique();
             $table->string('email')->unique();
             $table->string('password');
-            $table->string('semester');
+            $table->integer('semester');
             $table->foreignId('study_program_id')->constrained('study_programs')->onDelete('cascade');
             $table->foreignId('student_class_id')->constrained('student_classes')->onDelete('cascade');
             $table->string('role')->default('student');

@@ -20,7 +20,7 @@ class AcadStaffSeeder extends Seeder
             'reg_number' => 'A001',
             'email' => 'acadstaff@mail.com',
             'password' => bcrypt('password'),
-            'work_period' => 5,
+            'acad_staff_work_unit_id' => 1,
         ]);
     }
 }

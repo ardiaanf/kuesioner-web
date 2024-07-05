@@ -19,6 +19,11 @@ class AcadStaff extends Authenticatable
         'reg_number',
         'email',
         'password',
-        'work_period',
+        'acad_staff_work_unit_id',
     ];
+
+    public function acadStaffWorkUnit()
+    {
+        return $this->belongsTo(AcadStaffWorkUnit::class);
+    }
 }

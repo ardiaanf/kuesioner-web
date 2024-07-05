@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
-class AcademicStaffQuestionController extends BaseController
+class AcadStaffQuestionController extends BaseController
 {
     /**
      * Display a listing of the resource.
@@ -64,7 +64,6 @@ class AcademicStaffQuestionController extends BaseController
         } else {
             return $this->errorResponse('Unauthorized', [], 401);
         }
-
     }
 
     /**

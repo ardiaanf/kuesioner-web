@@ -13,14 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('acad_staffs', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('reg_number')->unique();
-            $table->string('email')->unique();
-            $table->string('password');
-            $table->string('role')->default('acad_staff');
-            $table->timestamps();
+        Schema::table('lecturers', function (Blueprint $table) {
+            $table->foreignId('lecturer_employment_status_id')->after('work_period')->constrained('lecturer_employment_statuses')->onDelete('cascade');
         });
     }
 
@@ -31,6 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('acad_staffs');
+        Schema::table('lecturers', function (Blueprint $table) {
+            $table->dropColumn('lecturer_employment_status_id');
+        });
     }
 };

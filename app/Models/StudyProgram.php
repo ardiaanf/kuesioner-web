@@ -11,4 +11,13 @@ class StudyProgram extends Model
 
     protected $table = 'study_programs';
 
+    public function students()
+    {
+        return $this->hasMany(Student::class);
+    }
+
+    public function major()
+    {
+        return $this->belongsTo(Major::class);
+    }
 }

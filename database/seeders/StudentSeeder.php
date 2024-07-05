@@ -20,9 +20,10 @@ class StudentSeeder extends Seeder
             'reg_number' => 'S001',
             'email' => 'student@mail.com',
             'password' => bcrypt('password'),
-            'semester' => '1',
-            'study_program_id' => 1,
-            'student_class_id' => 1,
+            'semester' => 1,
+            'major_id' => 2,
+            'study_program_id' => 2,
+            'student_class_id' => 2,
         ]);
     }
 }
