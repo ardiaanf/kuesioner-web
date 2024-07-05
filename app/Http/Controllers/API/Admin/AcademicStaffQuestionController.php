@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\Admin;
 use App\Http\Controllers\API\BaseController;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Admin\AcadStaffQuestionResource;
+use App\Models\AcadStaffElement;
 use App\Models\AcadStaffQuestion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,7 +22,7 @@ class AcademicStaffQuestionController extends BaseController
     {
         if (Auth::user()->role == 'admin') {
             $AcadStaffQuestions = AcadStaffQuestion::all();
-            return $this->successResponse(AcadStaffQuestion::collection($AcadStaffQuestions), 'Education Personel Questions retrieved successfully.');
+            return $this->successResponse(AcadStaffQuestionResource::collection($AcadStaffQuestions), 'Education Personel Questions retrieved successfully.');
         } else {
             return $this->errorResponse('Unauthorized', [], 401);
         }
@@ -59,7 +60,7 @@ class AcademicStaffQuestionController extends BaseController
             $input['label'] = implode(',', $input['label']);
             $LecturerQuestion = AcadStaffQuestion::create($input);
 
-            return $this->successResponse(new AcadStaffQuestionResource($LecturerQuestion), 'Lecturer Question created successfully.', 201);
+            return $this->successResponse(new AcadStaffQuestionResource($LecturerQuestion), 'Education Personel Question created successfully.', 201);
         } else {
             return $this->errorResponse('Unauthorized', [], 401);
         }
@@ -87,6 +88,27 @@ class AcademicStaffQuestionController extends BaseController
         }
     }
 
+    /**
+     * Display the specified resource with relations.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    // public function showWithRelations($id)
+    // {
+    //     if (Auth::user()->role == 'admin') {
+    //         $AcadStaffQuestion = AcadStaffElement::with('acadstaffQuestions')->find($id);
+
+    //         if (is_null($AcadStaffQuestion)) {
+    //             return $this->errorResponse('Education Personel Element not found.', [], 404);
+    //         }
+
+    //         return $this->successResponse(new AcadStaffQuestionResource($AcadStaffQuestion), 'Education Personel Element retrieved successfully.');
+    //     } else {
+    //         return $this->errorResponse('Unauthorized', [], 401);
+    //     }
+    // }
+
 
     /**
      * Update the specified resource in storage.
@@ -111,7 +133,7 @@ class AcademicStaffQuestionController extends BaseController
                 'min_range' => 'required',
                 'max_range' => 'required',
                 'label' => 'required|array',
-                'lecturer_element_id' => 'required|exists:lecturer_elements,id',
+                'acad_staff_element_id' => 'required|exists:acad_staff_elements,id',
             ]);
 
             if ($validator->fails()) {
@@ -128,7 +150,7 @@ class AcademicStaffQuestionController extends BaseController
             $AcadStaffQuestion->min_range = $input['min_range'];
             $AcadStaffQuestion->max_range = $input['max_range'];
             $AcadStaffQuestion->label = $input['label'];
-            $AcadStaffQuestion->lecturer_element_id = $input['lecturer_element_id'];
+            $AcadStaffQuestion->acad_staff_element_id = $input['acad_staff_element_id'];
             $AcadStaffQuestion->save();
 
             return $this->successResponse(new AcadStaffQuestionResource($AcadStaffQuestion), 'Education Personel Question updated successfully.');

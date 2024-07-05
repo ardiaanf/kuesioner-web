@@ -39,9 +39,6 @@ class AcademicStaffQuestionnaireController extends BaseController
     {
         if (Auth::user()->role = 'admin') {
             $input = $request->all();
-            // var_dump($input);
-            Log::info('Input data:', $input);
-            dd($input);
 
             $validator = Validator::make($input, [
                 'name' => 'required',

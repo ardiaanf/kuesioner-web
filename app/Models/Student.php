@@ -13,13 +13,4 @@ class Student extends Authenticatable
 
     protected $table = 'students';
 
-    protected $fillable = [
-        'name',
-        'reg_number',
-        'email',
-        'password',
-        'semester',
-        'study_program_id',
-        'student_class_id',
-    ];
 }

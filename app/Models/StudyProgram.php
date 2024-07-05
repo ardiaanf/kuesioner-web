@@ -10,4 +10,5 @@ class StudyProgram extends Model
     use HasFactory;
 
     protected $table = 'study_programs';
+
 }

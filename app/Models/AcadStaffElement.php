@@ -19,7 +19,7 @@ class AcadStaffElement extends Model
 
     public function acadstaffQuestionnaire()
     {
-        return $this->belongsTo(AcadStaffQuestionnaire::class);
+        return $this->belongsTo(acadstaffQuestionnaire::class);
     }
 
     public function acadstaffQuestions()
