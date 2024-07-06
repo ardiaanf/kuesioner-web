@@ -20,4 +20,9 @@ class StudyProgram extends Model
     {
         return $this->belongsTo(Major::class);
     }
+
+    public function courses()
+    {
+        return $this->hasMany(Course::class);
+    }
 }

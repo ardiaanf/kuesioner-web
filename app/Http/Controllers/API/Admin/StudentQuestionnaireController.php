@@ -41,7 +41,7 @@ class StudentQuestionnaireController extends BaseController
             $validator = Validator::make($input, [
                 'name' => 'required',
                 'description' => 'nullable',
-                'type' => 'required',
+                'type' => 'required|in:TLP,AC',
             ]);
 
             if ($validator->fails()) {
@@ -120,7 +120,7 @@ class StudentQuestionnaireController extends BaseController
             $validator = Validator::make($input, [
                 'name' => 'required',
                 'description' => 'nullable',
-                'type' => 'required',
+                'type' => 'required|in:TLP,AC',
             ]);
 
             if ($validator->fails()) {

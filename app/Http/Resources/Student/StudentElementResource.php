@@ -19,8 +19,8 @@ class StudentElementResource extends JsonResource
             'name' => $this->name,
             'description' => $this->description,
             'student_questions' => StudentQuestionResource::collection($this->whenLoaded('studentQuestions')),
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            // 'created_at' => $this->created_at,
+            // 'updated_at' => $this->updated_at,
         ];
     }
 }

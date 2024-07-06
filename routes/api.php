@@ -135,7 +135,10 @@ Route::middleware('auth:sanctum')->group(function () {
     /**
      * ROUTES FOR STUDENT
      */
-    // Student Questionnaires
-    Route::get('student/student-questionnaires', [StudentQuestionnaireController::class, 'index']);
-    Route::get('student/student-questionnaires/{studentQuestionnaire}', [StudentQuestionnaireController::class, 'show']);
+    Route::middleware('role:student')->group(function () {
+        // Student Questionnaires
+        Route::get('student/student-questionnaires', [StudentQuestionnaireController::class, 'index']);
+        Route::get('student/student-questionnaires/{studentQuestionnaire}', [StudentQuestionnaireController::class, 'show']);
+        Route::post('student/student-questionnaires', [StudentQuestionnaireController::class, 'fillQuestionTLP']);
+    });
 });
