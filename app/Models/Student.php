@@ -18,6 +18,7 @@ class Student extends Authenticatable
         'reg_number',
         'email',
         'password',
+        'gender',
         'semester',
         'major_id',
         'study_program_id',

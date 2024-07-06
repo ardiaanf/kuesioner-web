@@ -19,6 +19,7 @@ class Lecturer extends Authenticatable
         'reg_number',
         'email',
         'password',
+        'gender',
         'work_period',
         'lecturer_employment_status_id',
     ];

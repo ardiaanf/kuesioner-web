@@ -20,6 +20,7 @@ class StudentResource extends JsonResource
             'reg_number' => $this->reg_number,
             'email' => $this->email,
             'password' => $this->password,
+            'gender' => $this->gender,
             'semester' => $this->semester,
             'major' => $this->major ? $this->major->name : null,
             'study_program' => $this->studyProgram ? $this->studyProgram->name : null,

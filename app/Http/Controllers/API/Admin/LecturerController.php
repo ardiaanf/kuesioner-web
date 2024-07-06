@@ -36,6 +36,7 @@ class LecturerController extends BaseController
             'reg_number' => 'required|unique:lecturers,reg_number',
             'email' => 'required|email|unique:lecturers,email',
             'password' => 'required',
+            'gender' => 'required|in:male,female',
             'work_period' => 'required',
             'lecturer_employment_status_id' => 'required|exists:lecturer_employment_statuses,id'
         ]);
@@ -49,6 +50,7 @@ class LecturerController extends BaseController
             'reg_number' => $input['reg_number'],
             'email' => $input['email'],
             'password' => bcrypt($input['password']),
+            'gender' => $input['gender'],
             'work_period' => $input['work_period'],
             'lecturer_employment_status_id' => $input['lecturer_employment_status_id']
         ]);
@@ -95,6 +97,7 @@ class LecturerController extends BaseController
             'reg_number' => 'required|unique:lecturers,reg_number,' . $id,
             'email' => 'required|email|unique:lecturers,email,' . $id,
             'password' => 'required',
+            'gender' => 'required|in:male,female',
             'work_period' => 'required',
             'lecturer_employment_status_id' => 'required|exists:lecturer_employment_statuses,id'
         ]);
@@ -107,6 +110,7 @@ class LecturerController extends BaseController
         $lecturer->reg_number = $input['reg_number'];
         $lecturer->email = $input['email'];
         $lecturer->password = bcrypt($input['password']);
+        $lecturer->gender = $input['gender'];
         $lecturer->work_period = $input['work_period'];
         $lecturer->lecturer_employment_status_id = $input['lecturer_employment_status_id'];
         $lecturer->save();

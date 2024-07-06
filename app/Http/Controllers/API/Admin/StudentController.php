@@ -37,6 +37,7 @@ class StudentController extends BaseController
             'reg_number' => 'required|unique:students,reg_number',
             'email' => 'required|email|unique:students,email',
             'password' => 'required',
+            'gender' => 'required|in:male,female',
             'semester' => 'required',
             'major_id' => 'required|exists:majors,id',
             'study_program_id' => [
@@ -64,6 +65,7 @@ class StudentController extends BaseController
             'reg_number' => $input['reg_number'],
             'email' => $input['email'],
             'password' => bcrypt($input['password']),
+            'gender' => $input['gender'],
             'semester' => $input['semester'],
             'major_id' => $input['major_id'],
             'study_program_id' => $input['study_program_id'],
@@ -112,6 +114,7 @@ class StudentController extends BaseController
             'reg_number' => 'required|unique:students,reg_number,' . $id,
             'email' => 'required|email|unique:students,email,' . $id,
             'password' => 'required',
+            'gender' => 'required|in:male,female',
             'semester' => 'required',
             'major_id' => 'required|exists:majors,id',
             'study_program_id' => [
@@ -138,6 +141,7 @@ class StudentController extends BaseController
         $student->reg_number = $input['reg_number'];
         $student->email = $input['email'];
         $student->password = bcrypt($input['password']);
+        $student->gender = $input['gender'];
         $student->semester = $input['semester'];
         $student->major_id = $input['major_id'];
         $student->study_program_id = $input['study_program_id'];

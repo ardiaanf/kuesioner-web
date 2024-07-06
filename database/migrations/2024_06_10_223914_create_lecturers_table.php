@@ -19,7 +19,8 @@ return new class extends Migration
             $table->string('reg_number')->unique();
             $table->string('email')->unique();
             $table->string('password');
-            $table->integer('work_period');
+            $table->enum('gender', ['male', 'female']);
+            $table->year('work_period');
             $table->string('role')->default('lecturer');
             $table->timestamps();
         });

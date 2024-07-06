@@ -20,6 +20,7 @@ class StudentSeeder extends Seeder
             'reg_number' => 'S001',
             'email' => 'student@mail.com',
             'password' => bcrypt('password'),
+            'gender' => 'male',
             'semester' => 1,
             'major_id' => 2,
             'study_program_id' => 2,
