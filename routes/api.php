@@ -138,4 +138,5 @@ Route::middleware('auth:sanctum')->group(function () {
     // Student Questionnaires
     Route::get('student/student-questionnaires', [StudentQuestionnaireController::class, 'index']);
     Route::get('student/student-questionnaires/{studentQuestionnaire}', [StudentQuestionnaireController::class, 'show']);
+    Route::post('student/student-questionnaires', [StudentQuestionnaireController::class, 'store']);
 });
