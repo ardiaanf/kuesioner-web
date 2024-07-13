@@ -16,14 +16,14 @@ class StudentElementSeeder extends Seeder
     public function run()
     {
         StudentElement::create([
-            'name' => 'Student Element 1',
-            'description' => 'This is the first student element.',
+            'name' => 'Teori',
+            'description' => null,
             'student_questionnaire_id' => 1,
         ]);
 
         StudentElement::create([
-            'name' => 'Student Element 2',
-            'description' => 'This is the second student element.',
+            'name' => 'Praktikum',
+            'description' => null,
             'student_questionnaire_id' => 1,
         ]);
     }

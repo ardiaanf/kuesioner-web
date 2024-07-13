@@ -39,4 +39,14 @@ class Student extends Authenticatable
     {
         return $this->belongsTo(StudentClass::class);
     }
+
+    public function studentAnswerTlp()
+    {
+        return $this->hasMany(StudentAnswerDetailTlp::class);
+    }
+
+    public function studentAnswerAc()
+    {
+        return $this->hasMany(StudentAnswerAc::class);
+    }
 }

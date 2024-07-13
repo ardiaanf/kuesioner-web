@@ -15,19 +15,20 @@ class LecturerSeeder extends Seeder
      */
     public function run()
     {
+        $faker = \Faker\Factory::create('id_ID');
         Lecturer::create([
-            'name' => 'Lecturer',
-            'reg_number' => 'L001',
-            'email' => 'lecturer@mail.com',
+            'name' => $faker->name,
+            'reg_number' => $faker->unique()->regexify('D[0-9]{3}'),
+            'email' => $faker->unique()->safeEmail,
             'password' => bcrypt('password'),
             'work_period' => 2020,
             'lecturer_employment_status_id' => 1,
         ]);
 
         Lecturer::create([
-            'name' => 'Lecturer 2',
-            'reg_number' => 'L002',
-            'email' => 'lecturer@example.com',
+            'name' => $faker->name,
+            'reg_number' => $faker->unique()->regexify('D[0-9]{3}'),
+            'email' => $faker->unique()->safeEmail,
             'password' => bcrypt('password'),
             'work_period' => 2022,
             'lecturer_employment_status_id' => 2,

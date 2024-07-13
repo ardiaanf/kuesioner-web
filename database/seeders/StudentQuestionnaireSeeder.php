@@ -16,9 +16,30 @@ class StudentQuestionnaireSeeder extends Seeder
     public function run()
     {
         StudentQuestionnaire::create([
-            'name' => 'Student Questionnaire 1',
-            'description' => 'This is the first student questionnaire.',
+            'name' => "Kuesioner PBM Ganjil Kelas 1",
+            'description' => null,
             'type' => 'TLP',
+            'admin_id' => 1,
+        ]);
+
+        StudentQuestionnaire::create([
+            'name' => "Kuesioner CA Mahasiswa",
+            'description' => null,
+            'type' => 'AC',
+            'admin_id' => 1,
+        ]);
+
+        StudentQuestionnaire::create([
+            'name' => "Kuesioner CA Dosen",
+            'description' => null,
+            'type' => 'AC',
+            'admin_id' => 1,
+        ]);
+
+        StudentQuestionnaire::create([
+            'name' => "Kuesioner CA Tendik",
+            'description' => null,
+            'type' => 'AC',
             'admin_id' => 1,
         ]);
     }

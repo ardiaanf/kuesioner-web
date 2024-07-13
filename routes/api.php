@@ -20,6 +20,7 @@ use App\Http\Controllers\API\{
     Admin\LecturerController as AccountLecturerController,
     Admin\AcadStaffController as AccountAcadStaffController,
     Admin\StudentController as AccountStudentController,
+    Admin\LecturerRankingController,
     Student\StudentQuestionnaireController,
 };
 
@@ -130,6 +131,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('admin/students/{student}', [AccountStudentController::class, 'show']);
         Route::put('admin/students/{student}', [AccountStudentController::class, 'update']);
         Route::delete('admin/students/{student}', [AccountStudentController::class, 'destroy']);
+
+        // Lecturer Ranking
+        Route::get('admin/lecturer-ranking', [LecturerRankingController::class, 'index']);
     });
 
     /**
@@ -140,5 +144,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('student/student-questionnaires', [StudentQuestionnaireController::class, 'index']);
         Route::get('student/student-questionnaires/{studentQuestionnaire}', [StudentQuestionnaireController::class, 'show']);
         Route::post('student/student-questionnaires', [StudentQuestionnaireController::class, 'fillQuestionTLP']);
+        Route::get('student/student-questionnaires/{studentQuestionnaire}/filled-tlp', [StudentQuestionnaireController::class, 'showFilledQuestionTLP']);
     });
 });

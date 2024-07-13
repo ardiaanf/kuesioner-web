@@ -16,34 +16,82 @@ class StudentQuestionSeeder extends Seeder
     public function run()
     {
         StudentQuestion::create([
-            'question' => 'Example Question 1 (Student Element 1)',
+            'question' => 'Rencana materi dan tujuan mata kuliah diberikan di awal perkuliahan]',
             'min_range' => 1,
             'max_range' => 4,
-            'label' => implode(',', ['Strongly Disagree', 'Disagree', 'Agree', 'Strongly Agree']),
+            'label' => implode(',', ['Sangat Tidak Setuju', 'Tidak Setuju', 'Setuju', 'Sangat Setuju']),
             'student_element_id' => 1,
         ]);
 
         StudentQuestion::create([
-            'question' => 'Example Question 2 (Student Element 1)',
+            'question' => 'Dosen datang tepat waktu & mengajar sesuai waktu yang terjadwal',
             'min_range' => 1,
             'max_range' => 4,
-            'label' => implode(',', ['Strongly Disagree', 'Disagree', 'Agree', 'Strongly Agree']),
+            'label' => implode(',', ['Sangat Tidak Setuju', 'Tidak Setuju', 'Setuju', 'Sangat Setuju']),
             'student_element_id' => 1,
         ]);
 
         StudentQuestion::create([
-            'question' => 'Example Question 3 (Student Element 2)',
+            'question' => 'Diadakan diskusi & tanya jawab',
             'min_range' => 1,
             'max_range' => 4,
-            'label' => implode(',', ['Strongly Disagree', 'Disagree', 'Agree', 'Strongly Agree']),
+            'label' => implode(',', ['Sangat Tidak Setuju', 'Tidak Setuju', 'Setuju', 'Sangat Setuju']),
+            'student_element_id' => 1,
+        ]);
+
+        StudentQuestion::create([
+            'question' => 'Manfaat soal latihan dalam menambah pemahaman mata kuliah ini',
+            'min_range' => 1,
+            'max_range' => 4,
+            'label' => implode(',', ['Sangat Tidak Setuju', 'Tidak Setuju', 'Setuju', 'Sangat Setuju']),
+            'student_element_id' => 1,
+        ]);
+
+        StudentQuestion::create([
+            'question' => 'Kesesuaian evaluasi (tugas dan Quiz) dengan materi yang diajarkan',
+            'min_range' => 1,
+            'max_range' => 4,
+            'label' => implode(',', ['Sangat Tidak Setuju', 'Tidak Setuju', 'Setuju', 'Sangat Setuju']),
+            'student_element_id' => 1,
+        ]);
+
+        StudentQuestion::create([
+            'question' => 'Pelaksanaan praktikum tepat waktu dan sesuai dengan waktu yang terjadwal',
+            'min_range' => 1,
+            'max_range' => 4,
+            'label' => implode(',', ['Sangat Tidak Setuju', 'Tidak Setuju', 'Setuju', 'Sangat Setuju']),
             'student_element_id' => 2,
         ]);
 
         StudentQuestion::create([
-            'question' => 'Example Question 4 (Student Element 2)',
+            'question' => 'Praktikum menambah pemahaman teori dan ketrampilan waktu yang terjadwal',
             'min_range' => 1,
             'max_range' => 4,
-            'label' => implode(',', ['Strongly Disagree', 'Disagree', 'Agree', 'Strongly Agree']),
+            'label' => implode(',', ['Sangat Tidak Setuju', 'Tidak Setuju', 'Setuju', 'Sangat Setuju']),
+            'student_element_id' => 2,
+        ]);
+
+        StudentQuestion::create([
+            'question' => 'Setiap percobaan/praktikum sinergi dengan materi yang diajarkan saat teori',
+            'min_range' => 1,
+            'max_range' => 4,
+            'label' => implode(',', ['Sangat Tidak Setuju', 'Tidak Setuju', 'Setuju', 'Sangat Setuju']),
+            'student_element_id' => 2,
+        ]);
+
+        StudentQuestion::create([
+            'question' => 'Dosen selalu datang setiap praktikum',
+            'min_range' => 1,
+            'max_range' => 4,
+            'label' => implode(',', ['Sangat Tidak Setuju', 'Tidak Setuju', 'Setuju', 'Sangat Setuju']),
+            'student_element_id' => 2,
+        ]);
+
+        StudentQuestion::create([
+            'question' => 'Dosen menjelaskan arah dan tujuan dalam setiap percobaan]',
+            'min_range' => 1,
+            'max_range' => 4,
+            'label' => implode(',', ['Sangat Tidak Setuju', 'Tidak Setuju', 'Setuju', 'Sangat Setuju']),
             'student_element_id' => 2,
         ]);
     }
