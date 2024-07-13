@@ -9,6 +9,7 @@ use App\Models\StudentQuestionnaire;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\Student\StudentQuestionnaireResource;
+use App\Http\Resources\Student\StudentQuestionnaireFilledResource;
 use App\Http\Controllers\API\BaseController as BaseController;
 use App\Models\StudentAnswerDetailTlp;
 use App\Models\StudentAnswerTlp;
@@ -201,7 +202,6 @@ class StudentQuestionnaireController extends BaseController
                 Rule::exists('courses', 'id')->where(function ($query) use ($request) {
                     return $query->where('study_program_id', $request->study_program_id);
                 }),
-
             ],
             'lecturer_id' => [
                 'required',
@@ -225,6 +225,44 @@ class StudentQuestionnaireController extends BaseController
 
         if ($validator->fails()) {
             return $this->errorResponse('Validation Error', $validator->errors(), 422);
+        }
+
+        // Validate the student question
+        foreach ($request->student_questionnaire['student_elements'] as $element) {
+            foreach ($element['student_question']['id'] as $index => $questionId) {
+                $student = DB::table('student_questions')
+                    ->where('student_element_id', $element['id'])
+                    ->where('id', $questionId)
+                    ->first();
+
+                if (!$student) {
+                    return $this->errorResponse('The student question does not exist.', [], 422);
+                }
+            }
+        }
+
+        // Validate the answer range
+        foreach ($request->student_questionnaire['student_elements'] as $element) {
+            foreach ($element['student_question']['id'] as $index => $questionId) {
+                $answer = $element['student_question']['answer'][$index];
+                $studentQuestionId = $questionId;
+                $questionDetails = DB::table('student_questions')
+                    ->select('min_range', 'max_range')
+                    ->where('id', $studentQuestionId)
+                    ->first();
+
+                if (!$questionDetails) {
+                    return false;
+                }
+
+                $minRange = $questionDetails->min_range;
+                $maxRange = $questionDetails->max_range;
+
+                $answer = intval($answer);
+                if ($answer < $minRange || $answer > $maxRange) {
+                    return $this->errorResponse('The answer must be within the allowed range based on the student question.', [], 422);
+                }
+            }
         }
 
         try {
@@ -253,16 +291,15 @@ class StudentQuestionnaireController extends BaseController
             }
 
             DB::commit();
-            return $this->successResponse([], 'Questionnaire filled successfully', 201);
+
+            $studentAnswerDetailTlp = StudentAnswerDetailTlp::with('studentAnswerTlp')->find($studentAnswerDetailTlp->id);
+            return $this->successResponse(new StudentQuestionnaireFilledResource($studentAnswerDetailTlp), 'Questionnaire filled successfully', 201);
         } catch (\Exception $e) {
             DB::rollBack();
             return $this->errorResponse('Internal Server Error', $e->getMessage(), 500);
         }
     }
 
-    // TODO: Error Handling for too much question / answer has not match with count of question
-    // TODO: Fix valitator for multiple elements
-    // TODO: Create Method to Get the Answered Questionnaire
     // TODO: Create Method to Get the Answered Questionnaire by Student ID
     // TODO: Create Method to Fill the Questionnaire for AC
 }
