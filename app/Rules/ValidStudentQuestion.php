@@ -5,7 +5,7 @@ namespace App\Rules;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Contracts\Validation\Rule;
 
-class AnswerWithinRange implements Rule
+class ValidStudentQuestion implements Rule
 {
     protected $request;
     /**
@@ -33,21 +33,12 @@ class AnswerWithinRange implements Rule
             return false;
         }
 
-        $studentQuestionId = $this->request->student_questionnaire['student_elements'][$index]['student_question']['id'] ?? null;
-        if (!$studentQuestionId) {
+        $studentElementId = $this->request->student_questionnaire['student_elements'][$index]['id'] ?? null;
+        if (!$studentElementId) {
             return false;
         }
 
-        $ranges = DB::table('student_questions')
-            ->select('min_range', 'max_range')
-            ->where('id', $studentQuestionId)
-            ->first();
-
-        if (!$ranges) {
-            return false;
-        }
-
-        return $value >= $ranges->min_range && $value <= $ranges->max_range;
+        return DB::table('student_questions')->where('id', $value)->where('student_element_id', $studentElementId)->exists();
     }
 
     /**
@@ -57,6 +48,6 @@ class AnswerWithinRange implements Rule
      */
     public function message()
     {
-        return "The answer is not within the allowed range.";
+        return 'The selected student question is invalid.';
     }
 }
