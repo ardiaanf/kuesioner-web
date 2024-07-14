@@ -135,6 +135,7 @@ Route::middleware('auth:sanctum')->group(function () {
         // Lecturer Ranking
         Route::get('admin/lecturer-ranking', [LecturerRankingController::class, 'getLecturerRanking']);
         Route::get('admin/lecturer-ranking-by-study-program-id', [LecturerRankingController::class, 'getLecturerRankingByStudyProgramId']);
+        Route::get('admin/lecturer-ranking-by-study-program-id-and-sort', [LecturerRankingController::class, 'getLecturerRankingByStudyProgramIdAndSort']);
     });
 
     /**

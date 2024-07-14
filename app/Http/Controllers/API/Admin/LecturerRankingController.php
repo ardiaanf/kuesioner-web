@@ -50,7 +50,7 @@ class LecturerRankingController extends BaseController
                     $studentElement = StudentElement::where('id', $answer->student_element_id)->first();
                     if ($studentElement->name == 'Teori') {
                         $teoriScores->push($answer->answer);
-                    } elseif ($studentElement->name == 'Praktikum') {
+                    } else if ($studentElement->name == 'Praktikum') {
                         $praktikumScores->push($answer->answer);
                     }
                 }
@@ -61,9 +61,13 @@ class LecturerRankingController extends BaseController
 
             $lecturer->average_theory = $averageTheory;
             $lecturer->average_practicum = $averagePracticum;
+
+            $lecturer->total_average = ($averageTheory + $averagePracticum) / 2;
         });
 
-        return $this->successResponse(LecturerRankingResource::collection($lecturers), 'Lecturer rankings retrieved successfully.');
+        $sortedLecturers = $lecturers->sortByDesc('total_average');
+
+        return $this->successResponse(LecturerRankingResource::collection($sortedLecturers), 'Lecturer rankings retrieved successfully.');
     }
 
     // public function getLecturerRankingByStudyProgramId()
@@ -113,6 +117,50 @@ class LecturerRankingController extends BaseController
                     $studentElement = StudentElement::where('id', $answer->student_element_id)->first();
                     if ($studentElement->name == 'Teori') {
                         $teoriScores->push($answer->answer);
+                    } else if ($studentElement->name == 'Praktikum') {
+                        $praktikumScores->push($answer->answer);
+                    }
+                }
+            });
+
+            $averageTheory = $teoriScores->avg();
+            $averagePracticum = $praktikumScores->avg();
+
+            $lecturer->average_theory = $averageTheory;
+            $lecturer->average_practicum = $averagePracticum;
+
+            $lecturer->total_average = ($averageTheory + $averagePracticum) / 2;
+        });
+
+        $sortedLecturers = $lecturers->sortByDesc('total_average');
+
+        return $this->successResponse(LecturerRankingResource::collection($sortedLecturers), 'Lecturer rankings retrieved successfully.');
+    }
+
+    public function getLecturerRankingByStudyProgramIdAndSort()
+    {
+        $studyProgramId = request()->query('study_program_id');
+        $sortBy = request()->query('sort_by');
+
+        $lecturers = Lecturer::with('studyPrograms')->select('lecturers.id', 'lecturers.name', 'lecturers.reg_number', 'lecturer_study_programs.study_program_id', 'lecturer_study_programs.lecturer_id', 'study_programs.name as study_program_name')
+            ->join('lecturer_study_programs', 'lecturers.id', '=', 'lecturer_study_programs.lecturer_id')
+            ->join('study_programs', 'lecturer_study_programs.study_program_id', '=', 'study_programs.id')
+            ->where('lecturer_study_programs.study_program_id', $studyProgramId)
+            ->distinct()
+            ->get();
+
+        $lecturers->map(function ($lecturer) use ($sortBy) {
+            $details = StudentAnswerDetailTlp::where('lecturer_id', $lecturer->id)->get();
+
+            $teoriScores = collect();
+            $praktikumScores = collect();
+
+            $details->each(function ($detail) use (&$teoriScores, &$praktikumScores) {
+                $answers = StudentAnswerTlp::where('student_answer_detail_tlp_id', $detail->id)->get();
+                foreach ($answers as $answer) {
+                    $studentElement = StudentElement::where('id', $answer->student_element_id)->first();
+                    if ($studentElement->name == 'Teori') {
+                        $teoriScores->push($answer->answer);
                     } elseif ($studentElement->name == 'Praktikum') {
                         $praktikumScores->push($answer->answer);
                     }
@@ -124,8 +172,18 @@ class LecturerRankingController extends BaseController
 
             $lecturer->average_theory = $averageTheory;
             $lecturer->average_practicum = $averagePracticum;
+
+            $lecturer->total_average = ($averageTheory + $averagePracticum) / 2;
         });
 
-        return $this->successResponse(LecturerRankingResource::collection($lecturers), 'Lecturer rankings retrieved successfully.');
+        if ($sortBy == 'Teori') {
+            $sortedLecturers = $lecturers->sortByDesc('average_theory');
+        } else if ($sortBy == 'Praktikum') {
+            $sortedLecturers = $lecturers->sortByDesc('average_practicum');
+        } else {
+            $sortedLecturers = $lecturers->sortByDesc('total_average');
+        }
+
+        return $this->successResponse(LecturerRankingResource::collection($sortedLecturers), 'Lecturer rankings retrieved successfully.');
     }
 }
