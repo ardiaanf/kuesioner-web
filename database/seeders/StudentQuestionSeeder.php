@@ -94,5 +94,61 @@ class StudentQuestionSeeder extends Seeder
             'label' => implode(',', ['Sangat Tidak Setuju', 'Tidak Setuju', 'Setuju', 'Sangat Setuju']),
             'student_element_id' => 2,
         ]);
+
+        StudentQuestion::create([
+            'question' => 'Visi, misi, tujuan dan strategi Politeknik Negeri Banyuwangi telah disosialisasikan secara jelas melalui berbagai kegiatan dan/atau media',
+            'min_range' => 1,
+            'max_range' => 4,
+            'label' => implode(',', ['Sangat Tidak Setuju', 'Tidak Setuju', 'Setuju', 'Sangat Setuju']),
+            'student_element_id' => 3,
+        ]);
+
+        StudentQuestion::create([
+            'question' => 'Visi, misi, tujuan dan strategi Politeknik Negeri Banyuwangi telah disosialisasikan secara berkala melalui berbagai kegiatan dan/atau media',
+            'min_range' => 1,
+            'max_range' => 4,
+            'label' => implode(',', ['Sangat Tidak Setuju', 'Tidak Setuju', 'Setuju', 'Sangat Setuju']),
+            'student_element_id' => 3,
+        ]);
+
+        StudentQuestion::create([
+            'question' => 'Mahasiswa mengetahui struktur organisasi Perguruan Tinggi',
+            'min_range' => 1,
+            'max_range' => 4,
+            'label' => implode(',', ['Sangat Tidak Setuju', 'Tidak Setuju', 'Setuju', 'Sangat Setuju']),
+            'student_element_id' => 4,
+        ]);
+
+        StudentQuestion::create([
+            'question' => 'Setiap unit/bagian memberikan pelayanan dengan terpercaya sesuai SOP',
+            'min_range' => 1,
+            'max_range' => 4,
+            'label' => implode(',', ['Sangat Tidak Setuju', 'Tidak Setuju', 'Setuju', 'Sangat Setuju']),
+            'student_element_id' => 4,
+        ]);
+
+        StudentQuestion::create([
+            'question' => 'Setiap unit/bagian memberikan pelayanan dengan terbuka',
+            'min_range' => 1,
+            'max_range' => 4,
+            'label' => implode(',', ['Sangat Tidak Setuju', 'Tidak Setuju', 'Setuju', 'Sangat Setuju']),
+            'student_element_id' => 4,
+        ]);
+
+        StudentQuestion::create([
+            'question' => 'Setiap unit/bagian memberikan pelayanan dengan jujur, disiplin, dan responsif',
+            'min_range' => 1,
+            'max_range' => 4,
+            'label' => implode(',', ['Sangat Tidak Setuju', 'Tidak Setuju', 'Setuju', 'Sangat Setuju']),
+            'student_element_id' => 4,
+        ]);
+
+        StudentQuestion::create([
+            'question' => 'Setiap unit/bagian memberikan pelayanan dengan bertanggung jawab',
+            'min_range' => 1,
+            'max_range' => 4,
+            'label' => implode(',', ['Sangat Tidak Setuju', 'Tidak Setuju', 'Setuju', 'Sangat Setuju']),
+            'student_element_id' => 4,
+        ]);
     }
 }

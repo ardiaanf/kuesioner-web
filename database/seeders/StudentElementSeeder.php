@@ -26,5 +26,17 @@ class StudentElementSeeder extends Seeder
             'description' => null,
             'student_questionnaire_id' => 1,
         ]);
+
+        StudentElement::create([
+            'name' => 'Visi, Misi, Tujuan, dan Strategi',
+            'description' => null,
+            'student_questionnaire_id' => 2,
+        ]);
+
+        StudentElement::create([
+            'name' => 'Tata Pamong, Tata Kelola, dan Kerjasama',
+            'description' => null,
+            'student_questionnaire_id' => 2,
+        ]);
     }
 }
