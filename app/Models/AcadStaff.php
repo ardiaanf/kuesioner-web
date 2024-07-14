@@ -19,6 +19,7 @@ class AcadStaff extends Authenticatable
         'reg_number',
         'email',
         'password',
+        'gender',
         'acad_staff_work_unit_id',
     ];
 

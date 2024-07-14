@@ -20,8 +20,8 @@ class StudentQuestionnaireResource extends JsonResource
             'description' => $this->description,
             'type' => $this->type,
             'student_elements' => StudentElementResource::collection($this->whenLoaded('studentElements')),
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            // 'created_at' => $this->created_at,
+            // 'updated_at' => $this->updated_at,
         ];
     }
 }

@@ -14,14 +14,22 @@ class StudentQuestionResource extends JsonResource
      */
     public function toArray($request)
     {
+        $labels = explode(',', $this->label);
+        $rangeLabels = [];
+
+        for ($i = $this->min_range; $i <= $this->max_range; $i++) {
+            $rangeLabels[] = [
+                'key' => $i,
+                'value' => isset($labels[$i - $this->min_range]) ? $labels[$i - $this->min_range] : 'Undefined'
+            ];
+        }
+
         return [
             'id' => $this->id,
             'question' => $this->question,
-            'min_range' => $this->min_range,
-            'max_range' => $this->max_range,
-            'label' => explode(',', $this->label),
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'range_labels' => $rangeLabels,
+            // 'created_at' => $this->created_at,
+            // 'updated_at' => $this->updated_at,
         ];
     }
 }

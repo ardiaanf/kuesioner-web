@@ -20,8 +20,17 @@ class LecturerSeeder extends Seeder
             'reg_number' => 'L001',
             'email' => 'lecturer@mail.com',
             'password' => bcrypt('password'),
-            'work_period' => 5,
+            'work_period' => 2020,
             'lecturer_employment_status_id' => 1,
+        ]);
+
+        Lecturer::create([
+            'name' => 'Lecturer 2',
+            'reg_number' => 'L002',
+            'email' => 'lecturer@example.com',
+            'password' => bcrypt('password'),
+            'work_period' => 2022,
+            'lecturer_employment_status_id' => 2,
         ]);
     }
 }

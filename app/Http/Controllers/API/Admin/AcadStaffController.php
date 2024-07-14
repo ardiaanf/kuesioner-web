@@ -37,6 +37,7 @@ class AcadStaffController extends BaseController
             'reg_number' => 'required|unique:acad_staffs,reg_number',
             'email' => 'required|email|unique:acad_staffs,email',
             'password' => 'required',
+            'gender' => 'required|in:male,female',
             'acad_staff_work_unit_id' => 'required|exists:acad_staff_work_units,id'
         ]);
 
@@ -49,6 +50,7 @@ class AcadStaffController extends BaseController
             'reg_number' => $input['reg_number'],
             'email' => $input['email'],
             'password' => bcrypt($input['password']),
+            'gender' => $input['gender'],
             'acad_staff_work_unit_id' => $input['acad_staff_work_unit_id']
         ]);
 
@@ -95,6 +97,7 @@ class AcadStaffController extends BaseController
             'reg_number' => 'required|unique:acad_staffs,reg_number,' . $id,
             'email' => 'required|email|unique:acad_staffs,email,' . $id,
             'password' => 'required',
+            'gender' => 'required|in:male,female',
             'acad_staff_work_unit_id' => 'required|exists:acad_staff_work_units,id'
         ]);
 
@@ -106,6 +109,7 @@ class AcadStaffController extends BaseController
         $acadstaff->reg_number = $input['reg_number'];
         $acadstaff->email = $input['email'];
         $acadstaff->password = bcrypt($input['password']);
+        $acadstaff->gender = $input['gender'];
         $acadstaff->acad_staff_work_unit_id = $input['acad_staff_work_unit_id'];
         $acadstaff->save();
 

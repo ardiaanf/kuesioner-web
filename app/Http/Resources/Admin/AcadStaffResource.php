@@ -20,6 +20,7 @@ class AcadStaffResource extends JsonResource
             'reg_number' => $this->reg_number,
             'email' => $this->email,
             'password' => $this->password,
+            'gender' => $this->gender,
             'work_unit' => $this->acadStaffWorkUnit ? $this->acadStaffWorkUnit->name : null,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

@@ -122,7 +122,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('admin/lecturers', [AccountLecturerController::class, 'store']);
         Route::get('admin/lecturers/{lecturer}', [AccountLecturerController::class, 'show']);
         Route::put('admin/lecturers/{lecturer}', [AccountLecturerController::class, 'update']);
-        Route::delete('admin/lecturers/{admin}', [AccountLecturerController::class, 'destroy']);
+        Route::delete('admin/lecturers/{lecturer}', [AccountLecturerController::class, 'destroy']);
 
         // Account Management Student
         Route::get('admin/students', [AccountStudentController::class, 'index']);
@@ -135,8 +135,10 @@ Route::middleware('auth:sanctum')->group(function () {
     /**
      * ROUTES FOR STUDENT
      */
-    // Student Questionnaires
-    Route::get('student/student-questionnaires', [StudentQuestionnaireController::class, 'index']);
-    Route::get('student/student-questionnaires/{studentQuestionnaire}', [StudentQuestionnaireController::class, 'show']);
-    Route::post('student/student-questionnaires', [StudentQuestionnaireController::class, 'store']);
+    Route::middleware('role:student')->group(function () {
+        // Student Questionnaires
+        Route::get('student/student-questionnaires', [StudentQuestionnaireController::class, 'index']);
+        Route::get('student/student-questionnaires/{studentQuestionnaire}', [StudentQuestionnaireController::class, 'show']);
+        Route::post('student/student-questionnaires', [StudentQuestionnaireController::class, 'fillQuestionTLP']);
+    });
 });
