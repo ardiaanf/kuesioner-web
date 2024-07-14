@@ -6,35 +6,50 @@ use App\Http\Controllers\API\BaseController as BaseController;
 use App\Models\Lecturer;
 use App\Models\StudentAnswerDetailTlp;
 use App\Models\StudentAnswerTlp;
+use App\Http\Resources\Admin\LecturerRankingResource;
 
 class LecturerRankingController extends BaseController
 {
-    public function index()
+    public function getLecturerRanking()
     {
-        // Retrieve all lecturers that are referenced in StudentAnswerDetailTlp
-        $lecturers = Lecturer::select('lecturers.*')
+        $lecturers = Lecturer::select('lecturers.id', 'lecturers.name', 'lecturers.reg_number')
             ->join('student_answer_detail_tlps', 'lecturers.id', '=', 'student_answer_detail_tlps.lecturer_id')
             ->distinct()
             ->get();
 
-        $lecturerRankings = $lecturers->map(function ($lecturer) {
-            // For each lecturer, find all associated StudentAnswerDetailTlp records
+        $lecturers->map(function ($lecturer) {
             $details = StudentAnswerDetailTlp::where('lecturer_id', $lecturer->id)->get();
 
-            // Use the details to find corresponding StudentAnswerTlp entries and calculate the average answer value
             $averageScore = $details->flatMap(function ($detail) {
                 return StudentAnswerTlp::where('student_answer_detail_tlp_id', $detail->id)->get();
             })->avg('answer');
 
-            // Return the lecturer with their average score
-            return [
-                'lecturer_id' => $lecturer->id,
-                'lecturer_name' => $lecturer->name,
-                'average_score' => $averageScore,
-            ];
+            $lecturer->average_score = $averageScore;
         });
 
-        // Return the results
-        return response()->json($lecturerRankings);
+        return $this->successResponse(LecturerRankingResource::collection($lecturers), 'Lecturer rankings retrieved successfully.');
+    }
+    public function getLecturerRankingByStudyProgramId()
+    {
+        $studyProgramId = request()->query('study_program_id');
+
+        $lecturers = Lecturer::with('studyPrograms')->select('lecturers.id', 'lecturers.name', 'lecturers.reg_number', 'lecturer_study_programs.study_program_id', 'lecturer_study_programs.lecturer_id', 'study_programs.name as study_program_name')
+            ->join('lecturer_study_programs', 'lecturers.id', '=', 'lecturer_study_programs.lecturer_id')
+            ->join('study_programs', 'lecturer_study_programs.study_program_id', '=', 'study_programs.id')
+            ->where('lecturer_study_programs.study_program_id', $studyProgramId)
+            ->distinct()
+            ->get();
+
+        $lecturers->map(function ($lecturer) {
+            $details = StudentAnswerDetailTlp::where('lecturer_id', $lecturer->id)->get();
+
+            $averageScore = $details->flatMap(function ($detail) {
+                return StudentAnswerTlp::where('student_answer_detail_tlp_id', $detail->id)->get();
+            })->avg('answer');
+
+            $lecturer->average_score = $averageScore;
+        });
+
+        return $this->successResponse(LecturerRankingResource::collection($lecturers), 'Lecturer rankings retrieved successfully.');
     }
 }

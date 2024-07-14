@@ -133,7 +133,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('admin/students/{student}', [AccountStudentController::class, 'destroy']);
 
         // Lecturer Ranking
-        Route::get('admin/lecturer-ranking', [LecturerRankingController::class, 'index']);
+        Route::get('admin/lecturer-ranking', [LecturerRankingController::class, 'getLecturerRanking']);
+        Route::get('admin/lecturer-ranking-by-study-program-id', [LecturerRankingController::class, 'getLecturerRankingByStudyProgramId']);
     });
 
     /**

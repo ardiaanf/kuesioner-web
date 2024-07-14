@@ -25,4 +25,9 @@ class StudyProgram extends Model
     {
         return $this->hasMany(Course::class);
     }
+
+    public function lecturers()
+    {
+        return $this->belongsToMany(Lecturer::class, 'lecturer_study_programs');
+    }
 }
