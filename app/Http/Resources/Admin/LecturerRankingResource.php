@@ -20,7 +20,9 @@ class LecturerRankingResource extends JsonResource
             'study_program' => $this->whenLoaded('studyPrograms', function () {
                 return $this->study_program_name;
             }),
-            'average_score' => $this->average_score,
+            // 'average_score' => $this->average_score,
+            'average_theory' => $this->average_theory,
+            'average_practicum' => $this->average_practicum,
         ];
     }
 }
