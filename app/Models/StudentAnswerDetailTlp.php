@@ -24,4 +24,34 @@ class StudentAnswerDetailTlp extends Model
     {
         return $this->hasMany(StudentAnswerTlp::class);
     }
+
+    public function major()
+    {
+        return $this->belongsTo(Major::class);
+    }
+
+    public function studyProgram()
+    {
+        return $this->belongsTo(StudyProgram::class);
+    }
+
+    public function studentClass()
+    {
+        return $this->belongsTo(StudentClass::class);
+    }
+
+    public function course()
+    {
+        return $this->belongsTo(Course::class);
+    }
+
+    public function lecturer()
+    {
+        return $this->belongsTo(Lecturer::class);
+    }
+
+    public function student()
+    {
+        return $this->belongsTo(Student::class);
+    }
 }

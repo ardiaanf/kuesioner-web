@@ -28,4 +28,9 @@ class Lecturer extends Authenticatable
     {
         return $this->belongsTo(LecturerEmploymentStatus::class);
     }
+
+    public function studyPrograms()
+    {
+        return $this->belongsToMany(StudyProgram::class, 'lecturer_study_programs');
+    }
 }

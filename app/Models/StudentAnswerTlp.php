@@ -23,4 +23,19 @@ class StudentAnswerTlp extends Model
     {
         return $this->belongsTo(StudentAnswerDetailTlp::class);
     }
+
+    public function studentQuestionnaire()
+    {
+        return $this->belongsTo(StudentQuestionnaire::class);
+    }
+
+    public function studentElement()
+    {
+        return $this->belongsTo(StudentElement::class);
+    }
+
+    public function studentQuestion()
+    {
+        return $this->belongsTo(StudentQuestion::class);
+    }
 }

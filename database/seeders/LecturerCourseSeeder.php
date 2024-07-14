@@ -32,6 +32,11 @@ class LecturerCourseSeeder extends Seeder
 
         LecturerCourse::create([
             'lecturer_id' => 2,
+            'course_id' => 3,
+        ]);
+
+        LecturerCourse::create([
+            'lecturer_id' => 2,
             'course_id' => 4,
         ]);
     }

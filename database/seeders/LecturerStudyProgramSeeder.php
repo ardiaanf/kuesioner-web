@@ -27,6 +27,11 @@ class LecturerStudyProgramSeeder extends Seeder
 
         LecturerStudyProgram::create([
             'lecturer_id' => 2,
+            'study_program_id' => 1,
+        ]);
+
+        LecturerStudyProgram::create([
+            'lecturer_id' => 2,
             'study_program_id' => 3,
         ]);
     }

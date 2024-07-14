@@ -10,4 +10,14 @@ class LecturerStudyProgram extends Model
     use HasFactory;
 
     protected $table = 'lecturer_study_programs';
+
+    public function lecturer()
+    {
+        return $this->belongsTo(Lecturer::class);
+    }
+
+    public function studyProgram()
+    {
+        return $this->belongsTo(StudyProgram::class);
+    }
 }

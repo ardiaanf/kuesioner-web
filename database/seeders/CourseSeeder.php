@@ -35,6 +35,12 @@ class CourseSeeder extends Seeder
                 'study_program_id' => 1,
             ],
             [
+                'name' => 'Photography',
+                'code' => 'PG101',
+                'semester' => 1,
+                'study_program_id' => 1,
+            ],
+            [
                 'name' => 'Television Production',
                 'code' => 'TP101',
                 'semester' => 1,
