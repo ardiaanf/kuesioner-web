@@ -148,5 +148,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('student/student-questionnaires-tlp', [StudentQuestionnaireController::class, 'fillQuestionTLP']);
         Route::get('student/student-questionnaires/{studentQuestionnaire}/filled-tlp', [StudentQuestionnaireController::class, 'showFilledQuestionTLP']);
         Route::post('student/student-questionnaires-ac', [StudentQuestionnaireController::class, 'fillQuestionAC']);
+        Route::get('student/student-questionnaires/{studentQuestionnaire}/filled-ac', [StudentQuestionnaireController::class, 'showFilledQuestionAC']);
     });
 });

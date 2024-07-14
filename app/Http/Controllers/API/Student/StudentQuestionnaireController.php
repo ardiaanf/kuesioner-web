@@ -252,5 +252,30 @@ class StudentQuestionnaireController extends BaseController
         }
     }
 
-    // TODO: Create Method to Get the Answered Questionnaire AC by Student ID
+    public function showFilledQuestionAC($id)
+    {
+        $studentAnswers = StudentAnswerAc::where('student_id', Auth::user()->id)
+            ->where('student_questionnaire_id', $id)
+            ->with('studentQuestionnaire', 'studentElement', 'studentQuestion', 'student')
+            ->get();
+
+        if ($studentAnswers->isEmpty()) {
+            return response()->json([]);
+        }
+
+        $groupedAnswers = [
+            'student_questionnaire' => $studentAnswers->first()->studentQuestionnaire->name,
+            'student_name' => $studentAnswers->first()->student->name,
+            'answers' => $studentAnswers->map(function ($item) {
+                return [
+                    'student_element' => $item->studentElement->name,
+                    'student_question' => $item->studentQuestion->question,
+                    'answer' => $item->answer
+                ];
+            })->toArray(),
+            'created_at' => $studentAnswers->first()->created_at,
+        ];
+
+        return $this->successResponse(new StudentAnswerACResource((object) $groupedAnswers), 'Questionnaire filled successfully', 201);
+    }
 }
