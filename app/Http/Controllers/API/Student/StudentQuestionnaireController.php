@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\Student;
 
 use Illuminate\Http\Request;
+use App\Models\StudentAnswerAc;
 use Illuminate\Validation\Rule;
 use App\Models\StudentAnswerTlp;
 use App\Rules\AnswerWithinRange;
@@ -12,10 +13,10 @@ use App\Models\StudentQuestionnaire;
 use Illuminate\Support\Facades\Auth;
 use App\Models\StudentAnswerDetailTlp;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Resources\Student\StudentAnswerACResource;
 use App\Http\Resources\Student\StudentQuestionnaireResource;
 use App\Http\Controllers\API\BaseController as BaseController;
 use App\Http\Resources\Student\StudentQuestionnaireFilledResource;
-use App\Models\StudentAnswerAc;
 
 class StudentQuestionnaireController extends BaseController
 {
@@ -169,69 +170,87 @@ class StudentQuestionnaireController extends BaseController
         return $this->successResponse(new StudentQuestionnaireFilledResource($studentAnswerDetailTlp), 'Student Answer Detail TLP retrieved successfully');
     }
 
-    // public function fillQuestionAC(Request $request)
-    // {
-    //     $studentAnswerAC = StudentAnswerAc::where('student_id', Auth::user()->id)
-    //         ->where('student_questionnaire_id', $request->student_questionnaire_id)
-    //         ->where('student_element_id', $request->student_element_id)
-    //         ->where('student_question_id', $request->student_question_id)
-    //         ->first();
+    public function fillQuestionAC(Request $request)
+    {
+        $studentAnswerAC = StudentAnswerAc::where('student_id', Auth::user()->id)
+            ->where('student_questionnaire_id', $request->student_questionnaire['id'])
+            ->first();
 
-    //     if ($studentAnswerAC) {
-    //         return $this->errorResponse('You have filled the questionnaire', [], 400);
-    //     }
+        if ($studentAnswerAC) {
+            return $this->errorResponse('You have filled the questionnaire', [], 400);
+        }
 
-    //     $validator = Validator::make($request->all(), [
-    //         'student_questionnaire.id' => 'required|integer|exists:student_questionnaires,id',
-    //         'student_questionnaire.student_elements.*.id' => [
-    //             'required',
-    //             'integer',
-    //             Rule::exists('student_elements', 'id')->where(function ($query) use ($request) {
-    //                 return $query->where('student_questionnaire_id', $request->student_questionnaire['id']);
-    //             }),
-    //         ],
-    //         'student_questionnaire.student_elements.*.student_question.id.*' => [
-    //             'required',
-    //             'integer',
-    //             new ValidStudentQuestion($request),
-    //         ],
-    //         'student_questionnaire.student_elements.*.student_question.answer.*' => [
-    //             'required',
-    //             'integer',
-    //             new AnswerWithinRange($request),
-    //         ]
-    //     ]);
+        $validator = Validator::make($request->all(), [
+            'student_questionnaire.id' => 'required|integer|exists:student_questionnaires,id',
+            'student_questionnaire.student_elements.*.id' => [
+                'required',
+                'integer',
+                Rule::exists('student_elements', 'id')->where(function ($query) use ($request) {
+                    return $query->where('student_questionnaire_id', $request->student_questionnaire['id']);
+                }),
+            ],
+            'student_questionnaire.student_elements.*.student_question.id.*' => [
+                'required',
+                'integer',
+                new ValidStudentQuestion($request),
+            ],
+            'student_questionnaire.student_elements.*.student_question.answer.*' => [
+                'required',
+                'integer',
+                new AnswerWithinRange($request),
+            ]
+        ]);
 
-    //     if ($validator->fails()) {
-    //         return $this->errorResponse('Validation Error', $validator->errors(), 422);
-    //     }
+        if ($validator->fails()) {
+            return $this->errorResponse('Validation Error', $validator->errors(), 422);
+        }
 
-    //     try {
-    //         DB::beginTransaction();
+        try {
+            DB::beginTransaction();
 
-    //         foreach ($request->student_questionnaire['student_elements'] as $element) {
-    //             foreach ($element['student_question']['id'] as $index => $questionId) {
-    //                 $answer = $element['student_question']['answer'][$index];
-    //                 StudentAnswerTlp::create([
-    //                     'answer' => $answer,
-    //                     'student_id' => Auth::user()->id,
-    //                     'student_questionnaire_id' => $request->student_questionnaire['id'],
-    //                     'student_element_id' => $element['id'],
-    //                     'student_question_id' => $questionId,
-    //                 ]);
-    //             }
-    //         }
+            foreach ($request->student_questionnaire['student_elements'] as $element) {
+                foreach ($element['student_question']['id'] as $index => $questionId) {
+                    $answer = $element['student_question']['answer'][$index];
+                    StudentAnswerAC::create([
+                        'answer' => $answer,
+                        'student_id' => Auth::user()->id,
+                        'student_questionnaire_id' => $request->student_questionnaire['id'],
+                        'student_element_id' => $element['id'],
+                        'student_question_id' => $questionId,
+                    ]);
+                }
+            }
 
-    //         DB::commit();
+            DB::commit();
 
-    //         // $studentAnswerDetailTlp = StudentAnswerDetailTlp::with('studentAnswerTlp')->find($studentAnswerDetailTlp->id);
-    //         return $this->successResponse([], 'Questionnaire filled successfully', 201);
-    //     } catch (\Exception $e) {
-    //         DB::rollBack();
-    //         return $this->errorResponse('Internal Server Error', $e->getMessage(), 500);
-    //     }
-    // }
+            $studentAnswers = StudentAnswerAc::where('student_id', Auth::user()->id)
+                ->where('student_questionnaire_id', $request->student_questionnaire['id'])
+                ->with('studentQuestionnaire', 'studentElement', 'studentQuestion', 'student')
+                ->get();
+
+            if ($studentAnswers->isEmpty()) {
+                return response()->json([]);
+            }
+
+            $groupedAnswers = [
+                'student_questionnaire' => $studentAnswers->first()->studentQuestionnaire->name,
+                'student_name' => $studentAnswers->first()->student->name,
+                'answers' => $studentAnswers->map(function ($item) {
+                    return [
+                        'student_element' => $item->studentElement->name,
+                        'student_question' => $item->studentQuestion->question,
+                        'answer' => $item->answer
+                    ];
+                })->toArray(),
+                'created_at' => $studentAnswers->first()->created_at,
+            ];
+
+            return $this->successResponse(new StudentAnswerACResource((object) $groupedAnswers), 'Questionnaire filled successfully', 201);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $this->errorResponse('Internal Server Error', $e->getMessage(), 500);
+        }
+    }
 
     // TODO: Create Method to Get the Answered Questionnaire AC by Student ID
-    // TODO: Ranking for lecturer based on the questionnaire
 }
