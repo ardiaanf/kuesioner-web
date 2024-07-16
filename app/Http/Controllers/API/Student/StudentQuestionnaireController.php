@@ -260,7 +260,7 @@ class StudentQuestionnaireController extends BaseController
             ->get();
 
         if ($studentAnswers->isEmpty()) {
-            return response()->json([]);
+            return $this->errorResponse('Student Answer AC not found', [], 404);
         }
 
         $groupedAnswers = [
