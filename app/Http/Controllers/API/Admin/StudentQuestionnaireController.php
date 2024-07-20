@@ -217,8 +217,6 @@ class StudentQuestionnaireController extends BaseController
             } else {
                 return $this->errorResponse('Invalid type', [], 400);
             }
-
-            // return response()->json($studentQuestionnaires);
         } else {
             return $this->errorResponse('Unauthorized', [], 401);
         }
