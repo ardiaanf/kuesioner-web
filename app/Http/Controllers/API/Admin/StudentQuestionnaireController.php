@@ -2,12 +2,18 @@
 
 namespace App\Http\Controllers\API\Admin;
 
+use App\Models\Student;
+use Illuminate\Http\Request;
+use App\Models\StudentAnswerAc;
+use App\Models\StudentAnswerTlp;
 use App\Models\StudentQuestionnaire;
+use Illuminate\Support\Facades\Auth;
+use App\Models\StudentAnswerDetailTlp;
+use Illuminate\Support\Facades\Validator;
+use App\Http\Resources\Admin\StudentAnswerACResource;
 use App\Http\Resources\Admin\StudentQuestionnaireResource;
 use App\Http\Controllers\API\BaseController as BaseController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
+use App\Http\Resources\Admin\StudentQuestionnaireFilledResource;
 
 class StudentQuestionnaireController extends BaseController
 {
@@ -161,5 +167,60 @@ class StudentQuestionnaireController extends BaseController
         }
     }
 
-    // TODO: get all filled questionnaires (TLP/AC)
+    public function getFilledQuestionnaires()
+    {
+        if (Auth::user()->role == 'admin') {
+            $students = Student::all();
+            if (request()->query('type') == 'TLP') {
+                $students = $students->map(function ($student) {
+                    $studentAnswerDetailTlp = StudentAnswerDetailTlp::where('student_id', $student->id)->first();
+
+                    $student->filled = !is_null($studentAnswerDetailTlp);
+                    $student->studentAnswerDetailTlp = $studentAnswerDetailTlp;
+
+                    return $student;
+                });
+
+                $students = $students->filter(function ($student) {
+                    return $student->filled;
+                });
+
+                $students = $students->map(function ($student) {
+                    $studentAnswerTlp = StudentAnswerTlp::where('student_answer_detail_tlp_id', $student->studentAnswerDetailTlp->id)->get();
+
+                    $student->studentAnswerTlp = $studentAnswerTlp;
+                    return $student;
+                });
+
+                return $this->successResponse(
+                    StudentQuestionnaireFilledResource::collection($students),
+                    'Student Questionnaires retrieved successfully'
+                );
+            } else if (request()->query('type') == 'AC') {
+                $students = $students->map(function ($student) {
+                    $studentAnswersAC = StudentAnswerAc::where('student_id', $student->id)->first();
+
+                    $student->filled = !is_null($studentAnswersAC);
+                    $student->studentAnswersAC = $studentAnswersAC;
+
+                    return $student;
+                });
+
+                $students = $students->filter(function ($student) {
+                    return $student->filled;
+                });
+
+                return $this->successResponse(
+                    StudentAnswerACResource::collection($students),
+                    'Student Questionnaires retrieved successfully'
+                );
+            } else {
+                return $this->errorResponse('Invalid type', [], 400);
+            }
+
+            // return response()->json($studentQuestionnaires);
+        } else {
+            return $this->errorResponse('Unauthorized', [], 401);
+        }
+    }
 }
