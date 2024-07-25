@@ -24,7 +24,6 @@ use App\Http\Controllers\API\{
     Student\StudentQuestionnaireController,
 };
 
-
 Route::post('auth/admin', [AdminAuthController::class, 'signin']);
 Route::post('auth/lecturer', [LecturerAuthController::class, 'signin']);
 Route::post('auth/acadstaff', [AcadStaffAuthController::class, 'signin']);
