@@ -41,6 +41,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('admin/student-questionnaires/{studentQuestionnaire}', [AdminStudentQuestionnaireController::class, 'update']);
     Route::delete('admin/student-questionnaires/{studentQuestionnaire}', [AdminStudentQuestionnaireController::class, 'destroy']);
 
+    Route::get('admin/filled-student-questionnaires', [AdminStudentQuestionnaireController::class, 'getFilledQuestionnaires']);
+
     // Student Elements
     Route::get('admin/student-elements', [AdminStudentElementController::class, 'index']);
     Route::post('admin/student-elements', [AdminStudentElementController::class, 'store']);
