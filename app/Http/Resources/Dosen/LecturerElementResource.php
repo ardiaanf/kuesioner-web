@@ -19,8 +19,8 @@ class LecturerElementResource extends JsonResource
             'name' => $this->name,
             'description' => $this->description,
             'lecturer_questions' => LecturerQuestionResource::collection($this->whenLoaded('lecturerQuestions')),
-            // 'created_at' => $this->created_at,
-            // 'updated_at' => $this->updated_at,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ];
     }
 }

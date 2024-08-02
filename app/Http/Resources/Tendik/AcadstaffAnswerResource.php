@@ -14,6 +14,11 @@ class AcadstaffAnswerResource extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'acad_staff_questionnaire' => $this->acad_staff_questionnaire,
+            'acad_staff_name' => $this->acad_staff_name,
+            'answers' => $this->answers,
+            'created_at' => $this->created_at,
+        ];
     }
 }

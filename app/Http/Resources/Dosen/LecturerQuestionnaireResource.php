@@ -2,7 +2,7 @@
 
 namespace App\Http\Resources\Dosen;
 
-use App\Http\Resources\Tendik\AcadStaffElementResource;
+use App\Http\Resources\Dosen\LecturerElementResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class LecturerQuestionnaireResource extends JsonResource
@@ -19,10 +19,12 @@ class LecturerQuestionnaireResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
-            'type' => $this->type,
-            'acad_staff_elements' => AcadStaffElementResource::collection($this->whenLoaded('acadstaffElements')),
-            // 'created_at' => $this->created_at,
-            // 'updated_at' => $this->updated_at,
+            'admin' => $this->whenLoaded('admin', function () {
+                return $this->admin->name;
+            }),
+            'lecturer_elements' => LecturerElementResource::collection($this->whenLoaded('lecturerElements')),
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ];
     }
 }

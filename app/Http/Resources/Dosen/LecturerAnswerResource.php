@@ -14,6 +14,11 @@ class LecturerAnswerResource extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'lecturer_questionnaire' => $this->lecturer_questionnaire,
+            'lecturer_name' => $this->lecturer_name,
+            'answers' => $this->answers,
+            'created_at' => $this->created_at,
+        ];
     }
 }

@@ -14,6 +14,22 @@ class LecturerQuestionResource extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        $labels = explode(',', $this->label);
+        $rangeLabels = [];
+
+        for ($i = $this->min_range; $i <= $this->max_range; $i++) {
+            $rangeLabels[] = [
+                'key' => $i,
+                'value' => isset($labels[$i - $this->min_range]) ? $labels[$i - $this->min_range] : 'Undefined'
+            ];
+        }
+
+        return [
+            'id' => $this->id,
+            'question' => $this->question,
+            'range_labels' => $rangeLabels,
+            // 'created_at' => $this->created_at,
+            // 'updated_at' => $this->updated_at,
+        ];
     }
 }

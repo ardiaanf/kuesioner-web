@@ -2,22 +2,23 @@
 
 namespace App\Http\Controllers\API\Tendik;
 
+use Illuminate\Http\Request;
+use App\Models\AcadStaffAnswer;
+use Illuminate\Validation\Rule;
+use App\Rules\AnswerWithinRange;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use App\Rules\ValidAcadStaffQuestion;
+use App\Models\AcadStaffQuestionnaire;
+use App\Rules\AcadStaffAnswerWithinRange;
+use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\API\BaseController;
+use Illuminate\Support\Facades\DB; // Added this line
 use App\Http\Resources\Tendik\AcadstaffAnswerResource;
 use App\Http\Resources\Tendik\AcadStaffElementResource;
 use App\Http\Resources\Tendik\AcadStaffQuestionnaireResource;
-use App\Models\AcadStaffAnswer;
-use App\Models\AcadStaffQuestionnaire;
-use App\Rules\AcadStaffAnswerWithinRange;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
-use App\Rules\ValidAcadStaffQuestion;
-use App\Rules\AnswerWithinRange;
-use Illuminate\Support\Facades\DB; // Added this line
 
-class AcadStaffQuestionnaireController extends Controller
+class AcadStaffQuestionnaireController extends BaseController
 {
     /**
      * Display a listing of the resource.
@@ -27,7 +28,7 @@ class AcadStaffQuestionnaireController extends Controller
     public function index()
     {
         $acadstaffQuestionnaires = AcadStaffQuestionnaire::all();
-        return $this->successResponse(AcadStaffQuestionnaireResource::collection($acadstaffQuestionnaires), 'Student Questionnaires retrieved successfully');
+        return $this->successResponse(AcadStaffQuestionnaireResource::collection($acadstaffQuestionnaires), 'Education Personal Questionnaires retrieved successfully');
     }
 
     /**
@@ -43,7 +44,7 @@ class AcadStaffQuestionnaireController extends Controller
             return $this->errorResponse('Education Personal Questionnaire not found', [], 404);
         }
 
-        return $this->successResponse(new AcadStaffElementResource($acadstaffQuestionnaire), 'Education Personal Questionnaire retrieved successfully');
+        return $this->successResponse(new AcadStaffQuestionnaireResource($acadstaffQuestionnaire), 'Education Personal Questionnaire retrieved successfully');
     }
 
     /**
@@ -51,7 +52,7 @@ class AcadStaffQuestionnaireController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function fillAcadStaffQuestionnaire(Request $request)
+    public function fillQuestionAC(Request $request)
     {
         $acadstaffAnswer = AcadStaffAnswer::where('acad_staff_id', Auth::user()->id)
         ->where('acad_staff_questionnaire_id', $request->acad_staff_questionnaire['id'])

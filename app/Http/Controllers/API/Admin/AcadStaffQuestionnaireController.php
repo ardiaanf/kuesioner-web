@@ -5,6 +5,8 @@ namespace App\Http\Controllers\API\Admin;
 use App\Http\Controllers\API\BaseController;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Admin\AcadStaffQuestionnaireResource;
+use App\Models\AcadStaff;
+use App\Models\AcadStaffAnswer;
 use App\Models\AcadStaffQuestionnaire;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -91,13 +93,13 @@ class AcadStaffQuestionnaireController extends BaseController
     public function showWithRelations($id)
     {
         if (Auth::user()->role == 'admin') {
-            // $lecturerQuestionnaire = LecturerQuestionnaire::with('lecturerElements.lecturerQuestions')->find($id);
-            $lecturerQuestionnaire = AcadStaffQuestionnaire::with('admin')->with('acadstaffElements.acadstaffQuestions')->find($id);
-            if (is_null($lecturerQuestionnaire)) {
+            // $acadstaffQuestionnaire = LecturerQuestionnaire::with('lecturerElements.lecturerQuestions')->find($id);
+            $acadstaffQuestionnaire = AcadStaffQuestionnaire::with('admin')->with('acadstaffElements.acadstaffQuestions')->find($id);
+            if (is_null($acadstaffQuestionnaire)) {
                 return $this->errorResponse('Education Personal Questionnaire not found', [], 404);
             }
 
-            return $this->successResponse(new AcadStaffQuestionnaireResource($lecturerQuestionnaire), 'Lecturer Questionnaire retrieved successfully');
+            return $this->successResponse(new AcadStaffQuestionnaireResource($acadstaffQuestionnaire), 'Lecturer Questionnaire retrieved successfully');
         } else {
             return $this->errorResponse('Unauthorized', [], 401);
         }
@@ -161,5 +163,47 @@ class AcadStaffQuestionnaireController extends BaseController
         } else {
             return $this->errorResponse('Unauthorized', [], 401);
         }
+    }
+
+    public function getFilledQuestionnaires()
+    {
+        if (Auth::user()->role != 'admin') {
+            $acadstaff = AcadStaff::all();
+            $acadstaff = $acadstaff->map(function ($acadstaff) {
+                $acadstaffAnswers = AcadStaffAnswer::where('acad_staff_id', $acadstaff->id)
+                    ->with('acadstaffQuestionnaire', 'acadstaffElement', 'acadstaffQuestion')
+                    ->get();
+
+                $acadstaff->filled = !$acadstaffAnswers->isEmpty();
+                $acadstaff->acadstaffAnswers = $acadstaffAnswers;
+
+                return $acadstaff;
+            });
+
+            $acadstaff = $acadstaff->filter(function ($acadstaff) {
+                return $acadstaff->filled;
+            });
+
+            $groupedAnswers = $acadstaff->map(function ($acadstaff) {
+                return [
+                    'acad_staff_name' => $acadstaff->name,
+                    'answers' => $acadstaff->acadstaffAnswers->map(function ($answer) {
+                        return [
+                            'acad_staff_questionnaire' => $answer->acadstaffQuestionnaire->name,
+                            'acad_staff_element' => $answer->acadstaffElement->name,
+                            'acad_staff_question' => $answer->acadstaffQuestion->question,
+                            'answer' => $answer->answer,
+                            'created_at' => $answer->created_at,
+                        ];
+                    }),
+                ];
+            });
+
+            return $this->successResponse(
+                $groupedAnswers,
+                'Education Personal Questionnaires retrieved successfully'
+            );
+        }
+        return $this->errorResponse('Unauthorized', [], 401);
     }
 }

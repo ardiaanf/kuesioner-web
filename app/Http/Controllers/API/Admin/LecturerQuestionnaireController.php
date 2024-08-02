@@ -5,6 +5,9 @@ namespace App\Http\Controllers\API\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Admin\LecturerQuestionnaireResource;
 use App\Http\Controllers\API\BaseController as BaseController;
+use App\Http\Resources\Dosen\LecturerAnswerResource;
+use App\Models\Lecturer;
+use App\Models\LecturerAnswer;
 use App\Models\LecturerQuestionnaire;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -93,7 +96,7 @@ class LecturerQuestionnaireController extends BaseController
             // $lecturerQuestionnaire = LecturerQuestionnaire::with('lecturerElements.lecturerQuestions')->find($id);
             $lecturerQuestionnaire = LecturerQuestionnaire::with('admin')->with('lecturerElements.lecturerQuestions')->find($id);
             if (is_null($lecturerQuestionnaire)) {
-                return $this->errorResponse('Student Questionnaire not found', [], 404);
+                return $this->errorResponse('lecturer Questionnaire not found', [], 404);
             }
 
             return $this->successResponse(new LecturerQuestionnaireResource($lecturerQuestionnaire), 'Lecturer Questionnaire retrieved successfully');
@@ -115,7 +118,7 @@ class LecturerQuestionnaireController extends BaseController
             $letureQuestionnaires = LecturerQuestionnaire::find($id);
 
             if (is_null($letureQuestionnaires)) {
-                return $this->errorResponse('Student Questionnaire not found', [], 404);
+                return $this->errorResponse('lecturer Questionnaire not found', [], 404);
             }
 
             $input = $request->all();
@@ -160,5 +163,47 @@ class LecturerQuestionnaireController extends BaseController
         } else {
             return $this->errorResponse('Unauthorized', [], 401);
         }
+    }
+
+    public function getFilledQuestionnaires()
+    {
+        if (Auth::user()->role != 'admin') {
+            $lecturer = Lecturer::all();
+            $lecturer = $lecturer->map(function ($lecturer) {
+                $lecturerAnswers = LecturerAnswer::where('lecturer_id', $lecturer->id)
+                    ->with('lecturerQuestionnaire', 'lecturerElement', 'lecturerQuestion')
+                    ->get();
+
+                $lecturer->filled = !$lecturerAnswers->isEmpty();
+                $lecturer->lecturerAnswers = $lecturerAnswers;
+
+                return $lecturer;
+            });
+
+            $lecturer = $lecturer->filter(function ($lecturer) {
+                return $lecturer->filled;
+            });
+
+            $groupedAnswers = $lecturer->map(function ($lecturer) {
+                return [
+                    'lecturer_name' => $lecturer->name,
+                    'answers' => $lecturer->lecturerAnswers->map(function ($answer) {
+                        return [
+                            'lecturer_questionnaire' => $answer->lecturerQuestionnaire->name,
+                            'lecturer_element' => $answer->lecturerElement->name,
+                            'lecturer_question' => $answer->lecturerQuestion->question,
+                            'answer' => $answer->answer,
+                            'created_at' => $answer->created_at,
+                        ];
+                    }),
+                ];
+            });
+
+            return $this->successResponse(
+                $groupedAnswers,
+                'lecturer Questionnaires retrieved successfully'
+            );
+        }
+        return $this->errorResponse('Unauthorized', [], 401);
     }
 }

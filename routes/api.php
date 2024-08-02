@@ -22,6 +22,8 @@ use App\Http\Controllers\API\{
     Admin\StudentController as AccountStudentController,
     Admin\LecturerRankingController,
     Student\StudentQuestionnaireController,
+    Dosen\LecturerQuestionnaireController as LecturerLecturerQuestionnaireController,
+    Tendik\AcadStaffQuestionnaireController as AcadStaffsQuestionnaireController
 };
 
 Route::post('auth/admin', [AdminAuthController::class, 'signin']);
@@ -66,6 +68,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('admin/lecturer-questionnaires/{lecturerQuestionnaire}', [AdminLecturerQuestionnaireController::class, 'update']);
     Route::delete('admin/lecturer-questionnaires/{lecturerQuestionnaire}', [AdminLecturerQuestionnaireController::class, 'destroy']);
 
+    Route::get('admin/filled-lecturer-questionnaires', [AdminLecturerQuestionnaireController::class, 'getFilledQuestionnaires']);
+
     // Lecturer Elements
     Route::get('admin/lecturer-elements', [AdminLecturerElementController::class, 'index']);
     Route::post('admin/lecturer-elements', [AdminLecturerElementController::class, 'store']);
@@ -88,6 +92,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('admin/acadstaff-questionnaires/{acadstaffQuestionnaire}/relations', [AdminAcadStaffQuestionnaireController::class, 'showWithRelations']);
     Route::put('admin/acadstaff-questionnaires/{acadstaffQuestionnaire}', [AdminAcadStaffQuestionnaireController::class, 'update']);
     Route::delete('admin/acadstaff-questionnaires/{acadstaffQuestionnaire}', [AdminAcadStaffQuestionnaireController::class, 'destroy']);
+
+    Route::get('admin/filled-acadstaff-questionnaires', [AdminAcadStaffQuestionnaireController::class, 'getFilledQuestionnaires']);
 
     // Academic staff Elements
     Route::get('admin/acadstaff-elements', [AdminAcadStaffElementController::class, 'index']);
@@ -150,5 +156,21 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('student/student-questionnaires/{studentQuestionnaire}/filled-tlp', [StudentQuestionnaireController::class, 'showFilledQuestionTLP']);
         Route::post('student/student-questionnaires-ac', [StudentQuestionnaireController::class, 'fillQuestionAC']);
         Route::get('student/student-questionnaires/{studentQuestionnaire}/filled-ac', [StudentQuestionnaireController::class, 'showFilledQuestionAC']);
+    });
+
+    Route::middleware('role:lecturer')->group(function () {
+        // Lecturer Questionnaires
+        Route::get('lecturer/lecturer-questionnaires', [LecturerLecturerQuestionnaireController::class, 'index']);
+        Route::get('lecturer/lecturer-questionnaires/{lecturerQuestionnaire}', [LecturerLecturerQuestionnaireController::class, 'show']);
+        Route::post('lecturer/lecturer-questionnaires-ac', [LecturerLecturerQuestionnaireController::class, 'fillQuestion']);
+        Route::get('lecturer/lecturer-questionnaires-ac/{lecturerQuestionnaire}/filled', [LecturerLecturerQuestionnaireController::class, 'showFilledQuestion']);
+    });
+
+    Route::middleware('role:acad_staff')->group(function () {
+        // Lecturer Questionnaires
+        Route::get('acad-staff/acad-staff-questionnaires', [AcadStaffsQuestionnaireController::class, 'index']);
+        Route::get('acad-staff/acad-staff-questionnaires/{acadstaffQuestionnaire}', [AcadStaffsQuestionnaireController::class, 'show']);
+        Route::post('acad-staff/acad-staff-questionnaires-ac', [AcadStaffsQuestionnaireController::class, 'fillQuestionAC']);
+        Route::get('acad-staff/acad-staff-questionnaires/{acadstaffQuestionnaire}/filled', [AcadStaffsQuestionnaireController::class, 'showFilledQuestion']);
     });
 });

@@ -9,7 +9,7 @@ class LecturerAnswer extends Model
 {
     use HasFactory;
 
-    protected $table = 'acad_staff_answers';
+    protected $table = 'lecturer_answers';
 
     protected $fillable = [
         'answer',
@@ -19,23 +19,23 @@ class LecturerAnswer extends Model
         'lecturer_question_id'
     ];
 
-    public function acadStaff()
+    public function lecturer()
     {
-        return $this->belongsTo(AcadStaff::class);
+        return $this->belongsTo(Lecturer::class);
     }
 
-    public function acadStaffQuestionnaire()
+    public function lecturerQuestionnaire()
     {
-        return $this->belongsTo(AcadStaffQuestionnaire::class);
+        return $this->belongsTo(lecturerQuestionnaire::class);
     }
 
-    public function acadStaffElement()
+    public function lecturerElement()
     {
-        return $this->belongsTo(AcadStaffElement::class);
+        return $this->belongsTo(lecturerElement::class);
     }
 
-    public function acadStaffQuestion()
+    public function lecturerQuestion()
     {
-        return $this->belongsTo(AcadStaffQuestion::class);
+        return $this->belongsTo(lecturerQuestion::class);
     }
 }
