@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Web\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class LoginController extends Controller
+class LoginAdminController extends Controller
 {
     public function showLoginForm() {
         return view('auth.loginadmin');
