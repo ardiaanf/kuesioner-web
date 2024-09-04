@@ -14,6 +14,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/', function () {
+    return 'Welcome to the Laravel 8 Multi Auth System';
+});
+
 Route::get('/auth/admin', function () {
     return view('auth.admin');
 });
@@ -29,5 +33,3 @@ Route::get('/auth/student', function () {
 Route::get('/auth/acad-staff', function () {
     return view('auth.acadstaff');
 });
-
-
