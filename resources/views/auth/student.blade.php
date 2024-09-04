@@ -7,7 +7,7 @@
 </head>
 <body class="flex items-center justify-center h-screen bg-gray-100">
     <div class="bg-white border border-gray-300 p-6 rounded-lg shadow-md w-80">
-        <h2 class="text-lg font-semibold text-center mb-4">Login sebagai Admin</h2> <!-- Judul yang lebih jelas -->
+        <h2 class="text-lg font-semibold text-center mb-4">Login sebagai Mahasiswa</h2> <!-- Judul yang lebih jelas -->
         <form action="" method="POST">
             @csrf
             <label for="email" class="block text-sm font-medium text-gray-700">Email</label>

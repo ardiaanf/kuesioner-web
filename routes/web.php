@@ -14,9 +14,20 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/auth/admin', function () {
+    return view('auth.admin');
 });
 
-Route::get('login-admin', [LoginAdminController::class, 'showLoginForm'])->name('login');
+Route::get('/auth/lecturer', function () {
+    return view('auth.lecturer');
+});
+
+Route::get('/auth/student', function () {
+    return view('auth.student');
+});
+
+Route::get('/auth/acad-staff', function () {
+    return view('auth.acadstaff');
+});
+
 
