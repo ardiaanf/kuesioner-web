@@ -167,7 +167,7 @@ class LecturerQuestionnaireController extends BaseController
 
     public function getFilledQuestionnaires()
     {
-        if (Auth::user()->role != 'admin') {
+        if (Auth::user()->role == 'admin') {
             $lecturer = Lecturer::all();
             $lecturer = $lecturer->map(function ($lecturer) {
                 $lecturerAnswers = LecturerAnswer::where('lecturer_id', $lecturer->id)

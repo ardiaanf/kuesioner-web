@@ -167,7 +167,7 @@ class AcadStaffQuestionnaireController extends BaseController
 
     public function getFilledQuestionnaires()
     {
-        if (Auth::user()->role != 'admin') {
+        if (Auth::user()->role == 'admin') {
             $acadstaff = AcadStaff::all();
             $acadstaff = $acadstaff->map(function ($acadstaff) {
                 $acadstaffAnswers = AcadStaffAnswer::where('acad_staff_id', $acadstaff->id)

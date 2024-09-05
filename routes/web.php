@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Web\Auth\LoginAdminController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -30,4 +29,98 @@ Route::get('/auth/acad-staff', function () {
     return view('auth.acadstaff');
 });
 
+Route::get('/questionnaire/tlp-student', function () {
+    return view('questionnaire.studentTLP');
+});
+
+Route::get('/questionnaire/ac-student', function () {
+    return view('questionnaire.studentAC');
+});
+
+Route::get('/questionnaire/ac-lecturer', function () {
+    return view('questionnaire.lecturerAC');
+});
+
+Route::get('/questionnaire/ac-acadstaff', function () {
+    return view('questionnaire.acadstaffAC');
+});
+
+Route::get('/questionnaire/select-student', function () {
+    return view('questionnaire.selectStudent');
+});
+Route::get('/questionnaire/select-lecturer', function () {
+    return view('questionnaire.selectLecturer');
+});
+
+Route::get('/questionnaire/select-acad-staff', function () {
+    return view('questionnaire.selectAcadStaff');
+});
+
+Route::get('/admin/questionnaire-student', function () {
+    return view('admin.student.questionnaireStudent');
+})->name('admin.student.questionnaire');
+
+Route::get('/admin/questionnaire-student/fill', function () {
+    return view('admin.student.questionnaireStudentfill');
+})->name('admin.student.questionnairefill');
+
+Route::get('/admin/element-student', function () {
+    return view('admin.student.elementStudent');
+})->name('admin.student.element');
+
+Route::get('/admin/question-student', function () {
+    return view('admin.student.questionStudent');
+})->name('admin.student.question');
+
+Route::get('/admin/questionnaire-student/ranking', function () {
+    return view('admin.student.rangkingLecturer');
+})->name('admin.student.rangking');
+
+Route::get('/admin/questionnaire-lecturer', function () {
+    return view('admin.lecturer.questionnaireLecturer');
+})->name('admin.lecturer.questionnaire');
+
+Route::get('/admin/questionnaire-lecturer/fill', function () {
+    return view('admin.lecturer.questionnaireLecturerfill');
+})->name('admin.lecturer.questionnairefill');
+
+Route::get('/admin/element-lecturer', function () {
+    return view('admin.lecturer.elementLecturer');
+})->name('admin.lecturer.element');
+
+Route::get('/admin/question-lecturer', function () {
+    return view('admin.lecturer.questionLecturer');
+})->name('admin.lecturer.question');
+
+Route::get('/admin/questionnaire-acadstaff', function () {
+    return view('admin.acadstaff.questionnaireAcadstaff');
+})->name('admin.acadstaff.questionnaire');
+
+Route::get('/admin/questionnaire-acadstaff/fill', function () {
+    return view('admin.acadstaff.questionnaireAcadstafffill');
+})->name('admin.acadstaff.questionnairefill');
+
+Route::get('/admin/element-acadstaff', function () {
+    return view('admin.acadstaff.elementAcadstaff');
+})->name('admin.acadstaff.element');
+
+Route::get('/admin/question-acadstaff', function () {
+    return view('admin.acadstaff.questionAcadstaff');
+})->name('admin.acadstaff.question');
+
+Route::get('/admin/manage-admin', function () {
+    return view('admin.manage.admin');
+})->name('admin.manage.admin');
+
+Route::get('/admin/manage-student', function () {
+    return view('admin.manage.student');
+})->name('admin.manage.student');
+
+Route::get('/admin/manage-lecturer', function () {
+    return view('admin.manage.lecturer');
+})->name('admin.manage.lecturer');
+
+Route::get('/admin/manage-acadstaff', function () {
+    return view('admin.manage.acadstaff');
+})->name('admin.manage.acadstaff');
 
