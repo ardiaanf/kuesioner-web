@@ -12,7 +12,7 @@
         <!-- Sidebar -->
         @include('admin.component.sidebar')
 
-        <div class="flex-1 flex flex-col overflow-hidden">
+        <div class="flex-1 flex flex-col overflow-hidden p-4 ml-64">
             <!-- Header -->
             @include('admin.component.header')
 
@@ -50,7 +50,7 @@
                         </div>
                         <!-- Tambahkan button untuk menambahkan data -->
                         <div class="my-4">
-                            <button id="openModal" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+                            <button id="openModal" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
                                 Tambah Data
                             </button>
                         </div>
