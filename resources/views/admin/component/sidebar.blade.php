@@ -40,7 +40,7 @@
                 </ul>
             </li>
             <li class="mb-2"><a href="{{ route('admin.student.rangking') }}" class="block p-2 hover:bg-gray-300 rounded">Peringkat kinerja dosen</a></li>
-            <li class="mb-2"><a href="#" class="block p-2 hover:bg-gray-300 rounded">Laporan</a></li>
+            {{-- <li class="mb-2"><a href="#" class="block p-2 hover:bg-gray-300 rounded">Laporan</a></li> --}}
             <li class="mb-2">
                 <a href="#" class="block p-2 hover:bg-gray-300 rounded" onclick="toggleSubmenu(event)">Mengelola Pengguna</a>
                 <ul class="ml-4 hidden">
