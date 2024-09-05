@@ -9,7 +9,7 @@
 </head>
 
 <body class="bg-gray-100">
-    @include('questionnaire.components.navbarMahasiswa')
+    @include('questionnaire.components.navbarStudent')
     <div class="container mx-auto px-4 "> <!-- Menambahkan container untuk memberi jarak -->
         <div class="max-w-3xl mx-auto px-4 py-8 ">
             <h1 class="text-2xl font-bold mb-6 text-center">Pilih Jenis Kuesioner Mahasiswa</h1>

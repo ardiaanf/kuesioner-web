@@ -2,9 +2,11 @@
     <h2 class="text-2xl font-bold mb-4 pt-5">Halaman Admin</h2>
     <nav class="overflow-x-hidden">
         <ul>
-            <li class="mb-2 pt-8">
+            <li class="mb-2 pt-6"><a href="{{ route('admin.dashboard') }}" class="block p-2 hover:bg-gray-300 rounded">Dashboard</a></li>
+            <li class="mb-2">
                 <a href="#" class="block p-2 hover:bg-gray-300 rounded" onclick="toggleSubmenu(event)">Kuesioner</a>
                 <ul class="ml-4 hidden">
+
                     <li class="mb-2">
                         <a href="#" class="block p-2 hover:bg-gray-300 rounded" onclick="toggleSubmenu(event)">Jenis Kuesioner</a>
                         <ul class="ml-4 hidden">

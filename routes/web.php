@@ -30,7 +30,7 @@ Route::get('/auth/student', function () {
     return view('auth.student');
 });
 
-Route::get('/auth/acad-staff', function () {
+Route::get('/auth/acadstaff', function () {
     return view('auth.acadstaff');
 });
 
@@ -45,7 +45,7 @@ Route::middleware(['auth:student'])->group(function () {
     Route::get('/questionnaire/ac-student', function () {
         return view('questionnaire.studentAC');
     });
-    Route::post('/logout', function () {
+    Route::post('/student/logout', function () {
         Auth::logout();
         return redirect('/auth/student');
     })->name('student.logout');
@@ -54,28 +54,28 @@ Route::middleware(['auth:student'])->group(function () {
 Route::middleware(['auth:lecturer'])->group(function () {
     Route::get('/questionnaire/select-lecturer', function () {
         return view('questionnaire.selectLecturer');
-
-        Route::get('/questionnaire/ac-lecturer', function () {
-            return view('questionnaire.lecturerAC');
-        });
     });
 
-    Route::post('/logout', function () {
+    Route::get('/questionnaire/ac-lecturer', function () {
+        return view('questionnaire.lecturerAC');
+    });
+
+    Route::post('/lecturer/logout', function () {
         Auth::logout();
         return redirect('/auth/lecturer');
     })->name('lecturer.logout');
 });
 
-Route::middleware(['auth:acadstaff'])->group(function () {
+Route::middleware(['auth:acad_staff'])->group(function () {
     Route::get('/questionnaire/ac-acadstaff', function () {
         return view('questionnaire.acadstaffAC');
     });
 
-    Route::get('/questionnaire/select-acad-staff', function () {
+    Route::get('/questionnaire/select-acadstaff', function () {
         return view('questionnaire.selectAcadStaff');
     });
 
-    Route::post('/logout', function () {
+    Route::post('/acadstaff/logout', function () {
         Auth::logout();
         return redirect('/auth/acadstaff');
     })->name('acadstaff.logout');
@@ -86,7 +86,7 @@ Route::middleware(['auth:acadstaff'])->group(function () {
 Route::middleware(['auth:admin'])->group(function () {
     Route::get('/admin/dashboard', function () {
         return view('admin.dashboard');
-    })->name('admin.student.questionnaire');
+    })->name('admin.dashboard');
 
     Route::get('/admin/questionnaire-student', function () {
         return view('admin.student.questionnaireStudent');

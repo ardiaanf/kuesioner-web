@@ -8,6 +8,7 @@
 </head>
 
 <body class="bg-gray-100 p-6"> <!-- Tambahkan padding untuk jarak kanan kiri -->
+    @include('questionnaire.components.navbarStudent')
     <div class="bg-white p-6 rounded shadow"> <!-- Container utama dibungkus kotak putih -->
         <h2 class="text-lg font-semibold mb-1">Kuesioner Proses Belajar Mengajar Mahasiswa</h2>
         <p class="mb-6 text-gray-600">deskripsi</p>
