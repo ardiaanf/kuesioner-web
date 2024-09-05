@@ -80,7 +80,7 @@
     </div>
 
     <!-- Tambahkan script untuk mengontrol modal -->
-    <script>
+    {{-- <script>
         document.querySelector('.bg-blue-500').addEventListener('click', function() {
             document.getElementById('modal').classList.remove('hidden');
         });
@@ -97,6 +97,6 @@
         function closeEditModal() {
             document.getElementById('edit-modal').classList.add('hidden');
         }
-    </script>
+    </script> --}}
 </body>
 </html>
