@@ -300,8 +300,6 @@
             });
         }
 
-
-
         // Fungsi untuk menghapus kuesioner
         async function deleteQuestionnaire(id) {
             const token = localStorage.getItem('access_token');

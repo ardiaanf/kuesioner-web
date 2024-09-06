@@ -14,9 +14,9 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 
-Route::get('/', function () {
-    return 'Welcome to the Laravel 8 Multi Auth System';
-});
+// Route::get('/', function () {
+//     return 'Welcome to the Laravel 8 Multi Auth System';
+// });
 
 Route::get('/auth/admin', function () {
     return view('auth.admin');
