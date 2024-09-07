@@ -4,24 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - Kuesioner</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        function toggleModal() {
-            const modal = document.getElementById('modal');
-            modal.classList.toggle('hidden');
-        }
-    </script>
-
-    <!-- Tambahkan script untuk mengedit admin -->
-    <script>
-        function openEditModal(name, email) {
-            const modal = document.getElementById('edit-modal');
-            document.getElementById('edit-name').value = name;
-            document.getElementById('edit-email').value = email;
-            modal.classList.remove('hidden');
-        }
-    </script>
-
+    @vite('resources/css/app.css')
+    {{-- <script src="https://cdn.tailwindcss.com"></script> --}}
 </head>
 <body class="bg-gray-100">
     <div class="flex h-screen">
@@ -46,24 +30,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- Contoh data admin, ganti dengan data dinamis -->
-                                <tr class="border-b">
-                                    <td class="py-2 px-4 border">Admin 1</td> <!-- Tambahkan border pada sel -->
-                                    <td class="py-2 px-4 border">admin1@example.com</td> <!-- Tambahkan border pada sel -->
-                                    <td class="py-2 px-4 border">
-                                        <button class="bg-yellow-500 text-white px-2 py-1 rounded" onclick="openEditModal('Admin 1', 'admin1@example.com')">Edit</button>
-                                        <button class="bg-red-500 text-white px-2 py-1 rounded">Hapus</button>
-                                    </td>
-                                </tr>
-                                <tr class="border-b">
-                                    <td class="py-2 px-4 border">Admin 2</td> <!-- Tambahkan border pada sel -->
-                                    <td class="py-2 px-4 border">admin2@example.com</td> <!-- Tambahkan border pada sel -->
-                                    <td class="py-2 px-4 border">
-                                        <button class="bg-yellow-500 text-white px-2 py-1 rounded">Edit</button>
-                                        <button class="bg-red-500 text-white px-2 py-1 rounded">Hapus</button>
-                                    </td>
-                                </tr>
-                                <!-- Tambahkan lebih banyak baris sesuai kebutuhan -->
+                                <!-- Data admin akan ditampilkan di sini -->
                             </tbody>
                         </table>
                         <!-- Tambahkan button untuk tambah admin -->
@@ -124,12 +91,75 @@
             </main>
         </div>
     </div>
+
+    <script>
+        function toggleModal() {
+            const modal = document.getElementById('modal');
+            modal.classList.toggle('hidden');
+        }
+
+        function openEditModal(name, email) {
+            const modal = document.getElementById('edit-modal');
+            document.getElementById('edit-name').value = name;
+            document.getElementById('edit-email').value = email;
+            modal.classList.remove('hidden');
+        }
+
+        async function fetchAdminData() {
+            const token = localStorage.getItem('access_token');
+            console.log("Token:", token); // Debugging token
+            try {
+                const response = await fetch('http://127.0.0.1:8000/api/admin/admins', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                console.log("Data:", data); // Debugging data
+                if (data.success) {
+                    displayAdminData(data.data); // Pastikan data.data berisi array admin
+                } else {
+                    alert(data.message || 'Gagal mengambil data admin'); // Menangani kesalahan
+                }
+            } catch (error) {
+                console.error('Fetch error:', error); // Log error
+                alert('Terjadi kesalahan saat mengambil data admin');
+            }
+        }
+
+        function displayAdminData(admins) {
+            const tbody = document.querySelector('tbody');
+            tbody.innerHTML = ''; // Clear existing data
+            if (admins.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3" class="text-center">Tidak ada data admin</td></tr>'; // Menampilkan pesan jika tidak ada data
+            } else {
+                admins.forEach(admin => {
+                    const row = `
+                        <tr class="border-b">
+                            <td class="py-2 px-4 border">${admin.name}</td>
+                            <td class="py-2 px-4 border">${admin.email}</td>
+                            <td class="py-2 px-4 border">
+                                <button class="bg-yellow-500 text-white px-2 py-1 rounded" onclick="openEditModal('${admin.name}', '${admin.email}')">Edit</button>
+                                <button class="bg-red-500 text-white px-2 py-1 rounded">Hapus</button>
+                            </td>
+                        </tr>
+                    `;
+                    tbody.innerHTML += row;
+                });
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', fetchAdminData); // Fetch data on page load
+
+        function toggleEditModal() {
+            const modal = document.getElementById('edit-modal');
+            modal.classList.toggle('hidden');
+        }
+    </script>
 </body>
 </html>
-
-<script>
-    function toggleEditModal() {
-        const modal = document.getElementById('edit-modal');
-        modal.classList.toggle('hidden');
-    }
-</script>

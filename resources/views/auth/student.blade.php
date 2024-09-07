@@ -3,7 +3,8 @@
 
 <head>
     <title>Login</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    {{-- <script src="https://cdn.tailwindcss.com"></script> --}}
+    @vite('resources/css/app.css')
     {{-- <link href="{{ asset('resources/css/app.css') }}" rel="stylesheet"> <!-- Menggunakan file CSS lokal --> --}}
 </head>
 

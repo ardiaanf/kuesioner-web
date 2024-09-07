@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - Kuesioner</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    @vite('resources/css/app.css')
+    {{-- <script src="https://cdn.tailwindcss.com"></script> --}}
      <!-- Tambahkan meta tag untuk CSRF token -->
      <meta name="csrf-token" content="{{ csrf_token() }}">
 
