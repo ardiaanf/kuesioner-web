@@ -4,9 +4,60 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - Kuesioner</title>
-    {{-- <script src="https://cdn.tailwindcss.com"></script> --}}
     @vite('resources/css/app.css')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const token = localStorage.getItem('access_token');
 
+            console.log('Fetching data...');
+
+            fetch('/api/admin/filled-lecturer-questionnaires', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Data received:', data); // Tampilkan data di konsol
+                const tbody = document.getElementById('questionnaire-body');
+                tbody.innerHTML = ''; // Kosongkan tbody sebelum menambahkan data
+
+                // Periksa apakah data.data adalah array
+                if (Array.isArray(data.data)) {
+                    data.data.forEach((item, index) => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td class="py-2 px-4 border-b border-r">${index + 1}</td>
+                            <td class="py-2 px-4 border-b">
+                                <strong>Nama Dosen:</strong> ${item.lecturer_name || 'N/A'}<br>
+                                <strong>Kuesioner:</strong> ${item.answers.length > 0 ? item.answers[0].lecturer_questionnaire : 'N/A'}<br>
+                                <strong>Jawaban:</strong>
+                                <ul>
+                                    ${item.answers && Array.isArray(item.answers) ? item.answers.map(answer => `
+                                        <li>
+                                            <strong>Pertanyaan:</strong> ${answer.lecturer_question || 'N/A'}<br>
+                                            <strong>${answer.lecturer_element || 'N/A'}:</strong> ${answer.answer || 'N/A'}
+                                        </li>
+                                    `).join('') : '<li>Tidak ada jawaban.</li>'}
+                                </ul>
+                            </td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="2" class="py-2 px-4 border-b">Tidak ada data yang tersedia.</td></tr>';
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
 </head>
 <body class="bg-gray-100">
     <div class="flex h-screen">
@@ -31,27 +82,8 @@
                                         <th class="py-2 px-4 border-b">Detail Kuesioner</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr>
-                                        <td class="py-2 px-4 border-b border-r">1</td>
-                                        <td class="py-2 px-4 border-b">
-                                            <strong>Nama Dosen:</strong> Aris Yusuf Budiman S.Psi<br>
-                                            <strong>Kuesioner:</strong> Kuesioner civitas akademika dosen<br>
-                                            <strong>Jawaban:</strong>
-                                            <ul>
-                                                <li><strong>Visi Misi:</strong> Rencana materi dan tujuan mata kuliah diberikan di awal perkuliahan - Jawaban: 3</li>
-                                                <li><strong>Visi Misi Strategi:</strong> Dosen datang tepat waktu & mengajar sesuai waktu yang terjadwal - Jawaban: 1</li>
-                                                <li><strong>Visi Misi Strategi:</strong> Diadakan diskusi & tanya jawab - Jawaban: 3</li>
-                                                <li><strong>Visi Misi Strategi:</strong> Manfaat soal latihan dalam menambah pemahaman mata kuliah ini - Jawaban: 1</li>
-                                                <li><strong>Visi Misi Strategi:</strong> Kesesuaian evaluasi (tugas dan Quiz) dengan materi yang diajarkan - Jawaban: 2</li>
-                                                <li><strong>Pelatihan:</strong> Pelaksanaan praktikum tepat waktu dan sesuai dengan waktu yang terjadwal - Jawaban: 1</li>
-                                                <li><strong>Pelatihan:</strong> Praktikum menambah pemahaman teori dan ketrampilan waktu yang terjadwal - Jawaban: 2</li>
-                                                <li><strong>Pelatihan:</strong> Setiap percobaan/praktikum sinergi dengan materi yang diajarkan saat teori - Jawaban: 1</li>
-                                                <li><strong>Pelatihan:</strong> Dosen selalu datang setiap praktikum - Jawaban: 3</li>
-                                                <li><strong>Pelatihan:</strong> Dosen menjelaskan arah dan tujuan dalam setiap percobaan - Jawaban: 2</li>
-                                            </ul>
-                                        </td>
-                                    </tr>
+                                <tbody id="questionnaire-body">
+                                    <!-- Data akan ditambahkan di sini -->
                                 </tbody>
                             </table>
                         </div>
