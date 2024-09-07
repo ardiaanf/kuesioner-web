@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,7 @@
     @vite('resources/css/app.css')
     <meta name="csrf-token" content="{{ csrf_token() }}"> <!-- Tambahkan ini -->
 </head>
+
 <body class="bg-gray-100">
     <div class="flex h-screen">
         <!-- Sidebar -->
@@ -181,6 +183,13 @@
             fetchStudentQuestionnaires().then(() => {
                 const editSelect = document.getElementById('editStudentQuestionnaireId');
                 editSelect.value = studentQuestionnaireId; // Set value untuk select
+
+                for (let option of editSelect.options) {
+                    if (option.value == studentQuestionnaireId) {
+                        option.selected = true;
+                        break;
+                    }
+                }
             });
 
             document.getElementById('editModal').classList.remove('hidden'); // Menampilkan modal
@@ -239,4 +248,5 @@
         });
     </script>
 </body>
+
 </html>
