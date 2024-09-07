@@ -21,6 +21,7 @@ use App\Http\Controllers\API\{
     Admin\AcadStaffController as AccountAcadStaffController,
     Admin\StudentController as AccountStudentController,
     Admin\LecturerRankingController,
+    Admin\StudyProgramController,
     Student\StudentQuestionnaireController,
     Dosen\LecturerQuestionnaireController as LecturerLecturerQuestionnaireController,
     Tendik\AcadStaffQuestionnaireController as AcadStaffsQuestionnaireController
@@ -143,6 +144,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('admin/lecturer-ranking', [LecturerRankingController::class, 'getLecturerRanking']);
         Route::get('admin/lecturer-ranking-by-study-program-id', [LecturerRankingController::class, 'getLecturerRankingByStudyProgramId']);
         Route::get('admin/lecturer-ranking-by-study-program-id-and-sort', [LecturerRankingController::class, 'getLecturerRankingByStudyProgramIdAndSort']);
+
+        Route::get('admin/study-programs', [StudyProgramController::class, 'index']);
     });
 
     /**

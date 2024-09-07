@@ -11,6 +11,11 @@ class StudyProgram extends Model
 
     protected $table = 'study_programs';
 
+    protected $fillable = [
+        'name',
+        'major_id',
+    ];
+
     public function students()
     {
         return $this->hasMany(Student::class);
