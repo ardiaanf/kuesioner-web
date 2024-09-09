@@ -21,11 +21,14 @@ use App\Http\Controllers\API\{
     Admin\AcadStaffController as AccountAcadStaffController,
     Admin\StudentController as AccountStudentController,
     Admin\LecturerRankingController,
-    Admin\StudyProgramController,
+    Admin\StudyProgramController as AdminStudyProgramController,
     Student\StudentQuestionnaireController,
+    Student\StudyProgramController as StudentStudyProgramController,
+    Student\MajorController as StudentMajorController,
     Dosen\LecturerQuestionnaireController as LecturerLecturerQuestionnaireController,
     Tendik\AcadStaffQuestionnaireController as AcadStaffsQuestionnaireController
 };
+use App\Http\Controllers\API\Student\MajorController;
 
 Route::post('auth/admin', [AdminAuthController::class, 'signin']);
 Route::post('auth/lecturer', [LecturerAuthController::class, 'signin']);
@@ -145,7 +148,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('admin/lecturer-ranking-by-study-program-id', [LecturerRankingController::class, 'getLecturerRankingByStudyProgramId']);
         Route::get('admin/lecturer-ranking-by-study-program-id-and-sort', [LecturerRankingController::class, 'getLecturerRankingByStudyProgramIdAndSort']);
 
-        Route::get('admin/study-programs', [StudyProgramController::class, 'index']);
+        Route::get('admin/study-programs', [AdminStudyProgramController::class, 'index']);
     });
 
     /**
@@ -159,6 +162,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('student/student-questionnaires/{studentQuestionnaire}/filled-tlp', [StudentQuestionnaireController::class, 'showFilledQuestionTLP']);
         Route::post('student/student-questionnaires-ac', [StudentQuestionnaireController::class, 'fillQuestionAC']);
         Route::get('student/student-questionnaires/{studentQuestionnaire}/filled-ac', [StudentQuestionnaireController::class, 'showFilledQuestionAC']);
+
+        Route::get('student/study-programs', [StudentStudyProgramController::class, 'index']);
+        Route::get('student/majors', [StudentMajorController::class, 'index']);
     });
 
     Route::middleware('role:lecturer')->group(function () {

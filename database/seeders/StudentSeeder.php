@@ -18,6 +18,18 @@ class StudentSeeder extends Seeder
         $faker = \Faker\Factory::create('id_ID');
 
         Student::create([
+            'name' => 'Student',
+            'reg_number' => $faker->unique()->regexify('S[0-9]{3}'),
+            'email' =>  'student@mail.com',
+            'password' => bcrypt('password'),
+            'gender' => rand(0, 1) ? 'male' : 'female',
+            'semester' => rand(1, 8),
+            'major_id' => 1,
+            'study_program_id' => 1,
+            'student_class_id' => 1,
+        ]);
+
+        Student::create([
             'name' => $faker->name,
             'reg_number' => $faker->unique()->regexify('S[0-9]{3}'),
             'email' =>  $faker->unique()->safeEmail,
