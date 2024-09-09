@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\API\Admin;
+namespace App\Http\Controllers\API\Student;
 
 use App\Models\StudyProgram;
-use App\Http\Resources\Admin\StudyProgramResource;
-use App\Http\Controllers\API\BaseController as BaseController;
+use App\Http\Resources\Student\StudyProgramResource;
+use App\Http\Controllers\API\BaseController;
 
 class StudyProgramController extends BaseController
 {
