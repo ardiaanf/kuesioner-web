@@ -53,10 +53,12 @@
     <!-- Tambahkan modal untuk form input -->
     <div id="modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
         <div class="bg-white rounded-lg p-6 w-1/3 relative">
-            <button id="closeModal" class="absolute top-2 right-2 text-red-500 text-2xl">&times;</button>
             <h2 class="text-xl text-gray-600 hover:border-gray-300 font-bold mb-4">Tambah Elemen Kuesioner</h2>
+            <label class="block mb-2">Nama Elemen</label> <!-- Tambahkan label -->
             <input type="text" id="elementName" class="border border-gray-300 p-2 w-full mb-4" placeholder="Nama elemen" />
+            <label class="block mb-2">Deskripsi</label> <!-- Tambahkan label -->
             <input type="text" id="elementDescription" class="border border-gray-300 p-2 w-full mb-4" placeholder="Deskripsi" />
+            <label class="block mb-2">Kuesioner Mahasiswa</label> <!-- Tambahkan label -->
             <select id="studentQuestionnaireId" class="border border-gray-300 p-2 w-full mb-4">
                 <option value="">Pilih Kuesioner Mahasiswa</option>
                 <!-- Opsi kuesioner akan diisi melalui JavaScript -->
@@ -64,22 +66,41 @@
             <button id="saveElement" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" onclick="saveElement()">
                 Simpan
             </button>
+            <button id="closeModal" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 absolute bottom-2 right-2" onclick="closeModal()">
+                Tutup
+            </button>
         </div>
     </div>
     <!-- Tambahkan modal untuk form input ubah data -->
     <div id="editModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
         <div class="bg-white rounded-lg p-6 w-1/3 relative">
-            <button id="closeEditModal" class="absolute top-2 right-2 text-red-500 text-2xl">&times;</button>
             <h2 class="text-xl text-gray-600 hover:border-gray-300 font-bold mb-4">Ubah Elemen Kuesioner</h2>
             <input type="hidden" id="editElementId" /> <!-- Input tersembunyi untuk ID -->
+            <label class="block mb-2">Nama Elemen</label> <!-- Tambahkan label -->
             <input type="text" id="editElementName" class="border border-gray-300 p-2 w-full mb-4" placeholder="Nama elemen" />
+            <label class="block mb-2">Deskripsi</label> <!-- Tambahkan label -->
             <input type="text" id="editElementDescription" class="border border-gray-300 p-2 w-full mb-4" placeholder="Deskripsi" />
+            <label class="block mb-2">Kuesioner Mahasiswa</label> <!-- Tambahkan label -->
             <select id="editStudentQuestionnaireId" class="border border-gray-300 p-2 w-full mb-4">
                 <option value="">Pilih Kuesioner Mahasiswa</option>
                 <!-- Opsi kuesioner akan diisi melalui JavaScript -->
             </select>
             <button id="updateElement" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600" onclick="updateElement()">
                 Ubah Data
+            </button>
+            <button id="closeEditModal" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 absolute bottom-2 right-2" onclick="closeEditModal()">
+                Tutup
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal untuk menampilkan detail -->
+    <div id="detailModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+        <div class="bg-white rounded-lg p-6 w-1/3 relative max-h-3/4 overflow-y-auto"> <!-- Tambahkan max-h-3/4 dan overflow-y-auto -->
+            <h2 class="text-xl font-bold mb-4">Detail Elemen Kuesioner</h2>
+            <div id="detailContent"></div>
+            <button class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 mt-4" onclick="closeDetailModal()">
+                Tutup
             </button>
         </div>
     </div>
@@ -88,6 +109,16 @@
         const BASE_URL = 'http://127.0.0.1:8000';
         const token = localStorage.getItem('access_token');
         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content'); // Ambil token CSRF
+
+        // Definisikan fungsi closeModal
+        function closeModal() {
+            document.getElementById('modal').classList.add('hidden'); // Menyembunyikan modal
+        }
+
+        // Definisikan fungsi closeEditModal
+        function closeEditModal() {
+            document.getElementById('editModal').classList.add('hidden'); // Menyembunyikan modal edit
+        }
 
         async function fetchStudentElements() {
             const response = await fetch(`${BASE_URL}/api/admin/student-elements`, {
@@ -114,6 +145,9 @@
                                 </button>
                                 <button class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 ml-2" onclick="deleteElement(${element.id})">
                                     Hapus
+                                </button>
+                                <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 ml-2" onclick="showDetail(${element.id})">
+                                    Detail
                                 </button>
                             </td>
                         </tr>
@@ -184,6 +218,7 @@
                 const editSelect = document.getElementById('editStudentQuestionnaireId');
                 editSelect.value = studentQuestionnaireId; // Set value untuk select
 
+                // Pastikan opsi yang sesuai dipilih
                 for (let option of editSelect.options) {
                     if (option.value == studentQuestionnaireId) {
                         option.selected = true;
@@ -200,6 +235,12 @@
             const name = document.getElementById('editElementName').value;
             const description = document.getElementById('editElementDescription').value;
             const studentQuestionnaireId = document.getElementById('editStudentQuestionnaireId').value;
+
+            // Tambahkan validasi untuk studentQuestionnaireId
+            if (!studentQuestionnaireId) {
+                alert('Kuesioner Mahasiswa harus dipilih');
+                return;
+            }
 
             const response = await fetch(`${BASE_URL}/api/admin/student-elements/${id}`, {
                 method: 'PUT',
@@ -218,12 +259,11 @@
             if (response.ok) {
                 alert('Data berhasil diubah.');
                 fetchStudentElements(); // Refresh the table
-                document.getElementById('editModal').classList.add('hidden'); // Close the modal
-                document.getElementById('editElementName').value = ''; // Clear input
-                document.getElementById('editElementDescription').value = ''; // Clear input
-                document.getElementById('editStudentQuestionnaireId').value = ''; // Clear input
+                closeEditModal(); // Close the modal
             } else {
-                alert('Gagal mengubah data.');
+                const errorData = await response.json(); // Ambil detail error
+                console.error('Error Data:', errorData); // Log error data
+                alert(`Gagal mengubah data: ${errorData.message || 'Tidak ada pesan error.'}`); // Tampilkan pesan error
             }
         }
 
@@ -239,13 +279,113 @@
 
         // Menambahkan event listener untuk tombol tutup modal edit
         document.getElementById('closeEditModal').onclick = function() {
-            document.getElementById('editModal').classList.add('hidden'); // Menyembunyikan modal edit
+            closeEditModal(); // Panggil fungsi untuk menutup modal edit
         };
 
         document.addEventListener('DOMContentLoaded', () => {
             fetchStudentElements();
             fetchStudentQuestionnaires(); // Fetch questionnaires when the page loads
         });
+
+        // Pastikan fungsi saveElement didefinisikan
+        async function saveElement() {
+            const token = localStorage.getItem('access_token');
+            if (!token) {
+                alert('Anda belum login. Silakan login terlebih dahulu.');
+                window.location.href = `${BASE_URL}/auth/admin`;
+                return;
+            }
+
+            const name = document.getElementById('elementName').value;
+            const description = document.getElementById('elementDescription').value;
+            const studentQuestionnaireId = document.getElementById('studentQuestionnaireId').value;
+
+            if (!name) {
+                alert('Nama elemen harus diisi');
+                return;
+            }
+
+            // Tambahkan validasi untuk studentQuestionnaireId
+            if (!studentQuestionnaireId) {
+                alert('Kuesioner Mahasiswa harus dipilih');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${BASE_URL}/api/admin/student-elements`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    body: JSON.stringify({
+                        name,
+                        description,
+                        student_questionnaire_id: studentQuestionnaireId
+                    })
+                });
+
+                console.log('Response:', response); // Tambahkan log untuk melihat respons
+
+                if (response.ok) {
+                    alert('Data berhasil ditambahkan.');
+                    fetchStudentElements(); // Refresh the table
+                    closeModal(); // Close the modal
+                } else {
+                    const errorData = await response.json(); // Tambahkan ini untuk mendapatkan detail error
+                    console.error('Error Data:', errorData); // Log error data
+                    alert(`Gagal menambahkan data: ${errorData.message || 'Tidak ada pesan error.'}`); // Tampilkan pesan error
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan saat menambahkan data.');
+            }
+        }
+
+        async function showDetail(id) {
+            const response = await fetch(`${BASE_URL}/api/admin/student-elements/${id}/relations`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                displayDetail(data.data); // Panggil fungsi untuk menampilkan detail
+            } else {
+                alert('Gagal mengambil detail elemen.');
+            }
+        }
+
+        async function displayDetail(element) {
+            const detailModal = document.getElementById('detailModal');
+            const detailContent = document.getElementById('detailContent');
+
+            detailContent.innerHTML = `
+                <p><strong>Nama elemen :</strong> ${element.name}</p>
+                <p><strong>Deskripsi:</strong> ${element.description || 'Tidak ada deskripsi'}</p>
+                <h3 class="font-bold">Pertanyaan:</h3>
+                <ul>
+                    ${Array.isArray(element.student_questions) && element.student_questions.length > 0
+                        ? element.student_questions.map(question => `
+                            <li>
+                                <strong>${question.question}</strong><br>
+                                ${question.label.join(', ')}
+                            </li>
+                        `).join('')
+                        : '<li>Tidak ada pertanyaan tersedia.</li>'}
+                </ul>
+            `;
+
+            detailModal.classList.remove('hidden'); // Tampilkan modal detail
+        }
+
+        function closeDetailModal() {
+            document.getElementById('detailModal').classList.add('hidden'); // Menyembunyikan modal detail
+        }
     </script>
 </body>
 

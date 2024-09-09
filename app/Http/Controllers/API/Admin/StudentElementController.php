@@ -125,8 +125,10 @@ class StudentElementController extends BaseController
                 return $this->errorResponse('Validation Error', $validator->errors(), 422);
             }
 
+            // Update the properties including student_questionnaire_id
             $StudentElement->name = $input['name'];
             $StudentElement->description = $input['description'];
+            $StudentElement->student_questionnaire_id = $input['student_questionnaire_id']; // Tambahkan ini untuk memperbarui ID kuesioner
             $StudentElement->save();
 
             return $this->successResponse(new StudentElementResource($StudentElement), 'Student Element updated successfully.');

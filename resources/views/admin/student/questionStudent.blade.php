@@ -22,7 +22,7 @@
                 <div class="container mx-auto px-6 py-8">
                     <div class="bg-white rounded-lg shadow-md p-6">
                         <h1 class="text-2xl font-bold mb-4">Data Pertanyaan Kuesioner Mahasiswa</h1>
-                        <p class="text-gray-600 mb-4">Ini adalah daftar elemen kuesioner yang dapat Anda edit atau hapus. Gunakan tombol 'Tambah Data' untuk menambahkan elemen baru.</p>
+                        <p class="text-gray-600 mb-4">Ini adalah daftar elemen kuesioner yang dapat Anda edit atau hapus. Gunakan tombol 'Tambah Data' untuk menambahkan pertanyaan baru.</p>
                         <div class="overflow-x-auto">
                             <table class="min-w-full bg-white border border-gray-300">
                                 <thead>
@@ -111,11 +111,29 @@
         </div>
     </div>
 
+    <!-- Tambahkan modal untuk menampilkan detail pertanyaan -->
+    <div id="detailModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+        <div class="bg-white rounded-lg p-6 w-1/3 relative">
+            <h2 class="text-xl text-gray-600 font-bold mb-4">Detail Pertanyaan Kuesioner</h2>
+            <div id="detailContent">
+                <!-- Konten detail akan diisi dengan JavaScript -->
+            </div>
+            <button id="closeDetailModal" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 mt-4">
+                Tutup
+            </button>
+        </div>
+    </div>
+
     <script>
         const BASE_URL = 'http://127.0.0.1:8000';
 
         // Fungsi untuk menghapus pertanyaan
         async function deleteQuestion(id) {
+            const confirmation = confirm('Apakah Anda yakin ingin menghapus pertanyaan ini?'); // Konfirmasi penghapusan
+            if (!confirmation) {
+                return; // Jika tidak, keluar dari fungsi
+            }
+            
             const token = localStorage.getItem('access_token');
             const response = await fetch(`${BASE_URL}/api/admin/student-questions/${id}`, {
                 method: 'DELETE',
@@ -151,7 +169,7 @@
                 questionList.innerHTML = ''; // Kosongkan daftar sebelum menambahkan data baru
                 data.data.forEach((question, index) => {
                     questionList.innerHTML += `
-                        <tr data-id="${question.id}">
+                        <tr data-id="${question.id}" data-min-range="${question.min_range}" data-max-range="${question.max_range}" data-label="${question.label.join(',')}">
                             <td class="py-2 px-4 border-b border-r">${index + 1}</td>
                             <td class="py-2 px-4 border-b border-r">${question.question}</td>
                             <td class="py-2 px-4 border-b">
@@ -160,6 +178,9 @@
                                 </button>
                                 <button class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 ml-2" onclick="deleteQuestion(${question.id})">
                                     Hapus
+                                </button>
+                                <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 ml-2" onclick="showDetail(${question.id})">
+                                    Detail
                                 </button>
                             </td>
                         </tr>
@@ -200,10 +221,26 @@
         document.getElementById('saveElement').onclick = async function() {
             const token = localStorage.getItem('access_token');
             const question = document.getElementById('elementName').value;
-            const minRange = document.getElementById('minRange').value;
-            const maxRange = document.getElementById('maxRange').value;
+            const minRange = parseFloat(document.getElementById('minRange').value);
+            const maxRange = parseFloat(document.getElementById('maxRange').value);
             const label = document.getElementById('label').value.split(',').map(item => item.trim());
             const studentElementId = document.getElementById('studentElementId').value;
+
+            // Validasi input
+            if (minRange < 1 || maxRange < 1) {
+                alert('Rentang minimum dan maksimum harus minimal 1.');
+                return;
+            }
+            if (minRange > maxRange) {
+                alert('Rentang minimum tidak boleh lebih besar dari rentang maksimum.');
+                return;
+            }
+            if (minRange === 0 && label.length > 0) {
+                // Jika minRange 0, tidak ada batasan minimum untuk label
+            } else if (label.length < minRange || label.length > maxRange) {
+                alert(`Label harus terdiri dari antara ${minRange} dan ${maxRange} elemen.`);
+                return;
+            }
 
             const response = await fetch(`${BASE_URL}/api/admin/student-questions`, {
                 method: 'POST',
@@ -242,6 +279,16 @@
 
             const question = questionRow.children[1].innerText; // Ambil nama pertanyaan
             document.getElementById('editElementName').value = question;
+
+            // Ambil data rentang dan label
+            const minRange = questionRow.getAttribute('data-min-range'); // Ambil rentang minimum dari atribut data
+            const maxRange = questionRow.getAttribute('data-max-range'); // Ambil rentang maksimum dari atribut data
+            const label = questionRow.getAttribute('data-label'); // Ambil label dari atribut data
+
+            document.getElementById('editMinRange').value = minRange; // Tampilkan rentang minimum
+            document.getElementById('editMaxRange').value = maxRange; // Tampilkan rentang maksimum
+            document.getElementById('editLabel').value = label; // Tampilkan label
+
             document.getElementById('editModal').classList.remove('hidden'); // Tampilkan modal ubah
         }
 
@@ -299,6 +346,42 @@
             await fetchQuestions();
             await fetchStudentElements();
         });
+
+         // Fungsi untuk menampilkan detail pertanyaan
+    async function showDetail(id) {
+        const token = localStorage.getItem('access_token');
+        const response = await fetch(`${BASE_URL}/api/admin/student-questions/${id}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            const detailData = data.data;
+
+            // Tampilkan detail dalam modal
+            const detailContent = `
+                <p><strong>Pertanyaan:</strong> ${detailData.question}</p>
+                <p><strong>Rentang Minimum:</strong> ${detailData.min_range}</p>
+                <p><strong>Rentang Maksimum:</strong> ${detailData.max_range}</p>
+                <p><strong>Label:</strong> ${detailData.label.join(', ')}</p>
+                <p><strong>Dibuat pada:</strong> ${detailData.created_at}</p>
+                <p><strong>Diubah pada:</strong> ${detailData.updated_at}</p>
+            `;
+            document.getElementById('detailContent').innerHTML = detailContent;
+            document.getElementById('detailModal').classList.remove('hidden'); // Tampilkan modal detail
+        } else {
+            alert('Gagal mengambil detail pertanyaan');
+        }
+    }
+
+    // Event listener untuk menutup modal detail
+    document.getElementById('closeDetailModal').onclick = function() {
+        document.getElementById('detailModal').classList.add('hidden'); // Sembunyikan modal detail
+    };
     </script>
 </body>
 </html>

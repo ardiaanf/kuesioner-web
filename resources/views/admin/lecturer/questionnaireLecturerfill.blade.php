@@ -29,8 +29,8 @@
                 const tbody = document.getElementById('questionnaire-body');
                 tbody.innerHTML = ''; // Kosongkan tbody sebelum menambahkan data
 
-                // Periksa apakah data.data adalah array
-                if (Array.isArray(data.data)) {
+                // Periksa apakah data.data adalah array dan tidak kosong
+                if (Array.isArray(data.data) && data.data.length > 0) {
                     data.data.forEach((item, index) => {
                         const row = document.createElement('tr');
                         row.innerHTML = `
@@ -38,12 +38,13 @@
                             <td class="py-2 px-4 border-b">
                                 <strong>Nama Dosen:</strong> ${item.lecturer_name || 'N/A'}<br>
                                 <strong>Kuesioner:</strong> ${item.answers.length > 0 ? item.answers[0].lecturer_questionnaire : 'N/A'}<br>
-                                <strong>Jawaban:</strong>
+                                
                                 <ul>
                                     ${item.answers && Array.isArray(item.answers) ? item.answers.map(answer => `
                                         <li>
-                                            <strong>Pertanyaan:</strong> ${answer.lecturer_question || 'N/A'}<br>
-                                            <strong>${answer.lecturer_element || 'N/A'}:</strong> ${answer.answer || 'N/A'}
+                                            <strong>Elemen: </strong> ${answer.lecturer_element || 'N/A'}<br>
+                                            <strong>Pertanyaan: </strong> ${answer.lecturer_question || 'N/A'}<br>
+                                            <strong>Jawaban: </strong>${answer.answer || 'N/A'}<br>
                                         </li>
                                     `).join('') : '<li>Tidak ada jawaban.</li>'}
                                 </ul>

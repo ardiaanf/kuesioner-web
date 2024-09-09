@@ -50,14 +50,20 @@
                 element.innerHTML = `
                     <h2 class="text-lg font-semibold mb-2">${questionnaire.name}</h2>
                     <p class="text-sm text-gray-600">${questionnaire.description || 'Tidak ada deskripsi'}</p>
-                    <button onclick="startQuestionnaire(${questionnaire.id})" class="mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">Mulai Kuesioner</button>
+                    <button onclick="startQuestionnaire(${questionnaire.id}, '${questionnaire.type}')" class="mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">Mulai Kuesioner</button>
                 `;
                 container.appendChild(element);
             });
         }
 
-        function startQuestionnaire(id) {
-            alert(`Memulai kuesioner dengan ID: ${id}`);
+        function startQuestionnaire(id, type) {
+            if (type === 'TLP') {
+                window.location.href = `${BASE_URL}/questionnaire/tlp-student?id=${id}`; // URL untuk TLP
+            } else if (type === 'AC') {
+                window.location.href = `${BASE_URL}/questionnaire/ac-student?id=${id}`; // URL untuk AC
+            } else {
+                alert('Tipe kuesioner tidak dikenali');
+            }
         }
 
         // Panggil fungsi fetchQuestionnaires saat halaman dimuat
