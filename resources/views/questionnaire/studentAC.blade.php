@@ -90,8 +90,8 @@
                         radioLabel.className = 'block flex items-center mr-4'; // Menambahkan margin kanan untuk jarak antar opsi
                         const input = document.createElement('input');
                         input.type = 'radio';
-                        input.name = `question${question.id}`; // Menggunakan ID pertanyaan untuk grup
-                        input.value = label.key; // Menggunakan key dari range_labels sebagai nilai
+                        input.name = `question${question.id}`; // Pastikan ini benar
+                        input.value = index + 1; // Menggunakan index + 1 sebagai nilai
                         input.className = 'mr-2'; // Menambahkan margin kanan pada input
                         radioLabel.appendChild(input);
                         radioLabel.appendChild(document.createTextNode(label.value)); // Menampilkan value dari range_labels
@@ -130,23 +130,28 @@
         });
 
         async function fillQuestionAC() {
-            // Kumpulkan jawaban di sini
             const studentElements = questionnaire.student_elements.map(element => {
-                const answers = {};
+                const answers = {
+                    id: [],
+                    answer: []
+                };
+
                 // Kumpulkan jawaban dari radio button untuk elemen ini
                 document.querySelectorAll(`input[name^="question${element.id}"]:checked`).forEach(input => {
-                    const questionId = input.name.replace(`question${element.id}`, '');
-                    answers[questionId] = input.value;
+                    const questionId = input.name.replace(`question${element.id}`, ''); // Ambil ID pertanyaan
+                    answers.id.push(Number(questionId)); // Tambahkan ID pertanyaan ke array
+                    answers.answer.push(Number(input.value)); // Tambahkan nilai jawaban ke array
                 });
+
+                console.log(`Element ID: ${element.id}, Answers:`, answers); // Tambahkan log untuk memeriksa jawaban
 
                 return {
                     id: element.id, // ID elemen
-                    student_question: {
-                        id: Object.keys(answers).map(Number), // Mengubah kunci menjadi angka
-                        answer: Object.values(answers).map(Number) // Mengubah nilai menjadi angka
-                    }
+                    student_question: answers // Menggunakan objek answers yang sudah terisi
                 };
             });
+
+            console.log('Student Elements:', studentElements); // Tambahkan log untuk memeriksa studentElements
 
             // Ambil token CSRF
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
@@ -168,6 +173,7 @@
             });
 
             const result = await response.json();
+            console.log(result); // Tambahkan log untuk memeriksa respons
             if (response.ok) {
                 alert('Kuesioner berhasil diisi!');
             } else {

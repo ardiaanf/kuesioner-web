@@ -33,6 +33,7 @@
                                 <!-- Data admin akan ditampilkan di sini -->
                             </tbody>
                         </table>
+                        <div id="error-message" class="text-red-500 mt-2 hidden"></div> <!-- Tempat untuk menampilkan pesan error -->
                         <!-- Tambahkan button untuk tambah admin -->
                         <div class="flex justify-between mb-4">
                             <button class="bg-blue-500 text-white px-4 py-2 rounded my-4" onclick="toggleModal()">Tambah Admin</button>
@@ -107,7 +108,6 @@
 
         async function fetchAdminData() {
             const token = localStorage.getItem('access_token');
-            console.log("Token:", token); // Debugging token
             try {
                 const response = await fetch('http://127.0.0.1:8000/api/admin/admins', {
                     method: 'GET',
@@ -120,22 +120,23 @@
                     throw new Error('Network response was not ok');
                 }
                 const data = await response.json();
-                console.log("Data:", data); // Debugging data
+                console.log(data); // Tambahkan log untuk memeriksa data
                 if (data.success) {
                     displayAdminData(data.data); // Pastikan data.data berisi array admin
+                    document.getElementById('error-message').classList.add('hidden'); // Sembunyikan pesan error jika berhasil
                 } else {
-                    alert(data.message || 'Gagal mengambil data admin'); // Menangani kesalahan
+                    showError(data.message || 'Gagal mengambil data admin'); // Menangani kesalahan
                 }
             } catch (error) {
                 console.error('Fetch error:', error); // Log error
-                alert('Terjadi kesalahan saat mengambil data admin');
+                showError('Terjadi kesalahan saat mengambil data admin');
             }
         }
 
         function displayAdminData(admins) {
             const tbody = document.querySelector('tbody');
             tbody.innerHTML = ''; // Clear existing data
-            if (admins.length === 0) {
+            if (!Array.isArray(admins) || admins.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="3" class="text-center">Tidak ada data admin</td></tr>'; // Menampilkan pesan jika tidak ada data
             } else {
                 admins.forEach(admin => {
@@ -145,7 +146,7 @@
                             <td class="py-2 px-4 border">${admin.email}</td>
                             <td class="py-2 px-4 border">
                                 <button class="bg-yellow-500 text-white px-2 py-1 rounded" onclick="openEditModal('${admin.name}', '${admin.email}')">Edit</button>
-                                <button class="bg-red-500 text-white px-2 py-1 rounded">Hapus</button>
+                                <button class="bg-red-500 text-white px-2 py-1 rounded" onclick="deleteAdmin(${admin.id})">Hapus</button>
                             </td>
                         </tr>
                     `;
@@ -154,6 +155,37 @@
             }
         }
 
+        function showError(message) {
+            const errorMessageDiv = document.getElementById('error-message');
+            errorMessageDiv.textContent = message;
+            errorMessageDiv.classList.remove('hidden'); // Tampilkan pesan error
+        }
+
+        async function deleteAdmin(id) {
+            const token = localStorage.getItem('access_token');
+            if (confirm('Apakah Anda yakin ingin menghapus admin ini?')) {
+                try {
+                    const response = await fetch(`http://127.0.0.1:8000/api/admin/admins/${id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    if (response.ok) {
+                        alert('Admin berhasil dihapus.');
+                        fetchAdminData(); // Refresh data setelah penghapusan
+                    } else {
+                        showError('Gagal menghapus admin.'); // Tampilkan pesan error
+                    }
+                } catch (error) {
+                    console.error('Delete error:', error);
+                    showError('Terjadi kesalahan saat menghapus admin.'); // Tampilkan pesan error
+                }
+            }
+        }
+
+        // Hapus alert yang tidak perlu saat halaman dimuat
         document.addEventListener('DOMContentLoaded', fetchAdminData); // Fetch data on page load
 
         function toggleEditModal() {
