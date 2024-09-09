@@ -58,6 +58,12 @@
             <label class="block mb-2">Deskripsi Kuesioner</label>
             <textarea id="add-description" class="border border-gray-300 rounded w-full mb-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400" rows="3" placeholder="Masukkan deskripsi kuesioner"></textarea>
 
+            <label class="block mb-2">Jenis Kuesioner</label>
+            <select id="add-type" class="border border-gray-300 rounded w-full mb-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="TLP">TLP</option>
+                <option value="AC">AC</option>
+            </select>
+
             <div class="flex justify-between">
                 <button class="bg-blue-500 text-white px-4 py-2 rounded" onclick="addQuestionnaire()">Simpan</button>
                 <button class="bg-red-500 text-white px-4 py-2 rounded" onclick="closeModal()">Tutup</button>
@@ -76,6 +82,12 @@
             <label class="block mb-2">Deskripsi Kuesioner</label>
             <textarea id="edit-description" class="border border-gray-300 rounded w-full mb-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400" rows="3"></textarea>
 
+            <label class="block mb-2">Jenis Kuesioner</label>
+            <select id="edit-type" class="border border-gray-300 rounded w-full mb-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="TLP">TLP</option>
+                <option value="AC">AC</option>
+            </select>
+
             <div class="flex justify-between">
                 <button class="bg-green-500 text-white px-4 py-2 rounded" onclick="updateQuestionnaire()">Ubah</button>
                 <button class="bg-red-500 text-white px-4 py-2 rounded" onclick="closeEditModal()">Tutup</button>
@@ -85,11 +97,11 @@
 
     <!-- Modal Detail Kuesioner -->
     <div id="detail-modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
-        <div class="bg-white rounded-lg p-6 w-1/3 max-h-3/4 overflow-y-auto"> <!-- Tambahkan max-h dan overflow -->
+        <div class="bg-white rounded-lg p-6 w-2/3 max-h-3/4 overflow-y-auto"> <!-- Ubah lebar modal menjadi w-2/3 -->
             <h2 class="text-xl font-bold mb-4">Detail Kuesioner</h2>
             <p id="detail-nama" class="mb-2"></p>
             <p id="detail-deskripsi" class="mb-2"></p>
-            <p id="detail-jenis" class="mb-2"></p>
+            <p id="detail-type" class="mb-2"></p>
             <div id="detail-elements" class="mb-2"></div> <!-- Tambahkan elemen untuk menampilkan student_elements -->
             <button class="bg-red-500 text-white px-4 py-2 rounded" onclick="closeDetailModal()">Tutup</button>
         </div>
@@ -169,6 +181,7 @@
 
             const name = document.getElementById('add-nama').value;
             const description = document.getElementById('add-description').value;
+            const type = document.getElementById('add-type').value;
 
             if (!name) {
                 alert('Nama kuesioner harus diisi');
@@ -184,7 +197,7 @@
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                     },
-                    body: JSON.stringify({ name, description })
+                    body: JSON.stringify({ name, description, type })
                 });
 
                 if (!response.ok) {
@@ -210,6 +223,7 @@
             document.getElementById('modal').classList.remove('hidden');
             document.getElementById('add-nama').value = '';
             document.getElementById('add-description').value = '';
+            document.getElementById('add-type').value = 'TLP';
         }
 
          // Fungsi untuk menutup modal tambah data
@@ -222,6 +236,7 @@
             document.getElementById('edit-id').value = id;
             document.getElementById('edit-nama').value = name;
             document.getElementById('edit-description').value = description;
+            document.getElementById('edit-type').value = type; // Set jenis kuesioner yang dipilih
             document.getElementById('edit-modal').classList.remove('hidden');
         }
 
@@ -242,6 +257,7 @@
             const id = document.getElementById('edit-id').value;
             const name = document.getElementById('edit-nama').value;
             const description = document.getElementById('edit-description').value;
+            const type = document.getElementById('edit-type').value;
 
             if (!name) {
                 alert('Nama kuesioner harus diisi');
@@ -250,14 +266,14 @@
 
             try {
                 const response = await fetch(`${BASE_URL}/api/admin/student-questionnaires/${id}`, {
-                    method: 'Get',
+                    method: 'PUT', 
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Accept': 'application/json',
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                     },
-                    body: JSON.stringify({ name, description })
+                    body: JSON.stringify({ name, description, type }) // Pastikan body ada untuk PUT
                 });
 
                 if (!response.ok) {
@@ -302,21 +318,25 @@
                 const questionnaire = await response.json();
                 document.getElementById('detail-nama').innerText = `Nama: ${questionnaire.data.name}`;
                 document.getElementById('detail-deskripsi').innerText = `Deskripsi: ${questionnaire.data.description || 'Tidak ada deskripsi'}`;
-                document.getElementById('detail-jenis').innerText = `Jenis: ${questionnaire.data.type}`;
+                document.getElementById('detail-type').innerText = `Jenis Kuesioner: ${questionnaire.data.type }`;
 
                 // Menampilkan student_elements dan pertanyaan
                 const elementsContainer = document.getElementById('detail-elements');
                 elementsContainer.innerHTML = ''; // Kosongkan sebelumnya
-                questionnaire.data.student_elements.forEach(element => {
-                    const elementHTML = `<strong>Elemen: ${element.name}</strong><br>`;
-                    const questionsHTML = element.student_questions.map(question => `
-                        <div>
-                            <p><strong>Soal:</strong> ${question.question}</p>
-                            <p><strong>Label:</strong> ${question.label.join(', ')}</p>
-                        </div>
-                    `).join('');
-                    elementsContainer.innerHTML += elementHTML + questionsHTML + '<br>';
-                });
+                if (questionnaire.data.student_elements) { // Tambahkan pengecekan ini
+                    questionnaire.data.student_elements.forEach(element => {
+                        const elementHTML = `<strong>Elemen: ${element.name}</strong><br>`;
+                        const questionsHTML = element.student_questions.map(question => `
+                            <div>
+                                <p><strong>Soal:</strong> ${question.question}</p>
+                                <p><strong>Label:</strong> ${question.label.join(', ')}</p>
+                            </div>
+                        `).join('');
+                        elementsContainer.innerHTML += elementHTML + questionsHTML + '<br>';
+                    });
+                } else {
+                    elementsContainer.innerHTML = '<p>Tidak ada elemen yang tersedia.</p>'; // Tambahkan pesan jika tidak ada elemen
+                }
 
                 document.getElementById('detail-modal').classList.remove('hidden');
             } catch (error) {
