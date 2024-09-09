@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Login</title>
+    <title>Masuk sebagai Mahasiswa</title>
     {{-- <script src="https://cdn.tailwindcss.com"></script> --}}
     @vite('resources/css/app.css')
     {{-- <link href="{{ asset('resources/css/app.css') }}" rel="stylesheet"> <!-- Menggunakan file CSS lokal --> --}}
