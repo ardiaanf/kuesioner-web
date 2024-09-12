@@ -116,20 +116,26 @@
 
                 function openEditModal(id, name, description, acadstaffQuestionnaireId) {
                     document.getElementById('editElementId').value = id; // Set ID ke input tersembunyi
-                    document.getElementById('editElementName').value = name;
-                    document.getElementById('editElementDescription').value = description;
+                    document.getElementById('editElementName').value = name; // Isi nama elemen
+                    document.getElementById('editElementDescription').value = description; // Isi deskripsi
 
                     // Ambil data kuesioner dan set nilai select
-                    fetchAcadstaffQuestionnaires();
+                    fetchAcadstaffQuestionnaires().then(() => {
+                        const editSelect = document.getElementById('editAcadstaffQuestionnaireId');
+                        editSelect.value = acadstaffQuestionnaireId; // Set value untuk select berdasarkan ID yang dipilih
+                    });
+
                     document.getElementById('editModal').classList.remove('hidden'); // Menampilkan modal
                 }
             </script>
-            <button id="updateElement" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600" onclick="updateElement()">
-                Ubah Data
-            </button>
-            <button id="closeEditModal" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 absolute bottom-2 right-2" onclick="closeEditModal()">
-                Tutup
-            </button>
+            <div class="flex justify-between">
+                <button id="updateElement" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600" onclick="updateElement()">
+                    Ubah Data
+                </button>
+                <button id="closeEditModal" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600" onclick="closeEditModal()">
+                    Tutup
+                </button>
+            </div>
         </div>
     </div>
 
