@@ -153,8 +153,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('admin/lecturer-ranking-by-study-program-id', [LecturerRankingController::class, 'getLecturerRankingByStudyProgramId']);
         Route::get('admin/lecturer-ranking-by-study-program-id-and-sort', [LecturerRankingController::class, 'getLecturerRankingByStudyProgramIdAndSort']);
 
-        Route::get('student/majors', [AdminStudentMajorController::class, 'index']);
-        Route::get('student/class', [AdminStudentClassController::class, 'index']); 
+        Route::get('admin/majors', [AdminStudentMajorController::class, 'index']);
+        Route::get('admin/class', [AdminStudentClassController::class, 'index']);
 
         Route::get('admin/study-programs', [AdminStudyProgramController::class, 'index']);
     });
@@ -173,7 +173,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::get('student/study-programs', [StudentStudyProgramController::class, 'index']);
         Route::get('student/majors', [StudentMajorController::class, 'index']);
-        Route::get('student/class', [StudentClassController::class, 'index']); 
+        Route::get('student/class', [StudentClassController::class, 'index']);
         Route::get('student/course', [StudentCourseController::class, 'index']);
         Route::get('student/lecturer-get', [StudentLecturerGetController::class, 'index']);
     });

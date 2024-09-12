@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,7 @@
     {{-- <script src="https://cdn.tailwindcss.com"></script> --}}
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
+
 <body class="bg-gray-100">
     <div class="flex h-screen">
         <!-- Sidebar -->
@@ -37,7 +39,7 @@
                         <div id="error-message" class="text-red-500 mt-2 hidden"></div> <!-- Tempat untuk menampilkan pesan error -->
                         <!-- Tambahkan button untuk tambah siswa -->
                         <div class="flex justify-between mb-4">
-                            <button class="bg-blue-500 text-white px-4 py-2 rounded my-4" onclick="toggleModal()">Tambah Siswa</button>
+                            <button id="btnTambah" class="bg-blue-500 text-white px-4 py-2 rounded my-4" onclick="toggleModal()">Tambah Siswa</button>
                         </div>
                         <!-- Modal untuk input siswa -->
                         <div id="modal" class="hidden fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center">
@@ -99,12 +101,18 @@
                                 </form>
                             </div>
                         </div>
-                        
+
                     </div> <!-- Akhir kotak putih -->
                 </div>
             </main>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetchDropdownData();
+        });
+    </script>
 
     <script>
         function toggleModal() {
@@ -126,7 +134,7 @@
                     throw new Error('Network response was not ok');
                 }
                 const data = await response.json();
-                console.log(data); // Tambahkan log untuk memeriksa data
+                // console.log(data); // Tambahkan log untuk memeriksa data
                 if (data.message === 'Students retrieved successfully.') { // Perbaikan kondisi
                     displayStudentData(data.data); // Pastikan data.data berisi array siswa
                     document.getElementById('error-message').classList.add('hidden'); // Sembunyikan pesan error jika berhasil
@@ -212,6 +220,7 @@
             const majorId = document.getElementById('student-major').value;
             const studyProgramId = document.getElementById('student-study-program').value;
             const studentClassId = document.getElementById('student-class').value;
+            console.log(name, regNumber, email, password, gender, semester, majorId, studyProgramId, studentClassId); // Tambahkan log untuk memeriksa data
 
             const token = localStorage.getItem('access_token');
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content'); // Ambil CSRF token
@@ -223,7 +232,17 @@
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': csrfToken // Tambahkan CSRF token ke header
                     },
-                    body: JSON.stringify({ name, reg_number: regNumber, email, password, gender, semester, major_id: majorId, study_program_id: studyProgramId, student_class_id: studentClassId })
+                    body: JSON.stringify({
+                        name,
+                        reg_number: regNumber,
+                        email,
+                        password,
+                        gender,
+                        semester,
+                        major_id: majorId,
+                        study_program_id: studyProgramId,
+                        student_class_id: studentClassId
+                    })
                 });
 
                 if (response.ok) {
@@ -315,7 +334,7 @@
                             'Content-Type': 'application/json'
                         }
                     }),
-                    fetch('http://127.0.0.1:8000/api/admin/student-classes', {
+                    fetch('http://127.0.0.1:8000/api/admin/class', {
                         method: 'GET',
                         headers: {
                             'Authorization': `Bearer ${token}`,
@@ -327,7 +346,7 @@
                 const majors = await majorsResponse.json();
                 const studyPrograms = await studyProgramsResponse.json();
                 const studentClasses = await studentClassesResponse.json();
-
+                console.log(majors, studyPrograms, studentClasses); // Tambahkan log untuk memeriksa data
                 populateDropdowns(majors.data, studyPrograms.data, studentClasses.data);
             } catch (error) {
                 console.error('Error fetching dropdown data:', error);
@@ -363,8 +382,9 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             fetchStudentData(); // Fetch data siswa
-            fetchDropdownData(); // Fetch dropdown data
+            // fetchDropdownData(); // Fetch dropdown data
         });
     </script>
 </body>
+
 </html>

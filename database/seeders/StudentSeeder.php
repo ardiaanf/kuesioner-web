@@ -91,7 +91,7 @@ class StudentSeeder extends Seeder
 
         Student::create([
             'name' => 'IVO DWI NANDA ',
-            'reg_number' => '362393301004',
+            'reg_number' => '362393301002',
             'email' =>  'ivodwinanda@gmail.com',
             'password' => bcrypt('password'),
             'gender' => rand(0, 1) ? 'male' : 'female',
@@ -151,7 +151,7 @@ class StudentSeeder extends Seeder
 
         Student::create([
             'name' => 'Fio Dwi Agustine',
-            'reg_number' => '362393301002',
+            'reg_number' => '362393301671',
             'email' =>  'fiodwi24@gmail.com',
             'password' => bcrypt('password'),
             'gender' => rand(0, 1) ? 'male' : 'female',
@@ -172,6 +172,5 @@ class StudentSeeder extends Seeder
             'study_program_id' => 1,
             'student_class_id' => 1,
         ]);
-        
     }
 }
