@@ -5,122 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - Kuesioner</title>
     @vite('resources/css/app.css')
-    {{-- <script src="https://cdn.tailwindcss.com"></script> --}}
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Mengambil data program studi
-            fetch('/api/admin/study-programs') // Ganti dengan URL API yang sesuai
-                .then(response => response.json())
-                .then(data => {
-                    const select = document.getElementById('program-studi');
-                    data.data.forEach(program => {
-                        const option = document.createElement('option');
-                        option.value = program.id;
-                        option.textContent = program.name;
-                        select.appendChild(option);
-                    });
-                })
-                .catch(error => console.error('Error fetching study programs:', error));
-
-            // Mengambil data elemen kuesioner
-            fetch('/api/admin/student-elements') // Ganti dengan URL API yang sesuai
-                .then(response => response.json())
-                .then(data => {
-                    const select = document.getElementById('student-element');
-                    data.data.forEach(element => {
-                        // Hanya menambahkan opsi untuk "Teori" dan "Praktikum"
-                        if (element.name === 'Teori' || element.name === 'Praktikum') {
-                            const option = document.createElement('option');
-                            option.value = element.id;
-                            option.textContent = element.name;
-                            select.appendChild(option);
-                        }
-                    });
-                })
-                .catch(error => console.error('Error fetching student elements:', error));
-
-            // Fungsi untuk mendapatkan peringkat dosen awal
-            function getLecturerRanking() {
-                fetch('/api/admin/lecturer-ranking')
-                    .then(response => response.json())
-                    .then(data => {
-                        const tbody = document.getElementById('lecturer-ranking-body');
-                        tbody.innerHTML = ''; // Clear existing rows
-
-                        data.data.forEach((lecturer, index) => {
-                            const row = document.createElement('tr');
-                            row.innerHTML = `
-                                <td class="py-2 px-4 border-b border-r">${index + 1}</td>
-                                <td class="py-2 px-4 border-b border-r">${lecturer.name}</td>
-                                <td class="py-2 px-4 border-b border-r">${lecturer.reg_number}</td>
-                                <td class="py-2 px-4 border-b border-r">${lecturer.average_theory || 'N/A'}</td>
-                                <td class="py-2 px-4 border-b border-r">${lecturer.average_practicum || 'N/A'}</td>
-                                <td class="py-2 px-4 border-b border-r">${lecturer.total_average || 'N/A'}</td>
-                            `;
-                            tbody.appendChild(row);
-                        });
-                    })
-                    .catch(error => console.error('Error fetching lecturer rankings:', error));
-            }
-
-            // Event listener untuk tombol submit program studi
-            document.getElementById('submit-ranking').addEventListener('click', function() {
-                const programId = document.getElementById('program-studi').value;
-                const elementId = document.getElementById('student-element').value;
-
-                fetch(`/api/admin/lecturer-ranking?study_program_id=${programId}&student_element_id=${elementId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        const tbody = document.getElementById('lecturer-ranking-body');
-                        tbody.innerHTML = ''; // Clear existing rows
-
-                        data.data.forEach((lecturer, index) => {
-                            const row = document.createElement('tr');
-                            row.innerHTML = `
-                                <td class="py-2 px-4 border-b border-r">${index + 1}</td>
-                                <td class="py-2 px-4 border-b border-r">${lecturer.name}</td>
-                                <td class="py-2 px-4 border-b border-r">${lecturer.reg_number}</td>
-                                <td class="py-2 px-4 border-b border-r">${lecturer.average_theory || 'N/A'}</td>
-                                <td class="py-2 px-4 border-b border-r">${lecturer.average_practicum || 'N/A'}</td>
-                                <td class="py-2 px-4 border-b border-r">${lecturer.total_average || 'N/A'}</td>
-                            `;
-                            tbody.appendChild(row);
-                        });
-                    })
-                    .catch(error => console.error('Error fetching lecturer rankings:', error));
-            });
-
-            // Event listener untuk tombol submit elemen kuesioner
-            document.getElementById('submit-element-ranking').addEventListener('click', function() {
-                const programId = document.getElementById('program-studi').value;
-                const elementId = document.getElementById('student-element').value;
-
-                fetch(`/api/admin/lecturer-ranking-by-study-program-id-and-sort?study_program_id=${programId}&student_element_id=${elementId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        const tbody = document.getElementById('lecturer-ranking-body');
-                        tbody.innerHTML = ''; // Clear existing rows
-
-                        data.data.forEach((lecturer, index) => {
-                            const row = document.createElement('tr');
-                            row.innerHTML = `
-                                <td class="py-2 px-4 border-b border-r">${index + 1}</td>
-                                <td class="py-2 px-4 border-b border-r">${lecturer.name}</td>
-                                <td class="py-2 px-4 border-b border-r">${lecturer.reg_number}</td>
-                                <td class="py-2 px-4 border-b border-r">${lecturer.average_theory || 'N/A'}</td>
-                                <td class="py-2 px-4 border-b border-r">${lecturer.average_practicum || 'N/A'}</td>
-                                <td class="py-2 px-4 border-b border-r">${lecturer.total_average || 'N/A'}</td>
-                            `;
-                            tbody.appendChild(row);
-                        });
-                    })
-                    .catch(error => console.error('Error fetching lecturer rankings by sort:', error));
-            });
-
-            // Menampilkan peringkat dosen awal saat halaman dimuat
-            getLecturerRanking();
-        });
-    </script>
 </head>
 <body class="bg-gray-100">
     <div class="flex h-screen">
@@ -139,13 +23,16 @@
 
                         <label for="program-studi" class="block text-sm font-medium text-gray-700 mb-2">Progam studi</label>
                         <select id="program-studi" class="block w-1/2 p-1 border border-gray-300 hover:border-gray-300 rounded-md mb-4">
-                            <!-- Opsi akan diisi oleh JavaScript -->
+                            <option value="1">Program Studi A</option>
+                            <option value="2">Program Studi B</option>
+                            <option value="3">Program Studi C</option>
                         </select>
                         <button id="submit-ranking" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 mb-4">Submit</button>
 
                         <label for="student-element" class="block text-sm font-medium text-gray-700 mb-2">Elemen kuesioner</label>
                         <select id="student-element" class="block w-1/2 p-1 border border-gray-300 hover:border-gray-300 rounded-md mb-4">
-                            <!-- Opsi akan diisi oleh JavaScript -->
+                            <option value="1">Teori</option>
+                            <option value="2">Praktikum</option>
                         </select>
                         <button id="submit-element-ranking" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 mb-4">Sort</button>
 
@@ -162,7 +49,30 @@
                                     </tr>
                                 </thead>
                                 <tbody id="lecturer-ranking-body">
-                                    <!-- Data peringkat dosen akan diisi di sini -->
+                                    <tr>
+                                        <td class="py-2 px-4 border-b border-r">1</td>
+                                        <td class="py-2 px-4 border-b border-r">Dosen A</td>
+                                        <td class="py-2 px-4 border-b border-r">123456</td>
+                                        <td class="py-2 px-4 border-b border-r">85</td>
+                                        <td class="py-2 px-4 border-b border-r">75</td>
+                                        <td class="py-2 px-4 border-b border-r">80</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-2 px-4 border-b border-r">2</td>
+                                        <td class="py-2 px-4 border-b border-r">Dosen B</td>
+                                        <td class="py-2 px-4 border-b border-r">654321</td>
+                                        <td class="py-2 px-4 border-b border-r">90</td>
+                                        <td class="py-2 px-4 border-b border-r">80</td>
+                                        <td class="py-2 px-4 border-b border-r">85</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-2 px-4 border-b border-r">3</td>
+                                        <td class="py-2 px-4 border-b border-r">Dosen C</td>
+                                        <td class="py-2 px-4 border-b border-r">789012</td>
+                                        <td class="py-2 px-4 border-b border-r">70</td>
+                                        <td class="py-2 px-4 border-b border-r">65</td>
+                                        <td class="py-2 px-4 border-b border-r">67.5</td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
