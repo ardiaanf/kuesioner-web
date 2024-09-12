@@ -84,7 +84,7 @@ Route::middleware(['auth:acad_staff'])->group(function () {
 
 
 Route::middleware(['auth:admin'])->group(function () {
-    Route::get('/admin/dashboard', function () {
+    Route::get('/', function () {
         return view('admin.dashboard');
     })->name('admin.dashboard');
 

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Resources\Admin;
+namespace App\Http\Resources\Student;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class AcadStaffElementResource extends JsonResource
+class LecturerGetResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -14,13 +14,12 @@ class AcadStaffElementResource extends JsonResource
      */
     public function toArray($request)
     {
-        return [
+        return [ // Sesuaikan data yang ingin ditampilkan
             'id' => $this->id,
             'name' => $this->name,
-            'description' => $this->description,
-            'acad_staff_questionnaire_id' => $this->acad_staff_questionnaire_id, // Pastikan ini ada
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'reg_number' => $this->reg_number,
+            'email' => $this->email,
+            // Tambahkan atribut lain yang diperlukan
         ];
     }
 }

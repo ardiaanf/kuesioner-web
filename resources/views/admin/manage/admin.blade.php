@@ -6,6 +6,7 @@
     <title>Admin Dashboard - Kuesioner</title>
     @vite('resources/css/app.css')
     {{-- <script src="https://cdn.tailwindcss.com"></script> --}}
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 <body class="bg-gray-100">
     <div class="flex h-screen">
@@ -42,18 +43,18 @@
                         <div id="modal" class="hidden fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center">
                             <div class="bg-white p-6 rounded-lg shadow-md w-96"> <!-- Ubah lebar modal -->
                                 <h2 class="text-xl font-bold mb-4">Tambah Admin</h2>
-                                <form>
+                                <form id="add-admin-form">
                                     <div class="mb-4">
                                         <label class="block text-gray-700">Nama</label>
-                                        <input type="text" class="border rounded w-full py-2 px-3" required>
+                                        <input type="text" id="admin-name" class="border rounded w-full py-2 px-3" required>
                                     </div>
                                     <div class="mb-4">
                                         <label class="block text-gray-700">Email</label>
-                                        <input type="email" class="border rounded w-full py-2 px-3" required>
+                                        <input type="email" id="admin-email" class="border rounded w-full py-2 px-3" required>
                                     </div>
                                     <div class="mb-4">
                                         <label class="block text-gray-700">Password</label>
-                                        <input type="password" class="border rounded w-full py-2 px-3" required>
+                                        <input type="password" id="admin-password" class="border rounded w-full py-2 px-3" required>
                                     </div>
                                     <div class="flex justify-between">
                                         <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Simpan</button>
@@ -62,12 +63,11 @@
                                 </form>
                             </div>
                         </div>
-
                         <!-- Modal untuk edit admin -->
                         <div id="edit-modal" class="hidden fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center">
                             <div class="bg-white p-6 rounded-lg shadow-md w-96"> <!-- Ubah lebar modal -->
                                 <h2 class="text-xl font-bold mb-4">Edit Admin</h2>
-                                <form>
+                                <form id="edit-admin-form">
                                     <div class="mb-4">
                                         <label class="block text-gray-700">Nama</label>
                                         <input type="text" id="edit-name" class="border rounded w-full py-2 px-3" required>
@@ -77,12 +77,12 @@
                                         <input type="email" id="edit-email" class="border rounded w-full py-2 px-3" required>
                                     </div>
                                     <div class="mb-4">
-                                        <label class="block text-gray-700">Password</label>
-                                        <input type="password" class="border rounded w-full py-2 px-3" required>
+                                        <label class="block text-gray-700">Password (isi jika ingin mengubah)</label>
+                                        <input type="password" id="edit-password" class="border rounded w-full py-2 px-3" placeholder="Isi password baru jika ingin mengubah">
                                     </div>
                                     <div class="flex justify-between">
                                         <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Ubah Data</button>
-                                        <button type="button" class="bg-red-500 text-white px-4 py-2 rounded" onclick="toggleEditModal()">Tutup</button> <!-- Perbaikan fungsi -->
+                                        <button type="button" class="bg-red-500 text-white px-4 py-2 rounded" onclick="toggleEditModal()">Tutup</button>
                                     </div>
                                 </form>
                             </div>
@@ -99,10 +99,16 @@
             modal.classList.toggle('hidden');
         }
 
-        function openEditModal(name, email) {
+        let currentAdminId; // Variabel global untuk menyimpan ID admin yang sedang diedit
+        let existingPassword; // Variabel global untuk menyimpan password yang ada
+
+        function openEditModal(id, name, email, password) {
             const modal = document.getElementById('edit-modal');
             document.getElementById('edit-name').value = name;
             document.getElementById('edit-email').value = email;
+            document.getElementById('edit-password').value = ''; // Kosongkan input password
+            existingPassword = password; // Simpan password yang ada
+            currentAdminId = id; // Simpan ID admin yang sedang diedit
             modal.classList.remove('hidden');
         }
 
@@ -121,7 +127,7 @@
                 }
                 const data = await response.json();
                 console.log(data); // Tambahkan log untuk memeriksa data
-                if (data.success) {
+                if (data.message === 'Admins retrieved successfully.') { // Perbaikan kondisi
                     displayAdminData(data.data); // Pastikan data.data berisi array admin
                     document.getElementById('error-message').classList.add('hidden'); // Sembunyikan pesan error jika berhasil
                 } else {
@@ -145,7 +151,7 @@
                             <td class="py-2 px-4 border">${admin.name}</td>
                             <td class="py-2 px-4 border">${admin.email}</td>
                             <td class="py-2 px-4 border">
-                                <button class="bg-yellow-500 text-white px-2 py-1 rounded" onclick="openEditModal('${admin.name}', '${admin.email}')">Edit</button>
+                                <button class="bg-yellow-500 text-white px-2 py-1 rounded" onclick="openEditModal(${admin.id}, '${admin.name}', '${admin.email}', '${admin.password}')">Edit</button>
                                 <button class="bg-red-500 text-white px-2 py-1 rounded" onclick="deleteAdmin(${admin.id})">Hapus</button>
                             </td>
                         </tr>
@@ -163,17 +169,20 @@
 
         async function deleteAdmin(id) {
             const token = localStorage.getItem('access_token');
-            if (confirm('Apakah Anda yakin ingin menghapus admin ini?')) {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content'); // Ambil CSRF token
+            const confirmation = confirm('Apakah Anda yakin ingin menghapus admin ini?'); // Konfirmasi hapus
+            if (confirmation) {
                 try {
                     const response = await fetch(`http://127.0.0.1:8000/api/admin/admins/${id}`, {
                         method: 'DELETE',
                         headers: {
                             'Authorization': `Bearer ${token}`,
-                            'Content-Type': 'application/json'
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken // Tambahkan CSRF token ke header
                         }
                     });
                     if (response.ok) {
-                        alert('Admin berhasil dihapus.');
+                        alert('Admin berhasil dihapus.'); // Alert setelah berhasil menghapus
                         fetchAdminData(); // Refresh data setelah penghapusan
                     } else {
                         showError('Gagal menghapus admin.'); // Tampilkan pesan error
@@ -192,6 +201,96 @@
             const modal = document.getElementById('edit-modal');
             modal.classList.toggle('hidden');
         }
+
+        document.getElementById('add-admin-form').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Mencegah reload halaman
+            const name = document.getElementById('admin-name').value;
+            const email = document.getElementById('admin-email').value;
+            const password = document.getElementById('admin-password').value;
+
+            const token = localStorage.getItem('access_token');
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content'); // Ambil CSRF token
+            try {
+                const response = await fetch('http://127.0.0.1:8000/api/admin/admins', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken // Tambahkan CSRF token ke header
+                    },
+                    body: JSON.stringify({ name, email, password })
+                });
+
+                if (response.ok) {
+                    alert('Admin berhasil ditambahkan.'); // Alert setelah berhasil menambahkan
+                    fetchAdminData(); // Refresh data setelah penambahan
+                    toggleModal(); // Tutup modal
+                } else {
+                    const errorData = await response.json();
+                    if (errorData.errors) {
+                        // Jika ada kesalahan validasi, tampilkan pesan kesalahan
+                        showError(Object.values(errorData.errors).flat().join(', '));
+                    } else {
+                        showError(errorData.message || 'Gagal menambahkan admin.'); // Tampilkan pesan error
+                    }
+                }
+            } catch (error) {
+                console.error('Error adding admin:', error);
+                showError('Terjadi kesalahan saat menambahkan admin.');
+            }
+        });
+
+        document.getElementById('edit-admin-form').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Mencegah reload halaman
+            const name = document.getElementById('edit-name').value;
+            const email = document.getElementById('edit-email').value;
+            const password = document.getElementById('edit-password').value; // Ambil password
+
+            const token = localStorage.getItem('access_token');
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content'); // Ambil CSRF token
+
+            // Siapkan data untuk dikirim
+            const dataToUpdate = {
+                name,
+                email,
+            };
+
+            // Jika password diisi, tambahkan ke data yang akan dikirim
+            if (password) {
+                dataToUpdate.password = password; // Tambahkan password baru
+            } else {
+                dataToUpdate.password = existingPassword; // Gunakan password yang ada
+            }
+
+            try {
+                const response = await fetch(`http://127.0.0.1:8000/api/admin/admins/${currentAdminId}`, {
+                    method: 'PUT', // Gunakan PUT untuk mengupdate data
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken // Tambahkan CSRF token ke header
+                    },
+                    body: JSON.stringify(dataToUpdate) // Kirim data yang diperbarui
+                });
+
+                if (response.ok) {
+                    alert('Admin berhasil diubah.'); // Alert setelah berhasil mengubah
+                    fetchAdminData(); // Refresh data setelah pengubahan
+                    toggleEditModal(); // Tutup modal
+                } else {
+                    const errorData = await response.json();
+                    if (errorData.errors) {
+                        // Jika ada kesalahan validasi, tampilkan pesan kesalahan
+                        showError(Object.values(errorData.errors).flat().join(', '));
+                    } else {
+                        showError(errorData.message || 'Gagal mengubah admin.'); // Tampilkan pesan error
+                    }
+                }
+            } catch (error) {
+                console.error('Error updating admin:', error);
+                showError('Terjadi kesalahan saat mengubah admin.');
+            }
+        });
     </script>
 </body>
 </html>

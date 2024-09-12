@@ -17,34 +17,34 @@ class CourseSeeder extends Seeder
     {
         $courses = [
             [
-                'name' => 'Computer Science',
-                'code' => 'CSC101',
-                'semester' => 1,
-                'study_program_id' => 2,
-            ],
-            [
-                'name' => 'Mathematics',
-                'code' => 'MAT101',
-                'semester' => 1,
-                'study_program_id' => 2,
-            ],
-            [
-                'name' => 'Design Graphic',
-                'code' => 'DG101',
+                'name' => 'Pengantar Manajemen',
+                'code' => 'MBP1101',
                 'semester' => 1,
                 'study_program_id' => 1,
             ],
             [
-                'name' => 'Photography',
-                'code' => 'PG101',
+                'name' => 'Pengantar Usaha Perjalanan Wisata',
+                'code' => 'MBP31003',
                 'semester' => 1,
                 'study_program_id' => 1,
             ],
             [
-                'name' => 'Television Production',
-                'code' => 'TP101',
+                'name' => 'Pariwisata Hospitality',
+                'code' => 'MBP31001 ',
                 'semester' => 1,
-                'study_program_id' => 3,
+                'study_program_id' => 1,
+            ],
+            [
+                'name' => 'Aplikasi Komputer',
+                'code' => 'MBP31004 ',
+                'semester' => 1,
+                'study_program_id' => 1,
+            ],
+            [
+                'name' => 'Pemograman Dasar',
+                'code' => 'PD101',
+                'semester' => 1,
+                'study_program_id' => 2,
             ]
         ];
 

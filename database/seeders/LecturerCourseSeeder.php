@@ -15,6 +15,7 @@ class LecturerCourseSeeder extends Seeder
      */
     public function run()
     {
+
         LecturerCourse::create([
             'lecturer_id' => 1,
             'course_id' => 1,

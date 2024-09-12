@@ -354,25 +354,30 @@
 
             if (response.ok) {
                 const data = await response.json();
+                console.log('Data received:', data); // Tambahkan log untuk melihat data
                 displayDetail(data.data); // Panggil fungsi untuk menampilkan detail
             } else {
                 alert('Gagal mengambil detail elemen.');
             }
         }
 
-        async function displayDetail(element) {
+        async function displayDetail(data) {
             const detailModal = document.getElementById('detailModal');
             const detailContent = document.getElementById('detailContent');
 
+            const element = data.student_element; // Ambil student_element dari data
+            const questionnaireName = data.student_questionnaire_name; // Ambil nama kuesioner
+
             detailContent.innerHTML = `
-                <p><strong>Nama elemen :</strong> ${element.name}</p>
-                <p><strong>Deskripsi:</strong> ${element.description || 'Tidak ada deskripsi'}</p>
-                <h3 class="font-bold">Pertanyaan:</h3>
+                <p><strong class="font-medium">Nama elemen :</strong> ${element.name || 'Tidak ada nama'}</p>
+                <p><strong class="font-medium">Deskripsi:</strong> ${element.description || 'Tidak ada deskripsi'}</p>
+                <p><strong class="font-medium">Nama Kuesioner:</strong> ${questionnaireName || 'Tidak ada kuesioner'}</p>
+                <h3 class="font-medium">Pertanyaan dan label rentang:</h3>
                 <ul>
                     ${Array.isArray(element.student_questions) && element.student_questions.length > 0
                         ? element.student_questions.map(question => `
                             <li>
-                                <strong>${question.question}</strong><br>
+                                <strong class="font-medium">${question.question}</strong><br>
                                 ${question.label.join(', ')}
                             </li>
                         `).join('')

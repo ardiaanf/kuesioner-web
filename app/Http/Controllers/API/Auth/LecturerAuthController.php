@@ -16,10 +16,20 @@ class LecturerAuthController extends BaseController
      */
     public function signin(Request $request)
     {
-        if (!Lecturer::where('email', $request->email)->exists()) {
+        // Validasi input
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        // Cek apakah pengguna ada
+        $lecturer = Lecturer::where('email', $request->email)->first();
+
+        if (!$lecturer) {
             return $this->errorResponse('Unauthorized', ['error' => 'User not found'], 401);
         }
 
+        // Coba autentikasi
         if (Auth::guard('lecturer')->attempt(['email' => $request->email, 'password' => $request->password])) {
             /** @var \App\Models\Lecturer $authUser **/
             $authUser = Auth::guard('lecturer')->user();
@@ -28,10 +38,8 @@ class LecturerAuthController extends BaseController
             $success['name'] =  $authUser->name;
 
             return $this->successResponse($success, 'User signed in');
-        } else if (Lecturer::where('email', $request->email)->first()->password != $request->password) {
-            return $this->errorResponse('Unauthorized', ['error' => 'Password is wrong'], 401);
-        } else {
-            return $this->errorResponse('Unauthorized', [], 401);
         }
+
+        return $this->errorResponse('Unauthorized', ['error' => 'Password is wrong'], 401);
     }
 }

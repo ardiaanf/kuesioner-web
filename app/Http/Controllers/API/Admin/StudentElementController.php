@@ -85,13 +85,19 @@ class StudentElementController extends BaseController
     public function showWithRelations($id)
     {
         if (Auth::user()->role == 'admin') {
-            $StudentElement = StudentElement::with('studentQuestions')->find($id);
+            $StudentElement = StudentElement::with(['studentQuestions', 'studentQuestionnaire'])->find($id);
 
             if (is_null($StudentElement)) {
                 return $this->errorResponse('Student Element not found.', [], 404);
             }
 
-            return $this->successResponse(new StudentElementResource($StudentElement), 'Student Element retrieved successfully.');
+            // Ambil nama kuesioner
+            $studentQuestionnaireName = $StudentElement->studentQuestionnaire ? $StudentElement->studentQuestionnaire->name : null;
+
+            return $this->successResponse(new StudentElementResource($StudentElement), 'Student Element retrieved successfully.', [
+                'student_questionnaire_id' => $StudentElement->student_questionnaire_id,
+                'student_questionnaire_name' => $studentQuestionnaireName,
+            ]);
         } else {
             return $this->errorResponse('Unauthorized', [], 401);
         }
@@ -125,10 +131,8 @@ class StudentElementController extends BaseController
                 return $this->errorResponse('Validation Error', $validator->errors(), 422);
             }
 
-            // Update the properties including student_questionnaire_id
             $StudentElement->name = $input['name'];
             $StudentElement->description = $input['description'];
-            $StudentElement->student_questionnaire_id = $input['student_questionnaire_id']; // Tambahkan ini untuk memperbarui ID kuesioner
             $StudentElement->save();
 
             return $this->successResponse(new StudentElementResource($StudentElement), 'Student Element updated successfully.');

@@ -23,10 +23,10 @@
             <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100">
                 <div class="container mx-auto px-6 py-8">
                     <div class="bg-white rounded-lg shadow-md p-6">
-                        <h1 class="text-2xl font-bold mb-4">Data Elemen Kuesioner Tenaga kependidikan</h1>
+                        <h1 class="text-2xl font-bold mb-4">Data Elemen Kuesioner Tenaga Kependidikan</h1>
                         <p class="text-gray-600 mb-4">Ini adalah daftar elemen kuesioner yang dapat Anda edit atau hapus. Gunakan tombol 'Tambah Data' untuk menambahkan elemen baru.</p>
                         <div class="overflow-x-auto">
-                            <table class="min-w-full bg-white border border-gray-300" id="studentElementsTable">
+                            <table class="min-w-full bg-white border border-gray-300" id="acadstaffElementsTable">
                                 <thead>
                                     <tr class="bg-gray-100">
                                         <th class="py-2 px-4 border-b border-r">No</th>
@@ -58,9 +58,9 @@
             <input type="text" id="elementName" class="border border-gray-300 p-2 w-full mb-4" placeholder="Nama elemen" />
             <label class="block mb-2">Deskripsi</label> <!-- Tambahkan label -->
             <input type="text" id="elementDescription" class="border border-gray-300 p-2 w-full mb-4" placeholder="Deskripsi" />
-            <label class="block mb-2">Kuesioner Mahasiswa</label> <!-- Tambahkan label -->
-            <select id="studentQuestionnaireId" class="border border-gray-300 p-2 w-full mb-4">
-                <option value="">Pilih Kuesioner Mahasiswa</option>
+            <label class="block mb-2">Kuesioner Dosen</label> <!-- Tambahkan label -->
+            <select id="acadstaffQuestionnaireId" class="border border-gray-300 p-2 w-full mb-4">
+                <option value="">Pilih Kuesioner Tenaga Kependidikan</option>
                 <!-- Opsi kuesioner akan diisi melalui JavaScript -->
             </select>
             <button id="saveElement" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" onclick="saveElement()">
@@ -80,11 +80,50 @@
             <input type="text" id="editElementName" class="border border-gray-300 p-2 w-full mb-4" placeholder="Nama elemen" />
             <label class="block mb-2">Deskripsi</label> <!-- Tambahkan label -->
             <input type="text" id="editElementDescription" class="border border-gray-300 p-2 w-full mb-4" placeholder="Deskripsi" />
-            <label class="block mb-2">Kuesioner Mahasiswa</label> <!-- Tambahkan label -->
-            <select id="editStudentQuestionnaireId" class="border border-gray-300 p-2 w-full mb-4">
-                <option value="">Pilih Kuesioner Mahasiswa</option>
+            <label class="block mb-2">Kuesioner Tenaga Kependidikan</label> <!-- Tambahkan label -->
+            <select id="editAcadstaffQuestionnaireId" class="border border-gray-300 p-2 w-full mb-4">
+                <option value="">Pilih Kuesioner Tenaga Kependidikan</option>
                 <!-- Opsi kuesioner akan diisi melalui JavaScript -->
             </select>
+            <script>
+                async function fetchAcadstaffQuestionnaires() {
+                    const response = await fetch(`${BASE_URL}/api/admin/acadstaff-questionnaires`, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        const editSelect = document.getElementById('editAcadstaffQuestionnaireId');
+                        editSelect.innerHTML = '<option value="">Pilih Kuesioner Tenaga Kependidikan</option>'; // Clear existing options
+
+                        data.data.forEach(questionnaire => {
+                            const option = document.createElement('option');
+                            option.value = questionnaire.id;
+                            option.textContent = questionnaire.name; // Ganti dengan nama yang sesuai
+                            editSelect.appendChild(option);
+                        });
+
+                        // Set value untuk select berdasarkan ID yang dipilih
+                        editSelect.value = acadstaffQuestionnaireId; // Pastikan ini diatur setelah opsi ditambahkan
+                    } else {
+                        alert('Gagal mengambil data kuesioner.');
+                    }
+                }
+
+                function openEditModal(id, name, description, acadstaffQuestionnaireId) {
+                    document.getElementById('editElementId').value = id; // Set ID ke input tersembunyi
+                    document.getElementById('editElementName').value = name;
+                    document.getElementById('editElementDescription').value = description;
+
+                    // Ambil data kuesioner dan set nilai select
+                    fetchAcadstaffQuestionnaires();
+                    document.getElementById('editModal').classList.remove('hidden'); // Menampilkan modal
+                }
+            </script>
             <button id="updateElement" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600" onclick="updateElement()">
                 Ubah Data
             </button>
@@ -120,8 +159,8 @@
             document.getElementById('editModal').classList.add('hidden'); // Menyembunyikan modal edit
         }
 
-        async function fetchStudentElements() {
-            const response = await fetch(`${BASE_URL}/api/admin/student-elements`, {
+        async function fetchAcadstaffElements() {
+            const response = await fetch(`${BASE_URL}/api/admin/acadstaff-elements`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -131,7 +170,7 @@
 
             if (response.ok) {
                 const data = await response.json();
-                const tableBody = document.querySelector('#studentElementsTable tbody');
+                const tableBody = document.querySelector('#acadstaffElementsTable tbody');
                 tableBody.innerHTML = ''; // Clear existing data
 
                 data.data.forEach((element, index) => {
@@ -140,7 +179,7 @@
                             <td class="py-2 px-4 border-b border-r">${index + 1}</td>
                             <td class="py-2 px-4 border-b border-r">${element.name}</td>
                             <td class="py-2 px-4 border-b">
-                                <button class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600" onclick="openEditModal(${element.id}, '${element.name}', '${element.description}', ${element.student_questionnaire_id})">
+                                <button class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600" onclick="openEditModal(${element.id}, '${element.name}', '${element.description}', ${element.lecturer_questionnaire_id || 'null'})">
                                     Ubah
                                 </button>
                                 <button class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 ml-2" onclick="deleteElement(${element.id})">
@@ -161,7 +200,7 @@
 
         async function deleteElement(id) {
             if (confirm('Apakah Anda yakin ingin menghapus elemen ini?')) {
-                const response = await fetch(`${BASE_URL}/api/admin/student-elements/${id}`, {
+                const response = await fetch(`${BASE_URL}/api/admin/acadstaff-elements/${id}`, {
                     method: 'DELETE',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -172,77 +211,68 @@
 
                 if (response.ok) {
                     alert('Data berhasil dihapus.');
-                    fetchStudentElements(); // Refresh the table
+                    fetchAcadstaffElements(); // Refresh the table
                 } else {
                     alert('Gagal menghapus data.');
                 }
             }
         }
 
-        async function fetchStudentQuestionnaires() {
-            const response = await fetch(`${BASE_URL}/api/admin/student-questionnaires`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                const select = document.getElementById('studentQuestionnaireId');
-                const editSelect = document.getElementById('editStudentQuestionnaireId');
-                select.innerHTML = '<option value="">Pilih Kuesioner Mahasiswa</option>'; // Clear existing options
-                editSelect.innerHTML = '<option value="">Pilih Kuesioner Mahasiswa</option>'; // Clear existing options
-
-                data.data.forEach(questionnaire => {
-                    const option = document.createElement('option');
-                    option.value = questionnaire.id;
-                    option.textContent = questionnaire.name; // Ganti dengan nama yang sesuai
-                    select.appendChild(option);
-                    const editOption = option.cloneNode(true); // Clone option for edit select
-                    editSelect.appendChild(editOption);
-                });
-            } else {
-                alert('Gagal mengambil data kuesioner.');
-            }
-        }
-
-        function openEditModal(id, name, description, studentQuestionnaireId) {
-            document.getElementById('editElementId').value = id; // Set ID ke input tersembunyi
-            document.getElementById('editElementName').value = name;
-            document.getElementById('editElementDescription').value = description;
-
-            // Ambil data kuesioner dan set nilai select
-            fetchStudentQuestionnaires().then(() => {
-                const editSelect = document.getElementById('editStudentQuestionnaireId');
-                editSelect.value = studentQuestionnaireId; // Set value untuk select
-
-                // Pastikan opsi yang sesuai dipilih
-                for (let option of editSelect.options) {
-                    if (option.value == studentQuestionnaireId) {
-                        option.selected = true;
-                        break;
+        async function fetchAcadstaffQuestionnaires() {
+            try {
+                const response = await fetch(`${BASE_URL}/api/admin/acadstaff-questionnaires`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
                     }
-                }
-            });
+                });
 
-            document.getElementById('editModal').classList.remove('hidden'); // Menampilkan modal
+                if (response.ok) {
+                    const data = await response.json();
+                    const select = document.getElementById('acadstaffQuestionnaireId');
+                    const editSelect = document.getElementById('editAcadstaffQuestionnaireId');
+
+                    console.log('Data kuesioner:', data); // Debugging: lihat data yang diterima
+
+                    if (select && editSelect) { // Pastikan elemen ada
+                        select.innerHTML = '<option value="">Pilih Kuesioner Dosen</option>'; // Clear existing options
+                        editSelect.innerHTML = '<option value="">Pilih Kuesioner Dosen</option>'; // Clear existing options
+
+                        data.data.forEach(questionnaire => {
+                            const option = document.createElement('option');
+                            option.value = questionnaire.id;
+                            option.textContent = questionnaire.name; // Ganti dengan nama yang sesuai
+                            select.appendChild(option);
+                            const editOption = option.cloneNode(true); // Clone option for edit select
+                            editSelect.appendChild(editOption);
+                        });
+
+                        console.log('Opsi kuesioner ditambahkan ke select.'); // Debugging: konfirmasi opsi ditambahkan
+                    } else {
+                        console.error('Element select tidak ditemukan.'); // Debugging: jika elemen tidak ada
+                    }
+                } else {
+                    alert('Gagal mengambil data kuesioner.');
+                }
+            } catch (error) {
+                console.error('Error saat mengambil kuesioner:', error); // Tangkap error
+            }
         }
 
         async function updateElement() {
             const id = document.getElementById('editElementId').value; // Ambil ID dari input tersembunyi
             const name = document.getElementById('editElementName').value;
             const description = document.getElementById('editElementDescription').value;
-            const studentQuestionnaireId = document.getElementById('editStudentQuestionnaireId').value;
+            const acadstaffQuestionnaireId = document.getElementById('editAcadstaffQuestionnaireId').value;
 
             // Tambahkan validasi untuk studentQuestionnaireId
-            if (!studentQuestionnaireId) {
-                alert('Kuesioner Mahasiswa harus dipilih');
+            if (!acadstaffQuestionnaireId) {
+                alert('Kuesioner Dosen harus dipilih');
                 return;
             }
 
-            const response = await fetch(`${BASE_URL}/api/admin/student-elements/${id}`, {
+            const response = await fetch(`${BASE_URL}/api/admin/acadstaff-elements/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -252,13 +282,13 @@
                 body: JSON.stringify({
                     name,
                     description,
-                    student_questionnaire_id: studentQuestionnaireId
+                    acad_staff_questionnaire_id: acadstaffQuestionnaireId
                 })
             });
 
             if (response.ok) {
                 alert('Data berhasil diubah.');
-                fetchStudentElements(); // Refresh the table
+                fetchAcadstaffElements(); // Refresh the table
                 closeEditModal(); // Close the modal
             } else {
                 const errorData = await response.json(); // Ambil detail error
@@ -269,6 +299,12 @@
 
         // Menambahkan event listener untuk tombol "Tambah Data"
         document.getElementById('openModal').onclick = function() {
+            // Ambil data kuesioner dan set nilai select
+            fetchAcadstaffQuestionnaires().then(() => {
+                const select = document.getElementById('acadstaffQuestionnaireId');
+                select.value = ''; // Reset nilai select jika perlu
+            });
+
             document.getElementById('modal').classList.remove('hidden'); // Menampilkan modal
         };
 
@@ -283,8 +319,8 @@
         };
 
         document.addEventListener('DOMContentLoaded', () => {
-            fetchStudentElements();
-            fetchStudentQuestionnaires(); // Fetch questionnaires when the page loads
+            fetchAcadstaffElements();
+            fetchAcadstaffQuestionnaires(); // Ganti fetchAcadstaffQuestionnaires dengan fetchStudentQuestionnaires
         });
 
         // Pastikan fungsi saveElement didefinisikan
@@ -298,7 +334,7 @@
 
             const name = document.getElementById('elementName').value;
             const description = document.getElementById('elementDescription').value;
-            const studentQuestionnaireId = document.getElementById('studentQuestionnaireId').value;
+            const acadstaffQuestionnaireId = document.getElementById('acadstaffQuestionnaireId').value;
 
             if (!name) {
                 alert('Nama elemen harus diisi');
@@ -306,13 +342,13 @@
             }
 
             // Tambahkan validasi untuk studentQuestionnaireId
-            if (!studentQuestionnaireId) {
-                alert('Kuesioner Mahasiswa harus dipilih');
+            if (!acadstaffQuestionnaireId) {
+                alert('Kuesioner Dosen harus dipilih');
                 return;
             }
 
             try {
-                const response = await fetch(`${BASE_URL}/api/admin/student-elements`, {
+                const response = await fetch(`${BASE_URL}/api/admin/acadstaff-elements`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -322,7 +358,7 @@
                     body: JSON.stringify({
                         name,
                         description,
-                        student_questionnaire_id: studentQuestionnaireId
+                        acad_staff_questionnaire_id: acadstaffQuestionnaireId
                     })
                 });
 
@@ -330,7 +366,7 @@
 
                 if (response.ok) {
                     alert('Data berhasil ditambahkan.');
-                    fetchStudentElements(); // Refresh the table
+                    fetchAcadstaffElements(); // Refresh the table
                     closeModal(); // Close the modal
                 } else {
                     const errorData = await response.json(); // Tambahkan ini untuk mendapatkan detail error
@@ -344,7 +380,7 @@
         }
 
         async function showDetail(id) {
-            const response = await fetch(`${BASE_URL}/api/admin/student-elements/${id}/relations`, {
+            const response = await fetch(`${BASE_URL}/api/admin/acadstaff-elements/${id}/relations`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -354,26 +390,33 @@
 
             if (response.ok) {
                 const data = await response.json();
-                displayDetail(data.data); // Panggil fungsi untuk menampilkan detail
+                console.log('Data yang diterima:', data); // Tambahkan log untuk memeriksa data
+                displayDetail(data); // Panggil fungsi untuk menampilkan detail
             } else {
                 alert('Gagal mengambil detail elemen.');
             }
         }
 
-        async function displayDetail(element) {
+        async function displayDetail(data) {
             const detailModal = document.getElementById('detailModal');
             const detailContent = document.getElementById('detailContent');
 
+            const element = data.data; // Ambil data dari respons
+            const questionnaireId = data.additional.acad_staff_questionnaire_id; // Ambil ID kuesioner dari additional
+            const questionnaireName = data.additional.acadstaff_questionnaire_name; // Ambil nama kuesioner dari additional
+
             detailContent.innerHTML = `
-                <p><strong>Nama elemen :</strong> ${element.name}</p>
-                <p><strong>Deskripsi:</strong> ${element.description || 'Tidak ada deskripsi'}</p>
-                <h3 class="font-bold">Pertanyaan:</h3>
+                <p><strong class="font-medium">Nama elemen :</strong> ${element.name}</p>
+                <p><strong class="font-medium">Deskripsi:</strong> ${element.description || 'Tidak ada deskripsi'}</p>
+                <p><strong class="font-medium">Nama Kuesioner:</strong> ${questionnaireName}</p> <!-- Menampilkan nama kuesioner dosen -->
+                <h3 class="font-medium">Pertanyaan:</h3>
                 <ul>
-                    ${Array.isArray(element.student_questions) && element.student_questions.length > 0
-                        ? element.student_questions.map(question => `
+                    ${Array.isArray(element.acadstaff_questions) && element.acadstaff_questions.length > 0
+                        ? element.acadstaff_questions.map(question => `
                             <li>
-                                <strong>${question.question}</strong><br>
-                                ${question.label.join(', ')}
+                                <strong class="font-medium">${question.question}</strong><br>
+                                <span>Label: ${question.label.join(', ')}</span><br>
+                                <span>Rentang: ${question.min_range} - ${question.max_range}</span>
                             </li>
                         `).join('')
                         : '<li>Tidak ada pertanyaan tersedia.</li>'}

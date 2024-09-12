@@ -87,13 +87,21 @@ class LecturerElementController extends BaseController
     public function showWithRelations($id)
     {
         if (Auth::user()->role == 'admin') {
-            $LectureElement = LecturerElement::with('lecturerQuestions')->find($id);
+            // Muat relasi lecturerQuestions dan lecturerQuestionnaire
+            $LectureElement = LecturerElement::with(['lecturerQuestions', 'lecturerQuestionnaire'])->find($id);
 
             if (is_null($LectureElement)) {
-                return $this->errorResponse('Student Element not found.', [], 404);
+                return $this->errorResponse('Lecture Element not found.', [], 404);
             }
 
-            return $this->successResponse(new LecturerElementResource($LectureElement), 'Lecture Element retrieved successfully.');
+            // Tambahkan nama kuesioner ke dalam respons
+            $lecturerQuestionnaireName = $LectureElement->lecturerQuestionnaire ? $LectureElement->lecturerQuestionnaire->name : 'Tidak ada kuesioner';
+
+            // Mengembalikan respons dengan status 200 dan data yang benar
+            return $this->successResponse(new LecturerElementResource($LectureElement), 'Lecture Element retrieved successfully.', [
+                'lecturer_questionnaire_id' => $LectureElement->lecturer_questionnaire_id,
+                'lecturer_questionnaire_name' => $lecturerQuestionnaireName,
+            ]);
         } else {
             return $this->errorResponse('Unauthorized', [], 401);
         }
@@ -128,8 +136,10 @@ class LecturerElementController extends BaseController
                 return $this->errorResponse('Validation Error', $validator->errors(), 422);
             }
 
+            // Update fields
             $LecturerElement->name = $input['name'];
             $LecturerElement->description = $input['description'];
+            $LecturerElement->lecturer_questionnaire_id = $input['lecturer_questionnaire_id']; // Tambahkan ini
             $LecturerElement->save();
 
             return $this->successResponse(new LecturerElementResource($LecturerElement), 'Lecturer Element updated successfully.');

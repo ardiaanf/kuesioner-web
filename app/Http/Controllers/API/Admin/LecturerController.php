@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\API\Admin;
 
 use App\Http\Controllers\API\BaseController;
+use App\Http\Controllers\Controller;
 use App\Http\Resources\Admin\LecturerResource;
 use App\Models\Lecturer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class LecturerController extends BaseController
@@ -17,8 +19,12 @@ class LecturerController extends BaseController
      */
     public function index(Request $request)
     {
-        $lecturer = Lecturer::all();
-        return $this->successResponse(LecturerResource::collection($lecturer), 'Lecturer retrieved successfully.');
+        if (Auth::user()->role == 'admin') {
+            $lecturer = Lecturer::all();
+            return $this->successResponse(LecturerResource::collection($lecturer), 'Lecturer retrieved successfully.');
+        } else {
+            return $this->errorResponse('Unauthorized', [], 401);
+        }
     }
 
     /**
@@ -29,33 +35,35 @@ class LecturerController extends BaseController
      */
     public function store(Request $request)
     {
-        $input = $request->all();
+        if (Auth::user()->role == 'admin') {
+            $input = $request->all();
 
-        $validator = Validator::make($input, [
-            'name' => 'required',
-            'reg_number' => 'required|unique:lecturers,reg_number',
-            'email' => 'required|email|unique:lecturers,email',
-            'password' => 'required',
-            'gender' => 'required|in:male,female',
-            'work_period' => 'required',
-            'lecturer_employment_status_id' => 'required|exists:lecturer_employment_statuses,id'
-        ]);
+            $validator = Validator::make($input, [
+                'name' => 'required',
+                'reg_number' => 'required|unique:lecturers,reg_number',
+                'email' => 'required|email|unique:lecturers,email',
+                'password' => 'required',
+                'work_period' => 'required',
+                'lecturer_employment_status_id' => 'required|exists:lecturer_employment_statuses,id' // Pastikan kolom ini ada
+            ]);
 
-        if ($validator->fails()) {
-            return $this->errorResponse('Validation Error', $validator->errors(), 422);
+            if ($validator->fails()) {
+                return $this->errorResponse('Validation Error', $validator->errors(), 422);
+            }
+
+            $lecturer = Lecturer::create([
+                'name' => $input['name'],
+                'reg_number' => $input['reg_number'],
+                'email' => $input['email'],
+                'password' => bcrypt($input['password']),
+                'work_period' => $input['work_period'],
+                'lecturer_employment_status_id' => $input['lecturer_employment_status_id'] // Tambahkan kolom ini
+            ]);
+
+            return $this->successResponse(new LecturerResource($lecturer), 'Lecturer created successfully.', 201);
+        } else {
+            return $this->errorResponse('Unauthorized', [], 401);
         }
-
-        $lecturer = Lecturer::create([
-            'name' => $input['name'],
-            'reg_number' => $input['reg_number'],
-            'email' => $input['email'],
-            'password' => bcrypt($input['password']),
-            'gender' => $input['gender'],
-            'work_period' => $input['work_period'],
-            'lecturer_employment_status_id' => $input['lecturer_employment_status_id']
-        ]);
-
-        return $this->successResponse(new LecturerResource($lecturer), 'Lecturer created successfully.', 201);
     }
 
     /**
@@ -66,13 +74,17 @@ class LecturerController extends BaseController
      */
     public function show($id)
     {
-        $lecturer = Lecturer::find($id);
+        if (Auth::user()->role == 'admin') {
+            $lecturer = Lecturer::find($id);
 
-        if (is_null($lecturer)) {
-            return $this->errorResponse('lecturer not found.', [], 404);
+            if (is_null($lecturer)) {
+                return $this->errorResponse('Admin lecturer not found.', [], 404);
+            }
+
+            return $this->successResponse(new LecturerResource($lecturer), 'Lecture retrieved successfully.');
+        } else {
+            return $this->errorResponse('Unauthorized', [], 401);
         }
-
-        return $this->successResponse(new LecturerResource($lecturer), 'Lecturer retrieved successfully.');
     }
 
     /**
@@ -84,38 +96,38 @@ class LecturerController extends BaseController
      */
     public function update(Request $request, $id)
     {
-        $lecturer = Lecturer::find($id);
+        if (Auth::user()->role == 'admin') {
+            $lecturer = Lecturer::find($id);
 
-        if (is_null($lecturer)) {
-            return $this->errorResponse('Lecturer not found.', [], 404);
+            if (is_null($lecturer)) {
+                return $this->errorResponse('Lecturer Admin not found.', [], 404);
+            }
+
+            $input = $request->all();
+
+            $validator = Validator::make($input, [
+                'name' => 'required',
+                'reg_number' => 'required|unique:lecturers,reg_number,'. $id,
+                'email' => 'required|email|unique:lecturers,email,' . $id,
+                'password' => 'required',
+                'work_period' => 'required'
+            ]);
+
+            if ($validator->fails()) {
+                return $this->errorResponse('Validation Error', $validator->errors(), 422);
+            }
+
+            $lecturer->name = $input['name'];
+            $lecturer->reg_number = $input['reg_number'];
+            $lecturer->email = $input['email'];
+            $lecturer->password = bcrypt($input['password']);
+            $lecturer->work_period = $input['work_period'];
+            $lecturer->save();
+
+            return $this->successResponse(new LecturerResource($lecturer), 'Lecturer updated successfully.');
+        } else {
+            return $this->errorResponse('Unauthorized', [], 401);
         }
-
-        $input = $request->all();
-
-        $validator = Validator::make($input, [
-            'name' => 'required',
-            'reg_number' => 'required|unique:lecturers,reg_number,' . $id,
-            'email' => 'required|email|unique:lecturers,email,' . $id,
-            'password' => 'required',
-            'gender' => 'required|in:male,female',
-            'work_period' => 'required',
-            'lecturer_employment_status_id' => 'required|exists:lecturer_employment_statuses,id'
-        ]);
-
-        if ($validator->fails()) {
-            return $this->errorResponse('Validation Error', $validator->errors(), 422);
-        }
-
-        $lecturer->name = $input['name'];
-        $lecturer->reg_number = $input['reg_number'];
-        $lecturer->email = $input['email'];
-        $lecturer->password = bcrypt($input['password']);
-        $lecturer->gender = $input['gender'];
-        $lecturer->work_period = $input['work_period'];
-        $lecturer->lecturer_employment_status_id = $input['lecturer_employment_status_id'];
-        $lecturer->save();
-
-        return $this->successResponse(new LecturerResource($lecturer), 'Lecturer updated successfully.');
     }
 
     /**
@@ -126,14 +138,18 @@ class LecturerController extends BaseController
      */
     public function destroy($id)
     {
-        $lecturer = Lecturer::find($id);
+        if (Auth::user()->role == 'admin') {
+            $lecturer = Lecturer::find($id);
 
-        if (is_null($lecturer)) {
-            return $this->errorResponse('Lecturer not found.', [], 404);
+            if (is_null($lecturer)) {
+                return $this->errorResponse('Lecturer Admin not found.', [], 404);
+            }
+
+            $lecturer->delete();
+
+            return $this->successResponse([], 'Lecturer deleted successfully.');
+        } else {
+            return $this->errorResponse('Unauthorized', [], 401);
         }
-
-        $lecturer->delete();
-
-        return $this->successResponse([], 'Lecturer deleted successfully.');
     }
 }

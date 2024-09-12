@@ -56,9 +56,8 @@
         }
 
         function mulaiKuesioner(id) {
-            // Implementasi untuk memulai kuesioner
-            console.log(`Memulai kuesioner dengan ID: ${id}`);
-            // Anda bisa menambahkan logika untuk berpindah ke halaman kuesioner yang spesifik di sini
+            // Mengarahkan ke halaman kuesioner dengan ID yang sesuai
+            window.location.href = `/questionnaire/ac-lecturer?id=${id}`;
         }
 
         // Panggil fungsi untuk menampilkan kuesioner saat halaman dimuat

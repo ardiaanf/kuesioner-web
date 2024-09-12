@@ -16,18 +16,34 @@ class StudentClassSeeder extends Seeder
     public function run()
     {
         StudentClass::create([
-            'name' => 'DKV 1',
+            'name' => 'MBP 1A',
             'study_program_id' => 1,
         ]);
 
         StudentClass::create([
-            'name' => 'RPL 1',
-            'study_program_id' => 2,
+            'name' => 'MBP 1B',
+            'study_program_id' => 1,
         ]);
 
         StudentClass::create([
-            'name' => 'BCT 1',
-            'study_program_id' => 3,
+            'name' => 'MBP 1C',
+            'study_program_id' => 1,
         ]);
+
+        StudentClass::create([
+            'name' => 'MBP 1D',
+            'study_program_id' => 1,
+        ]);
+
+        StudentClass::create([
+            'name' => 'MBP 1E',
+            'study_program_id' => 1,
+        ]);
+
+        StudentClass::create([
+            'name' => 'TRPL 1A',
+            'study_program_id' => 2,
+        ]);
+
     }
 }

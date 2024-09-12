@@ -137,10 +137,12 @@
                 };
 
                 // Kumpulkan jawaban dari radio button untuk elemen ini
-                document.querySelectorAll(`input[name^="question${element.id}"]:checked`).forEach(input => {
-                    const questionId = input.name.replace(`question${element.id}`, ''); // Ambil ID pertanyaan
-                    answers.id.push(Number(questionId)); // Tambahkan ID pertanyaan ke array
-                    answers.answer.push(Number(input.value)); // Tambahkan nilai jawaban ke array
+                element.student_questions.forEach(question => {
+                    const input = document.querySelector(`input[name="question${question.id}"]:checked`);
+                    if (input) {
+                        answers.id.push(question.id); // Tambahkan ID pertanyaan ke array
+                        answers.answer.push(Number(input.value)); // Tambahkan nilai jawaban ke array
+                    }
                 });
 
                 console.log(`Element ID: ${element.id}, Answers:`, answers); // Tambahkan log untuk memeriksa jawaban
@@ -176,8 +178,12 @@
             console.log(result); // Tambahkan log untuk memeriksa respons
             if (response.ok) {
                 alert('Kuesioner berhasil diisi!');
+                // Arahkan kembali ke halaman selectStudent setelah alert
+                window.location.href = `${BASE_URL}/questionnaire/select-student`;
             } else {
-                alert('Terjadi kesalahan: ' + result.message);
+                alert('Terjadi kesalahan: ' + result.message); // Ubah pesan ke bahasa Indonesia
+                // Arahkan kembali ke halaman selectStudent setelah alert
+                window.location.href = `${BASE_URL}/questionnaire/select-student`;
             }
         }
     </script>

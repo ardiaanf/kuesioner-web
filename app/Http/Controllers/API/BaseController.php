@@ -14,15 +14,13 @@ class BaseController extends Controller
      * @param $code
      * @return \Illuminate\Http\JsonResponse
      */
-    public function successResponse($result, $message, $code = 200)
+    protected function successResponse($data, $message = null, $additionalData = [], $status = 200)
     {
-        $response = [
-            'error' => false,
+        return response()->json([
             'message' => $message,
-            'data' => $result
-        ];
-
-        return response()->json($response, $code);
+            'data' => $data,
+            'additional' => $additionalData,
+        ], $status);
     }
 
     /**

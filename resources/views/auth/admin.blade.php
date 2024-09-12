@@ -48,7 +48,7 @@
                 alert(response.data.error);
             } else {
                 localStorage.setItem('access_token', response.data.access_token);
-                window.location.href = `${BASE_URL}/admin/dashboard`;
+                window.location.href = `${BASE_URL}/`;
             }
         });
     </script>

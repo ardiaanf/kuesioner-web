@@ -2,15 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Foundation\Auth\User as Authenticatable; // Pastikan ini diimpor
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
+use Laravel\Sanctum\HasApiTokens; // Tambahkan ini
 
-
-class Lecturer extends Authenticatable
+class Lecturer extends Authenticatable // Pastikan model ini mengextends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use Notifiable, HasApiTokens; // Tambahkan HasApiTokens di sini
 
     protected $table = 'lecturers';
 
@@ -32,5 +30,10 @@ class Lecturer extends Authenticatable
     public function studyPrograms()
     {
         return $this->belongsToMany(StudyProgram::class, 'lecturer_study_programs');
+    }
+
+    public function lecturerCourses()
+    {
+        return $this->hasMany(LecturerCourse::class, 'lecturer_id');
     }
 }

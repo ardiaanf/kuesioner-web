@@ -17,7 +17,7 @@ class LecturerSeeder extends Seeder
     {
         $faker = \Faker\Factory::create('id_ID');
         Lecturer::create([
-            'name' => $faker->name,
+            'name' => 'Esa Rindy Cardias, S.Pr., M.SC',
             'reg_number' => $faker->unique()->regexify('D[0-9]{3}'),
             'email' => $faker->unique()->safeEmail,
             'password' => bcrypt('password'),
@@ -26,7 +26,25 @@ class LecturerSeeder extends Seeder
         ]);
 
         Lecturer::create([
-            'name' => $faker->name,
+            'name' => 'Firda Rahma Amalia SE., MM',
+            'reg_number' => $faker->unique()->regexify('D[0-9]{3}'),
+            'email' => $faker->unique()->safeEmail,
+            'password' => bcrypt('password'),
+            'work_period' => 2022,
+            'lecturer_employment_status_id' => 2,
+        ]);
+
+        Lecturer::create([
+            'name' => 'Kanom, S.Pd., M.Par',
+            'reg_number' => $faker->unique()->regexify('D[0-9]{3}'),
+            'email' => $faker->unique()->safeEmail,
+            'password' => bcrypt('password'),
+            'work_period' => 2022,
+            'lecturer_employment_status_id' => 2,
+        ]);
+
+        Lecturer::create([
+            'name' => 'Randhi Nanang Darmawan, S.Si., M.Si',
             'reg_number' => $faker->unique()->regexify('D[0-9]{3}'),
             'email' => $faker->unique()->safeEmail,
             'password' => bcrypt('password'),

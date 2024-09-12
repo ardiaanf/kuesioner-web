@@ -76,9 +76,8 @@
         function displayQuestionnaireData(data) {
             // Clear previous data
             const container = document.getElementById('questionnaire-details');
-            if (data) {
+            if (data && data.length > 0) { // Memastikan data ada dan tidak kosong
                 container.innerHTML = `
-                    
                     <table class="border-collapse border border-gray-300">
                         <thead>
                             <tr>
@@ -87,24 +86,26 @@
                             </tr>
                         </thead>
                         <tbody>
-                            ${data.answers && Array.isArray(data.answers) ? data.answers.map((answer, index) => `
+                            ${data.map((student, index) => `
                                 <tr>
                                     <td class="border border-gray-300">${index + 1}</td>
                                     <td class="border border-gray-300">
-                                        <h2>${data.course}</h2>
-                                        <p><strong>Nama:</strong> ${data.name}</p>
-                                        <p><strong>Nomor Induk:</strong> ${data.reg_number}</p>
-                                        <p><strong>Email:</strong> ${data.email}</p>
-                                        <p><strong>Jurusan:</strong> ${data.major}</p>
-                                        <p><strong>Program Studi:</strong> ${data.study_program}</p>
-                                        <p><strong>Kelas:</strong> ${data.student_class}</p>
-                                        <p><strong>Dosen:</strong> ${data.lecturer}</p>
-                                        <p><strong>Tanggal:</strong> ${new Date(data.created_at).toLocaleDateString()}</p>
-                                        <p><strong>Pertanyaan:</strong> ${answer.question}</p>
-                                        <p><strong>Jawaban:</strong> ${answer.answer}</p>
+                                        <h2>${student.course}</h2>
+                                        <p><strong>Nama:</strong> ${student.name}</p>
+                                        <p><strong>Nomor Induk:</strong> ${student.reg_number}</p>
+                                        <p><strong>Email:</strong> ${student.email}</p>
+                                        <p><strong>Jurusan:</strong> ${student.major}</p>
+                                        <p><strong>Program Studi:</strong> ${student.study_program}</p>
+                                        <p><strong>Kelas:</strong> ${student.student_class}</p>
+                                        <p><strong>Dosen:</strong> ${student.lecturer}</p>
+                                        <p><strong>Tanggal:</strong> ${new Date(student.created_at).toLocaleDateString()}</p>
+                                        ${student.answers.map(answer => `
+                                            <p><strong>Pertanyaan:</strong> ${answer.question}</p>
+                                            <p><strong>Jawaban:</strong> ${answer.answer}</p>
+                                        `).join('')}
                                     </td>
                                 </tr>
-                            `).join('') : '<tr><td colspan="2" class="border border-gray-300">Tidak ada jawaban untuk ditampilkan.</td></tr>'}
+                            `).join('')}
                         </tbody>
                     </table>
                 `;

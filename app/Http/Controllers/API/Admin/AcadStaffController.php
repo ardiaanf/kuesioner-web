@@ -98,7 +98,8 @@ class AcadStaffController extends BaseController
             'email' => 'required|email|unique:acad_staffs,email,' . $id,
             'password' => 'required',
             'gender' => 'required|in:male,female',
-            'acad_staff_work_unit_id' => 'required|exists:acad_staff_work_units,id'
+            'acad_staff_work_unit_id' => 'required|exists:acad_staff_work_units,id',
+            
         ]);
 
         if ($validator->fails()) {

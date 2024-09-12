@@ -16,18 +16,14 @@ class StudyProgramSeeder extends Seeder
     public function run()
     {
         StudyProgram::create([
-            'name' => 'Desain Komunikasi Visual',
+            'name' => 'Manajemen Bisnis Pariwisata',
             'major_id' => 1
         ]);
 
         StudyProgram::create([
-            'name' => 'Rekayasa Perangkat Lunak',
+            'name' => 'Teknologi Rekayasa Perangkat Lunak',
             'major_id' => 2
         ]);
 
-        StudyProgram::create([
-            'name' => 'Broadcasting',
-            'major_id' => 3
-        ]);
     }
 }

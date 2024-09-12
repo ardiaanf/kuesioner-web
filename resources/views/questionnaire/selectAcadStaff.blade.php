@@ -43,7 +43,7 @@
                     questionnaireElement.className = 'bg-white rounded-lg shadow-md p-6 cursor-pointer hover:bg-blue-50 transition duration-300';
                     questionnaireElement.innerHTML = `
                         <h2 class="text-lg font-semibold mb-2">${questionnaire.name}</h2>
-                        <p class="text-sm text-gray-600">${questionnaire.description|| 'Tidak ada deskripsi'}</p>
+                        <p class="text-sm text-gray-600">${questionnaire.description || 'Tidak ada deskripsi'}</p>
                         <button class="mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600" onclick="startQuestionnaire(${questionnaire.id})">Mulai Kuesioner</button>
                     `;
                     questionnaireList.appendChild(questionnaireElement);
@@ -55,9 +55,8 @@
         });
 
         function startQuestionnaire(id) {
-            // Implementasi untuk memulai kuesioner
-            console.log('Memulai kuesioner dengan ID:', id);
-            // Tambahkan logika untuk memulai kuesioner di sini
+            // Arahkan ke halaman kuesioner berdasarkan ID
+            window.location.href = `/questionnaire/ac-acadstaff?id=${id}`; // Ganti dengan URL yang sesuai
         }
     </script>
 </body>

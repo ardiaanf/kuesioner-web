@@ -4,7 +4,7 @@ namespace App\Http\Resources\Admin;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class LecturerElementResource extends JsonResource
+class MajorResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,9 +17,6 @@ class LecturerElementResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'description' => $this->description,
-            'lecturer_questionnaire_id' => $this->lecturer_questionnaire_id, // Tambahkan ini
-            'lecturer_questions' => LecturerQuestionResource::collection($this->whenLoaded('lecturerQuestions')),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
